@@ -1,0 +1,11 @@
+TAP version 13
+ok 1 - Tests\AppBundle\Controller\DefaultControllerTest::testIndex
+not ok 2 - Failure: tests\AppBundle\Controller\MainControllerTest::testHomepage
+  ---
+  message: 'Failed asserting that 404 matches expected 200.'
+  severity: fail
+  data:
+      got: 404
+      expected: 200
+  ...
+1..2

@@ -31,20 +31,23 @@
     },
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
+        "phpunit/phpunit": "5.5.*",
         "symfony/phpunit-bridge": "^3.0"
     },
     "scripts": {
-        "symfony-scripts": [
-            "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
-            "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
-        ],
-        "post-install-cmd": [
-            "@symfony-scripts"
-        ],
+      "phpunit": "phpunit --log-tap ./tests/log.txt",
+      "symfony-scripts": [
+          "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
+          "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
+          "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
+          "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installAssets",
+          "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::installRequirementsFile",
+          "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::prepareDeploymentTarget"
+      ],
+      "phpunit-coverage": "phpunit --coverage-html ./tests/coverage --log-tap ./tests/log.txt",
+      "post-install-cmd": [
+          "@symfony-scripts"
+       ],
         "post-update-cmd": [
             "@symfony-scripts"
         ]
