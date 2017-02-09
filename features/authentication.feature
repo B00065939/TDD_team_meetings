@@ -3,7 +3,7 @@ Feature: Authentication
   As an admin
   I need to be able to login and logout
 
-  @javascript
+@javascript
   Scenario: Login in to management page
     Given I am on "/"
     When I fill in "login" with "admin"

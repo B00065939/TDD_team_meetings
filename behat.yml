@@ -4,3 +4,4 @@ default:
       base_url: http://localhost:8000
       goutte: ~
       selenium2: ~
+
