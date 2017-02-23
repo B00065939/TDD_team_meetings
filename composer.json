@@ -37,11 +37,13 @@
     "require-dev": {
         "sensio/generator-bundle": "^3.0",
         "phpunit/phpunit": "5.5.*",
-        "symfony/phpunit-bridge": "^3.0"
+        "symfony/phpunit-bridge": "^3.0",
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "nelmio/alice": "^2.2"
     },
     "scripts": {
-      "db_diff": "php ./bin/console doctrine:migrations:diff",
-      "db_migrate": "php ./bin/console doctrine:migrations:migrate",
+      "db_d": "php ./bin/console doctrine:migrations:diff",
+      "db_m": "php ./bin/console doctrine:migrations:migrate",
       "selenium": "java -jar c:/Project/selenium-server-standalone-3.0.1.jar",
       "phpunit": "phpunit --log-tap ./tests/log.txt",
       "symfony-scripts": [

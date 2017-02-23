@@ -6,7 +6,7 @@ Feature: Authentication
 //@javascript
   Scenario: Login in to management page
     Given I am on "/"
-    When I fill in Username with "admin@wp.pl"
+    When I fill in "Username" with "admin@wp.pl"
     And I fill in "Password" with "pass"
     And I press "Login"
-    Then I should see "Welcome Admin"
+    Then I should see "Logout"
