@@ -2,3 +2,4 @@ AppBundle\Entity\User:
     user_{1..10}:
         email: admin<current()>@wp.pl
         plainPassword: pass
+        roles: ["50%? ROLE_ADMIN : ROLE_USER"]

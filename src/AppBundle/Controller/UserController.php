@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\User;
 use AppBundle\Form\NewUserForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -24,9 +25,23 @@ class UserController extends Controller
     public function newAction(Request $request)
     {
         $form = $this->createForm(NewUserForm::class);
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid()){
+            /**
+             * @var User $user
+             */
+            $user = $form->getData();
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+            $this->addFlash('success', "User added");
+            return $this->redirectToRoute('new_user');
+        }
+
         return $this->render('admin/newuser.html.twig', [
             'form' => $form->createView()
         ]);
+
     }
 
 }

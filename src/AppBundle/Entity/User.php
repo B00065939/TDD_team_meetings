@@ -20,6 +20,12 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User implements UserInterface
 {
+
+    /**
+     * @ORM\Column(type="json_array")
+     */
+    private $roles = [];
+
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -52,6 +58,7 @@ class User implements UserInterface
         // forces the object to look "dirty" to Doctrine. Avoids
         // Doctrine *not* saving this entity, if only plainPassword changes
         $this->password = null;
+
     }
 
     public function setPlainPassword($plainPassword)
@@ -77,7 +84,16 @@ class User implements UserInterface
      */
     public function getRoles()
     {
-        return ['ROLE_ADMIN'];
+        $roles = $this->roles;
+//        if ( !in_array('ROLE_USER', $roles)) {
+//            $roles[] = 'ROLE_USER';
+//        }
+        return $roles;
+    }
+
+    public function setRoles(array $roles)
+    {
+        $this->roles = $roles;
     }
 
     /**
@@ -132,4 +148,21 @@ class User implements UserInterface
     {
         $this->plainPassword = null;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param mixed $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
 }

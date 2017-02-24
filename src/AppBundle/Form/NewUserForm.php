@@ -4,6 +4,7 @@ namespace AppBundle\Form;
 
 use AppBundle\Entity\User;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
@@ -18,7 +19,16 @@ class NewUserForm extends AbstractType
             ->add('email', EmailType::class)
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class
-            ]);
+            ])
+            ->add('roles', ChoiceType::class, [
+                'multiple' => true,
+                'expanded' => true, // render check-boxes
+                'choices' => [
+                    'Admin' => 'ROLE_ADMIN',
+                    'User' => 'ROLE_USER',
+                    'Supervisor' => 'ROLE_SUPERVISOR'
+                ],
+            ]) ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

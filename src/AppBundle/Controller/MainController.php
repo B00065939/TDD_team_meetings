@@ -10,6 +10,7 @@ namespace AppBundle\Controller;
 
 
 use AppBundle\Form\LoginForm;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class MainController extends Controller
@@ -18,6 +19,7 @@ class MainController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function homepageAction() {
+
 
 
         $authenticationUtils = $this->get('security.authentication_utils');
@@ -41,9 +43,9 @@ class MainController extends Controller
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public function logoutAction() {
-        throw new \Exception('this should not be reached!');
+        throw new Exception('this should not be reached!');
     }
 }
