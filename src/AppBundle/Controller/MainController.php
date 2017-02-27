@@ -21,6 +21,15 @@ class MainController extends Controller
     public function homepageAction() {
 
 
+        //if($this->denyAccessUnlessGranted('ROLE_ADMIN')) {
+        if(($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
+            return $this->render(
+                'admin/adminpanel.html.twig',
+                array(
+
+                )
+            );
+        }
 
         $authenticationUtils = $this->get('security.authentication_utils');
         // get the login error if there is one
