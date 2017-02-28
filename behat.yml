@@ -4,10 +4,16 @@ default:
       contexts:
         - FeatureContext
         - Behat\MinkExtension\Context\MinkContext
+        - AuthenticationContext
+    authentication:
+      contexts:
+        - Behat\MinkExtension\Context\MinkContext
+        - AuthenticationContext
   extensions:
     Behat\MinkExtension:
-      show_cmd: 'firefox %s'
+      browser_name: firefox
+      show_cmd: 'open %s'
       base_url: http://localhost:8000
       goutte: ~
       selenium2: ~
-
+    Behat\Symfony2Extension: ~

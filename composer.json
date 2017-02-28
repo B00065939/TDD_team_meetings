@@ -39,9 +39,11 @@
         "phpunit/phpunit": "5.5.*",
         "symfony/phpunit-bridge": "^3.0",
         "doctrine/doctrine-fixtures-bundle": "^2.3",
-        "nelmio/alice": "^2.2"
+        "nelmio/alice": "^2.2",
+        "behat/symfony2-extension": "^2.1"
     },
     "scripts": {
+      "behat_authentication": "C:/Project/TDD_team_meetings/vendor/bin/behat.bat --suite=authentication",
       "fix": " php ./bin/console doctrine:fixtures:load",
       "db_create": "php ./bin/console doctrine:database:create --force",
       "db_d": "php ./bin/console doctrine:migrations:diff",

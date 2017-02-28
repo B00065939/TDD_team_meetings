@@ -4,6 +4,9 @@ homepage:
 logout:
     path: /logout
     defaults: {_controller : AppBundle:Main:logout}
+admin_panel:
+    path: /admin/adminpanel
+    defaults: {_controller : AppBundle:Main:adminPanel}
 new_user:
     path: /admin/newuser
     defaults: {_controller : AppBundle:User:new}
