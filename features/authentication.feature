@@ -42,7 +42,7 @@ Feature: Authentication
     Given I am logged in as an user
     When I follow "logout"
     Then I should see "Login!"
-  @javascript
+#@javascript
   Scenario: Logout from supervisor panel
     Given I am logged in as an supervisor
     When I follow "logout"
