@@ -18,20 +18,27 @@ class MainController extends Controller
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function homepageAction() {
+    public function homepageAction()
+    {
 
         //if($this->denyAccessUnlessGranted('ROLE_ADMIN')) {
-        if(($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
+
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
+            return $this->redirectToRoute('user_panel');
+        }
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUP'])  ) {
+            return $this->redirectToRoute('sup_panel');
+        }
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
             return $this->redirectToRoute('admin_panel');
         }
-
         $authenticationUtils = $this->get('security.authentication_utils');
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
         // last username entered by the user
         $lastUsername = $authenticationUtils->getLastUsername();
 
-        $form = $this->createForm(LoginForm::class , [
+        $form = $this->createForm(LoginForm::class, [
             '_username' => $lastUsername,
         ]);
 
@@ -45,21 +52,47 @@ class MainController extends Controller
         );
     }
 
-    public function adminPanelAction() {
-        if(($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
+    public function supPanelAction()
+    {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUP'])) {
             return $this->render(
-                'admin/adminpanel.html.twig',
-                array(
-                )
+                'sup/suppanel.html.twig',
+                array()
             );
         } else {
             return $this->redirectToRoute('homepage');
         }
     }
+
+    public function userPanelAction()
+    {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
+            return $this->render(
+                'user/userpanel.html.twig',
+                array()
+            );
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
+
+    public function adminPanelAction()
+    {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
+            return $this->render(
+                'admin/adminpanel.html.twig',
+                array()
+            );
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
+
     /**
      * @throws Exception
      */
-    public function logoutAction() {
+    public function logoutAction()
+    {
         throw new Exception('this should not be reached!');
     }
 }

@@ -35,12 +35,12 @@ class AuthenticationContext extends RawMinkContext implements Context
     }
 
     /**
-     * @Given There is an admin user :email with password :password with :role
+     * @Given There is an user :email with password :password with :role
      * @param $email
      * @param $password
      * @param $role
      */
-    public function thereIsAnAdminUserWithPassword($email, $password, $role)
+    public function thereIsAnUserWithPassword($email, $password, $role)
     {
         $user = new \AppBundle\Entity\User();
         $user->setEmail($email);
@@ -52,7 +52,7 @@ class AuthenticationContext extends RawMinkContext implements Context
     }
 
     /**
-     * @Given I am logged in as an  admin
+     * @Given I am logged in as an admin
      */
     public function iAmLoggedInAsAnAdmin()
     {
@@ -60,7 +60,7 @@ class AuthenticationContext extends RawMinkContext implements Context
         $password = 'pass';
         $roles = 'ROLE_ADMIN';
 
-        $this->thereIsAnAdminUserWithPassword($email,$password,$roles);
+        $this->thereIsAnUserWithPassword($email,$password,$roles);
         $this->visitPath('/');
         $this->getPage()->fillField('Username', $email);
         $this->getPage()->fillField('Password', $password);
@@ -79,5 +79,37 @@ class AuthenticationContext extends RawMinkContext implements Context
     private function getPage()
     {
         return $this->getSession()->getPage();
+    }
+
+    /**
+     * @Given I am logged in as an user
+     */
+    public function iAmLoggedInAsAnUser()
+    {
+        $email = 'user@wp.pl';
+        $password = 'pass';
+        $roles = 'ROLE_USER';
+
+        $this->thereIsAnUserWithPassword($email, $password, $roles);
+        $this->visitPath('/');
+        $this->getPage()->fillField('Username', $email);
+        $this->getPage()->fillField('Password', $password);
+        $this->getPage()->pressButton('Login');
+    }
+
+    /**
+     * @Given /^I am logged in as an supervisor$/
+     */
+    public function iAmLoggedInAsAnSupervisor()
+    {
+        $email = 'sup@wp.pl';
+        $password = 'pass';
+        $roles = 'ROLE_SUP';
+
+        $this->thereIsAnUserWithPassword($email, $password, $roles);
+        $this->visitPath('/');
+        $this->getPage()->fillField('Username', $email);
+        $this->getPage()->fillField('Password', $password);
+        $this->getPage()->pressButton('Login');
     }
 }

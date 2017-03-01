@@ -7,12 +7,19 @@ logout:
 admin_panel:
     path: /admin/adminpanel
     defaults: {_controller : AppBundle:Main:adminPanel}
+user_panel:
+    path: /user/userpanel
+    defaults: {_controller : AppBundle:Main:userPanel}
+sup_panel:
+    path: /sup/suppanel
+    defaults: {_controller : AppBundle:Main:supPanel}
+#Admin section
 new_user:
     path: /admin/newuser
-    defaults: {_controller : AppBundle:User:new}
+    defaults: {_controller : AppBundle:Admin:new}
 edit_user:
     path: /admin/edituser/{userId}
-    defaults: {_controller : AppBundle:User:edit}
+    defaults: {_controller : AppBundle:Admin:edit}
 delete_user:
     path: /admin/deleteuser/{userId}
-    defaults: {_controller : AppBundle:User:delete}
+    defaults: {_controller : AppBundle:Admin:delete}
