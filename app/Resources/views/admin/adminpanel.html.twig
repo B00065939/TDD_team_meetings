@@ -1,7 +1,22 @@
 {% extends 'base.html.twig' %}
-
+{% block pageHeader %} Administrator Panel {% endblock %}
+{% block subHeader %} User list {% endblock %}
 {% block body %}
-    <h1>Administrator Panel</h1>
-    <a id="logout" href="{{ path('logout') }}">logout</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.email }}</td>
+                <td>{{ user.roles|join }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
 

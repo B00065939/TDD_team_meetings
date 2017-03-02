@@ -10,6 +10,21 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdminController extends Controller
 {
+    public function adminPanelAction()
+    {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
+            $em = $this->getDoctrine()->getManager();
+            $users = $em->getRepository('AppBundle:User')->findAll();
+
+            return $this->render(
+                'admin/adminpanel.html.twig',[
+                "users" => $users
+                    ]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
+
     /**
      * @Security("is_granted('ROLE_NEW_USER')")
      * @param Request $request

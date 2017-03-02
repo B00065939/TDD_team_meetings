@@ -1,11 +1,11 @@
 Feature: Authentication
-  In order to gain access to the user management area
-  As an admin
+  In order to gain access to the user or admin or supervisor panel
+  As an user or admin or supervisor
   I need to be able to login and logout
 
   # Scenario cannot assume then is a data already in database so we need to put in there every time when we start test
   # and when we finishing it removing this data
-#@javascript
+
 #  Scenario: Login in to management page
 #    Given There is an admin user "admin@wp.pl" with password "pass" with "ROLE_ADMIN"
 #    And I am on "/"
@@ -14,8 +14,9 @@ Feature: Authentication
 #    And I press "Login"
 #    Then I am on "/admin/adminpanel"
 #    And I should see "Administrator Panel"
-#    And I should see "Logout"
+#    And I should see "Logout
 
+#@javascript
   Scenario Outline: Login in to management page
     Given There is an user "<email>" with password "<password>" with "<role>"
     And I am on "/"
@@ -25,6 +26,7 @@ Feature: Authentication
     Then I am on "<page_name>"
     And I should see "<result>"
     And I should see "Logout"
+
     Examples:
       | email       | password | role       | page_name         | result              |
       | admin@wp.pl | pass     | ROLE_ADMIN | /admin/adminpanel | Administrator Panel |
@@ -36,14 +38,14 @@ Feature: Authentication
   Scenario: Logout from administrator panel
     Given I am logged in as an admin
     When I follow "logout"
-    Then I should see "Login!"
-
+    Then I should see "Login please!"
+#@javascript
   Scenario: Logout from user panel
     Given I am logged in as an user
     When I follow "logout"
-    Then I should see "Login!"
+    Then I should see "Login please!"
 #@javascript
   Scenario: Logout from supervisor panel
     Given I am logged in as an supervisor
     When I follow "logout"
-    Then I should see "Login!"
+    Then I should see "Login please!"

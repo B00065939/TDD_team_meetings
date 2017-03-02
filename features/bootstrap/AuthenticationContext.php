@@ -5,8 +5,8 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\MinkExtension\Context\MinkContext;
 use Behat\MinkExtension\Context\RawMinkContext;
-
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
+
 /**
  * Defines application features from the specific context.
  */
@@ -65,7 +65,6 @@ class AuthenticationContext extends RawMinkContext implements Context
         $this->getPage()->fillField('Username', $email);
         $this->getPage()->fillField('Password', $password);
         $this->getPage()->pressButton('Login');
-
     }
 
     /**
@@ -76,6 +75,9 @@ class AuthenticationContext extends RawMinkContext implements Context
         return $this->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 
+    /**
+     * @return \Behat\Mink\Element\DocumentElement
+     */
     private function getPage()
     {
         return $this->getSession()->getPage();
@@ -98,7 +100,7 @@ class AuthenticationContext extends RawMinkContext implements Context
     }
 
     /**
-     * @Given /^I am logged in as an supervisor$/
+     * @Given I am logged in as an supervisor
      */
     public function iAmLoggedInAsAnSupervisor()
     {

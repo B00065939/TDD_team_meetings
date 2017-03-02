@@ -19,12 +19,4 @@ class FeatureContext implements Context
     public function __construct()
     {
     }
-
-    /**
-     * @When I fill in Username with :arg1
-     */
-    public function iFillInUsernameWith($arg1)
-    {
-        throw new PendingException();
-    }
 }

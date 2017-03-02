@@ -76,17 +76,6 @@ class MainController extends Controller
         }
     }
 
-    public function adminPanelAction()
-    {
-        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
-            return $this->render(
-                'admin/adminpanel.html.twig',
-                array()
-            );
-        } else {
-            return $this->redirectToRoute('homepage');
-        }
-    }
 
     /**
      * @throws Exception
