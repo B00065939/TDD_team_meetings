@@ -3,11 +3,16 @@ homepage:
     defaults: {_controller : AppBundle:Main:homepage}
 logout:
     path: /logout
-    defaults: {_controller : AppBundle:Main:logout}
+    defaults: {
+      _controller : AppBundle:Main:logout
+      }
 
 user_panel:
     path: /user/userpanel
     defaults: {_controller : AppBundle:Main:userPanel}
+#Supervisor section
+new_project:
+    path: /project/newproject
 sup_panel:
     path: /sup/suppanel
     defaults: {_controller : AppBundle:Main:supPanel}
@@ -19,8 +24,8 @@ new_user:
     path: /admin/newuser
     defaults: {_controller : AppBundle:Admin:new}
 edit_user:
-    path: /admin/edituser/{userId}
+    path: /admin/edituser/{userID}
     defaults: {_controller : AppBundle:Admin:edit}
 delete_user:
-    path: /admin/deleteuser/{userId}
+    path: /admin/deleteuser/{userID}
     defaults: {_controller : AppBundle:Admin:delete}

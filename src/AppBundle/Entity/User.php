@@ -115,6 +115,7 @@ class User implements UserInterface
     {
         $this->password = $password;
     }
+
     /**
      * Returns the salt that was originally used to encode the password.
      *
@@ -164,4 +165,8 @@ class User implements UserInterface
         $this->email = $email;
     }
 
+    public function getID()
+    {
+        return $this->id;
+    }
 }

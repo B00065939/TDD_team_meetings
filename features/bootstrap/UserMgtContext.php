@@ -6,6 +6,7 @@ use Behat\MinkExtension\Context\MinkContext;
 use Behat\MinkExtension\Context\RawMinkContext;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
+require_once __DIR__.'/../../vendor/phpunit/phpunit/src/Framework/Assert/Functions.php';
 /**
  * Created by PhpStorm.
  * User: Bemben
@@ -16,11 +17,13 @@ class UserMgtContext extends RawMinkContext implements Context
 {
 
     /**
-     * @Then I should see list of users with at least :numberOfUsers rows
+     * @Then I should see table of users with at least :numberOfUsers rows
      */
-    public function iShouldSeeListOfUsersWithAtLeastRows($numberOfUsers)
+    public function iShouldSeeTableOfUsersWithAtLeastRows($numberOfUsers)
     {
-        throw new \Behat\Behat\Tester\Exception\PendingException();
+        $rows = $this->getPage()->findAll('css','tr');
+        assertLessThanOrEqual(count($rows),$numberOfUsers,"");
+        //throw new \Behat\Behat\Tester\Exception\PendingException();
     }
 
     /**

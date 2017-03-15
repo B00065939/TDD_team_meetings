@@ -1,12 +1,14 @@
 {% extends 'base.html.twig' %}
-{% block pageHeader %} Administrator Panel {% endblock %}
-{% block subHeader %} User list {% endblock %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
 {% block body %}
     <table class="table table-striped">
         <thead>
         <tr>
             <th>Email</th>
             <th>Role</th>
+            <th>Edit</th>
+            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -14,6 +16,9 @@
             <tr>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles|join }}</td>
+                <td><a href="{{ path('edit_user',{'userID': user.ID}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>
+                <td><a href="{{ path('delete_user',{'userID': user.ID}) }}"><span class="glyphicon glyphicon-trash"></span></a></td>
+
             </tr>
         {% endfor %}
         </tbody>

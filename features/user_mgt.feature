@@ -9,4 +9,4 @@ Feature: User Management
 Scenario: Displaying user list
   Given There are 5 users in database
   And I am on "/admin/adminpanel"
-  Then I should see list of users with at least 6 rows
+  Then I should see table of users with at least 5 rows
