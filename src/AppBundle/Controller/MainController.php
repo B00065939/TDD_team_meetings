@@ -26,7 +26,7 @@ class MainController extends Controller
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
             return $this->redirectToRoute('user_panel');
         }
-        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUP'])  ) {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])  ) {
             return $this->redirectToRoute('sup_panel');
         }
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
@@ -54,11 +54,17 @@ class MainController extends Controller
 
     public function supPanelAction()
     {
-        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUP'])) {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])) {
+            $em = $this->getDoctrine()->getManager();
+
+            $projects = $em->getRepository('AppBundle:Project')->findAll();
+
             return $this->render(
-                'sup/suppanel.html.twig',
-                array()
-            );
+                'sup/suppanel.html.twig',[
+                "pageHeader" => "Project supervising",
+                "subHeader" => "Project List",
+                "projects" => $projects
+            ]);
         } else {
             return $this->redirectToRoute('homepage');
         }
@@ -68,15 +74,32 @@ class MainController extends Controller
     {
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
             return $this->render(
-                'user/userpanel.html.twig',
-                array()
+                'user/userpanel.html.twig',[
+                    "pageHeader" => "User Panel",
+                    "subHeader" => "Project List"
+                ]
             );
         } else {
             return $this->redirectToRoute('homepage');
         }
     }
 
+    public function adminPanelAction()
+    {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
+            $em = $this->getDoctrine()->getManager();
+            $users = $em->getRepository('AppBundle:User')->findAll();
 
+            return $this->render(
+                'admin/adminpanel.html.twig', [
+                "users" => $users,
+                "pageHeader" => "Administrator Panel",
+                "subHeader" => "User List"
+            ]);
+        } else {
+            return $this->redirectToRoute('homepage');
+        }
+    }
     /**
      * @throws Exception
      */

@@ -26,13 +26,13 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUP') or  is_granted('ROLE_ADMIN')) %}
+                {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUPERVISOR') or  is_granted('ROLE_ADMIN')) %}
                     <li><a>Welcome {{ app.user.email }}</a></li>
 
                 {% endif %}
                 <li><a href="{{ path('homepage') }}">Dashboard</a></li>
                 <li><a href="#">Help</a></li>
-                {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUP') or  is_granted('ROLE_ADMIN')) %}
+                {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUPERVISOR') or  is_granted('ROLE_ADMIN')) %}
                     <li><a href="{{ path('logout') }}">Logout</a></li>
 
                 {% endif %}
@@ -46,37 +46,29 @@
     </div>
 </nav>
 
-
-{% if ( is_granted('ROLE_ADMIN')) %}
 <div class="container-fluid">
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
-            <ul class="nav nav-sidebar">
-                <li><a href="{{ path('new_user') }}">New User</a></li>
-            </ul>
+            {% if ( is_granted('ROLE_ADMIN')) %}
+                <ul class="nav nav-sidebar">
+                    <li><a href="{{ path('new_user') }}">New User</a></li>
+                </ul>
+            {% endif %}
 
-        </div>
-        {% endif %}
-
-        {% if is_granted('ROLE_SUPERVISOR')  %}
-            <div class="col-sm-3 col-md-2 sidebar">
+            {% if is_granted('ROLE_SUPERVISOR') %}
                 <ul class="nav nav-sidebar">
                     <li><a href="{{ path('new_project') }}">New Project</a></li>
                     <li><a href="{{ path('new_project_role') }}">New Project Role</a></li>
+                    <li><a href="{{ path('add_key_users_to_project') }}">New Project Role</a></li>
                 </ul>
+            {% endif %}
 
-            </div>
-        {% endif %}
-        {% if (is_granted('ROLE_USER')) %}
-            <div class="col-sm-3 col-md-2 sidebar">
+            {% if (is_granted('ROLE_USER')) %}
                 <ul class="nav nav-sidebar">
-
                     <li class="active"><a href="{{ path('new_user') }}">Tu jeszcze nic</a></li>
-
                 </ul>
-            </div>
-        {% endif %}
-
+            {% endif %}
+        </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
             <h1 class="page-header"> {% block pageHeader %}  pageHeader {% endblock %} </h1>
             <h2 class="sub-header">  {% block subHeader %} subHeader {% endblock %} </h2>

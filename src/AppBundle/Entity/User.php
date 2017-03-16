@@ -150,7 +150,7 @@ class User implements UserInterface
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getEmail()
     {
@@ -158,15 +158,26 @@ class User implements UserInterface
     }
 
     /**
-     * @param mixed $email
+     * @param string $email
      */
     public function setEmail($email)
     {
         $this->email = $email;
     }
 
+    /**
+     * @return integer
+     */
     public function getID()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    function __toString()
+    {
+        return $this->getEmail();
     }
 }

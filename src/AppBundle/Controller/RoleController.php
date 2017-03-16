@@ -4,11 +4,17 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Form\NewRoleForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class RoleController extends Controller
 {
+    /**
+     * @Security("is_granted('ROLE_NEW_PROJECT_ROLE')")
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function newAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -36,6 +42,12 @@ class RoleController extends Controller
         ));
     }
 
+    /**
+     * @Security("is_granted('ROLE_DELETE_PROJECT_ROLE')")
+     * @param Request $request
+     * @param ProjectRole $projectRole
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteAction(Request $request, ProjectRole $projectRole)
     {
         $em = $this->getDoctrine()->getManager();

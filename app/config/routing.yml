@@ -1,15 +1,17 @@
-homepage:
-    path: /
-    defaults: {_controller : AppBundle:Main:homepage}
-logout:
-    path: /logout
-    defaults: {
-      _controller : AppBundle:Main:logout
-      }
 
-user_panel:
-    path: /user/userpanel
-    defaults: {_controller : AppBundle:Main:userPanel}
+# Project section
+new_project:
+    path: /project/newproject
+    defaults: {_controller : AppBundle:Project:new}
+delete_project:
+    path: /project/deleteproject/{project}
+    defaults: {_controller : AppBundle:Project:delete}
+turn_project_lock:
+    path: /project/turnprojectlock/{project}
+    defaults: {_controller : AppBundle:Project:turnLock}
+add_key_users_to_project:
+    path: /project/addkeyuserstoproject
+    defaults: {_controller : AppBundle:Project:addKeyUsersToProject}
 
 # Project role section
 new_project_role:
@@ -19,18 +21,7 @@ delete_role:
     path: /role/deleterole/{projectRole}
     defaults: {_controller: AppBundle:Role:delete}
 
-# Project section
-new_project:
-    path: /project/newproject
-
-sup_panel:
-    path: /sup/suppanel
-    defaults: {_controller : AppBundle:Main:supPanel}
-
 #Admin section
-admin_panel:
-    path: /admin/adminpanel
-    defaults: {_controller : AppBundle:Admin:adminPanel}
 new_user:
     path: /admin/newuser
     defaults: {_controller : AppBundle:Admin:new}
@@ -40,3 +31,20 @@ edit_user:
 delete_user:
     path: /admin/deleteuser/{userID}
     defaults: {_controller : AppBundle:Admin:delete}
+
+#MAIN CONTROLLER section
+sup_panel:
+    path: /sup/suppanel
+    defaults: {_controller : AppBundle:Main:supPanel}
+user_panel:
+    path: /user/userpanel
+    defaults: {_controller : AppBundle:Main:userPanel}
+homepage:
+    path: /
+    defaults: {_controller : AppBundle:Main:homepage}
+admin_panel:
+    path: /admin/adminpanel
+    defaults: {_controller : AppBundle:Main:adminPanel}
+logout:
+    path: /logout
+    defaults: { _controller : AppBundle:Main:logout}
