@@ -10,12 +10,23 @@ logout:
 user_panel:
     path: /user/userpanel
     defaults: {_controller : AppBundle:Main:userPanel}
-#Supervisor section
+
+# Project role section
+new_project_role:
+    path: /role/newrole
+    defaults: {_controller: AppBundle:Role:new}
+delete_role:
+    path: /role/deleterole/{projectRole}
+    defaults: {_controller: AppBundle:Role:delete}
+
+# Project section
 new_project:
     path: /project/newproject
+
 sup_panel:
     path: /sup/suppanel
     defaults: {_controller : AppBundle:Main:supPanel}
+
 #Admin section
 admin_panel:
     path: /admin/adminpanel

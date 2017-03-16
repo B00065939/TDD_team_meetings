@@ -1,5 +1,14 @@
 AppBundle\Entity\User:
-    user_{1..10}:
-        email: admin<current()>@wp.pl
-        plainPassword: pass
-        roles: ["50%? ROLE_ADMIN : ROLE_USER"]
+  user_{1..10}:
+    email: admin<current()>@wp.pl
+    plainPassword: pass
+    roles: ["50%? ROLE_ADMIN : ROLE_USER"]
+
+AppBundle\Entity\Project:
+  project_{1..10}:
+    title: <text(10)>
+    locked: <boolean(15)>
+
+AppBundle\Entity\ProjectRole:
+  projectRole_{1..10}:
+    name: <projectRoleName()>
