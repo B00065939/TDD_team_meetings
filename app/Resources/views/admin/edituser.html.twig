@@ -10,6 +10,9 @@
         <div class="col-xs-12">
 
             {{ form_start(form) }}
+            {{ form_row(form.fullName,{
+                'value' : userToEdit.fullName
+            }) }}
             {{ form_row(form.email,{
                 'value' : userToEdit.email
             }) }}

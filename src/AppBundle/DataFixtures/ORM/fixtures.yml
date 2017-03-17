@@ -1,14 +1,36 @@
+#AppBundle\Entity\User:
+#  user_{1}:
+#    email: user@wp.pl
+#    fullName: '<firstName()> <lastName()>'
+#    plainPassword: pass
+#    roles: ['ROLE_USER']
+#
+#AppBundle\Entity\User:
+#  user_{2}:
+#    email: sup@wp.pl
+#    fullName: '<firstName()> <lastName()>'
+#    plainPassword: pass
+#    roles: ['ROLE_SUPERVISOR']
+#
+#AppBundle\Entity\User:
+#  user_{3}:
+#    email: admin@wp.pl
+#    fullName: '<firstName()> <lastName()>'
+#    plainPassword: pass
+#    roles: ['ROLE_ADMIN']
+
 AppBundle\Entity\User:
   user_{1..10}:
-    email: admin<current()>@wp.pl
+    email: user<current()>@wp.pl
+    fullName: '<firstName()> <lastName()>'
     plainPassword: pass
-    roles: ["50%? ROLE_ADMIN : ROLE_USER"]
+    roles: [<securityRole()>]
 
 AppBundle\Entity\Project:
   project_{1..10}:
     title: <text(10)>
-    locked: <boolean(15)>
+    locked: <boolean(35)>
 
-AppBundle\Entity\ProjectRole:
-  projectRole_{1..10}:
-    name: <projectRoleName()>
+#AppBundle\Entity\ProjectRole:
+#  projectRole_{1..10}:
+#    name: <projectRoleName()>

@@ -5,6 +5,7 @@
     <table class="table table-striped">
         <thead>
         <tr>
+            <th>Full Name</th>
             <th>Email</th>
             <th>Role</th>
             <th>Edit</th>
@@ -14,6 +15,7 @@
         <tbody>
         {% for user in users %}
             <tr>
+                <td>{{ user.fullName }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.roles|join }}</td>
                 <td><a href="{{ path('edit_user',{'userID': user.ID}) }}"><span class="glyphicon glyphicon-edit"></span></a></td>

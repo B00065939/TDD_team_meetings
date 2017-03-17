@@ -9,13 +9,14 @@
 namespace AppBundle\Entity;
 
 
+use phpDocumentor\Reflection\Types\String_;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Class User
  * @package AppBundle\Entity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  */
 class User implements UserInterface
@@ -38,6 +39,11 @@ class User implements UserInterface
      */
     private $email;
 
+    /**
+     * @ORM\Column(type="string")
+     * @var String $fullName
+     */
+    private $fullName;
     /**
      * The encoded password
      *
@@ -178,6 +184,24 @@ class User implements UserInterface
      */
     function __toString()
     {
-        return $this->getEmail();
+        return $this->getFullName().' ('.$this->getEmail().')';
     }
+
+    /**
+     * @return String
+     */
+    public function getFullName()
+    {
+        return $this->fullName;
+    }
+
+    /**
+     * @param String $fullName
+     */
+    public function setFullName($fullName)
+    {
+        $this->fullName = $fullName;
+    }
+
+
 }
