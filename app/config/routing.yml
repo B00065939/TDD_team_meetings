@@ -1,4 +1,7 @@
-
+# Project has user section
+add_user_to_project:
+    path: /project/addusertoproject
+    defaults: {_controller : AppBundle:ProjectHasUser:add}
 # Project section
 new_project:
     path: /project/newproject
@@ -9,10 +12,6 @@ delete_project:
 turn_project_lock:
     path: /project/turnprojectlock/{project}
     defaults: {_controller : AppBundle:Project:turnLock}
-add_key_users_to_project:
-    path: /project/addkeyuserstoproject
-    defaults: {_controller : AppBundle:Project:addKeyUsersToProject}
-
 # Project role section
 new_project_role:
     path: /role/newrole
@@ -20,7 +19,6 @@ new_project_role:
 delete_role:
     path: /role/deleterole/{projectRole}
     defaults: {_controller: AppBundle:Role:delete}
-
 #Admin section
 new_user:
     path: /admin/newuser
@@ -31,7 +29,6 @@ edit_user:
 delete_user:
     path: /admin/deleteuser/{userID}
     defaults: {_controller : AppBundle:Admin:delete}
-
 #MAIN CONTROLLER section
 sup_panel:
     path: /sup/suppanel

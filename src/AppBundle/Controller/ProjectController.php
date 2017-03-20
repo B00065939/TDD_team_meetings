@@ -14,37 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 class ProjectController extends Controller
 {
 
-    public function addKeyUsersToProjectAction(Request $request)
-    {
-//        if ($projectLeader == null || $projectSecretary == null || $projectLeader == $projectSecretary) {
-//
-//            retutn ;
-//        } else {
-        //User $projectLeader, User $projectSecretary
-        $form = $this->createForm(AddKeyUsersToProjectForm::class);
-
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            /**
-             * @var Project $project
-             */
-            $project = $form->getData();
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($project);
-            $em->flush();
-            $this->addFlash('success', "Project was crated");
-            return $this->redirectToRoute('new_project');
-        }
-        return $this->render('project/addusers.html.twig', array(
-            "pageHeader" => "Project supervising",
-            "subHeader" => "Create new Project",
-            "form" => $form->createView()
-
-        ));
-    }
-//    }
-
     /**
      * Locking or unlocking project
      * @param Request $request
@@ -138,6 +107,35 @@ class ProjectController extends Controller
 
         ));
     }
-
+//    public function addKeyUsersToProjectAction(Request $request)
+//    {
+////        if ($projectLeader == null || $projectSecretary == null || $projectLeader == $projectSecretary) {
+////
+////            retutn ;
+////        } else {
+//        //User $projectLeader, User $projectSecretary
+//        $form = $this->createForm(AddKeyUsersToProjectForm::class);
+//
+//
+//        $form->handleRequest($request);
+//        if ($form->isSubmitted() && $form->isValid()) {
+//            /**
+//             * @var Project $project
+//             */
+//            $project = $form->getData();
+//            $em = $this->getDoctrine()->getManager();
+//            $em->persist($project);
+//            $em->flush();
+//            $this->addFlash('success', "Project was crated");
+//            return $this->redirectToRoute('new_project');
+//        }
+//        return $this->render('project/addusers.html.twig', array(
+//            "pageHeader" => "Project supervising",
+//            "subHeader" => "Create new Project",
+//            "form" => $form->createView()
+//
+//        ));
+//    }
+//    }
 
 }

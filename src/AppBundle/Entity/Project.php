@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class Project
  * @package AppBundle\Entity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectRepository")
  * @ORM\Table(name="project")
  */
 class Project
@@ -85,7 +85,10 @@ class Project
         $this->locked = $locked;
     }
 
-
+    function __toString()
+    {
+        return $this->getTitle();
+    }
 
 
 }

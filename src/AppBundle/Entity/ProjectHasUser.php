@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Class ProjectHasUser
  * @package AppBundle\Entity
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProjectHasUserRepository")
  * @ORM\Table(name="project_has_user")
  */
 class ProjectHasUser
