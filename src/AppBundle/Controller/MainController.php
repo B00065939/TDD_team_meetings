@@ -9,6 +9,7 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\ProjectRole;
 use AppBundle\Form\LoginForm;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -57,7 +58,15 @@ class MainController extends Controller
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])) {
             $em = $this->getDoctrine()->getManager();
 
-            $projects = $em->getRepository('AppBundle:Project')->findAll();
+            $role = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Supervisor"]);
+
+            $projects = $em->getRepository('AppBundle:ProjectHasUser')->findBy([
+                'user' => $this->getUser(),
+                'projectRole' => $role
+            ]);
+
+
+            //findAllProjectsWhereUserHasRole($this->getUser(), $role);
 
             return $this->render(
                 'sup/suppanel.html.twig',[

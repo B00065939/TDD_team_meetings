@@ -43,6 +43,7 @@
         "behat/symfony2-extension": "^2.1"
     },
     "scripts": {
+      "run": " php bin/console server:run",
       "behat_authentication": "C:/Project/TDD_team_meetings/vendor/bin/behat.bat --suite=authentication",
       "selenium": "java -jar c:/Project/selenium-server-standalone-3.0.1.jar",
       "phpunit": "phpunit --log-tap ./tests/log.txt",

@@ -15,16 +15,17 @@
         <tbody>
         {% for project in projects %}
             <tr>
-                <td>{{ project.title }}</td>
-                <td><a href="{{ path('turn_project_lock',{'project': project.id}) }}">
-                        {% if project.lock %}
+
+                <td>{{ project.project.title }}</td>
+                <td><a href="{{ path('turn_project_lock',{'project': project.project.id}) }}">
+                        {% if project.project.lock %}
                             <i class="fa fa-lock" aria-hidden="true"></i>
                         {% else %}
                             <i class="fa fa-unlock" aria-hidden="true"></i>
                         {% endif %}
                     </a>
                 </td>
-                <td><a href="{{ path('delete_project',{'project': project.id}) }}"><span
+                <td><a href="{{ path('delete_project',{'project': project.project.id}) }}"><span
                                 class="glyphicon glyphicon-trash"></span></a></td>
             </tr>
         {% endfor %}

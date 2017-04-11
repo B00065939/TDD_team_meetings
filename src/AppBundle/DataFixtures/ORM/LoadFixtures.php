@@ -31,6 +31,11 @@ class LoadFixtures implements FixtureInterface
         $manager->persist($pr);
         $manager->flush();
 
+        $pr = new ProjectRole();
+        $pr->setName('Project Supervisor');
+        $manager->persist($pr);
+        $manager->flush();
+
         $u = new User();
         $u->setEmail('user@itb.ie');
         $u->setFullName("Michal Smigiel");
@@ -54,6 +59,8 @@ class LoadFixtures implements FixtureInterface
         $u->setRoles(['ROLE_ADMIN']);
         $manager->persist($u);
         $manager->flush();
+
+
 
         $objects = Fixtures::load(
             __DIR__.'/fixtures.yml',

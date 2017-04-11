@@ -7,6 +7,7 @@ use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
+
 /**
  * ProjectHasUserRepository
  *
@@ -25,6 +26,16 @@ class ProjectHasUserRepository extends EntityRepository
                 'roleP' => $projectRole
             ]);
 
+
+    }
+    public function findAllProjectsWhereUserHasRole(User $user, ProjectRole $role)
+    {
+        return $this->createQueryBuilder('projects')
+            ->where ('projects.user = :userP and projects.$projectRole = :roleP' )
+            ->setParameters([
+                'userP' => $user,
+                'roleP' => $role
+            ]);
 
     }
 }

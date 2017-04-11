@@ -34,6 +34,7 @@ class ProjectController extends Controller
     }
 
     /**
+     * Delete project (not used to many relations between replace by lock project)
      * @param Request $request
      * @param Project $project
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
@@ -49,6 +50,7 @@ class ProjectController extends Controller
     }
 
     /**
+     * Create new project
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -67,13 +69,13 @@ class ProjectController extends Controller
             $project->setTitle($form->get('title')->getData());
             $project->setLock($form->get('lock')->getData());
             $em->persist($project);
-            $em->flush();
 
             /**
              * @var User $projectLeader
              */
             $projectLeader = new User();
             $projectLeader = $form->get('projectLeader')->getData();
+
             /**
              * @var User $projectSecretary
              */
@@ -88,13 +90,20 @@ class ProjectController extends Controller
             $projectHasUser->setProjectRole($em->getRepository(ProjectRole::class)->findOneBy(['name' => 'Project Leader']));
             $projectHasUser->setUser($projectLeader);
             $em->persist($projectHasUser);
-            $em->flush();
 
             $projectHasUser = new ProjectHasUser();
             $projectHasUser->setProject($project);
             $projectHasUser->setProjectRole($em->getRepository(ProjectRole::class)->findOneBy(['name' => 'Project Secretary']));
             $projectHasUser->setUser($projectSecretary);
             $em->persist($projectHasUser);
+
+            // add project creator(current user)
+            $projectHasUser = new ProjectHasUser();
+            $projectHasUser->setProject($project);
+            $projectHasUser->setProjectRole($em->getRepository(ProjectRole::class)->findOneBy(['name' => 'Project Supervisor']));
+            $projectHasUser->setUser($this->getUser());
+            $em->persist($projectHasUser);
+
             $em->flush();
 
             $this->addFlash('success', "Project was crated");
@@ -107,35 +116,4 @@ class ProjectController extends Controller
 
         ));
     }
-//    public function addKeyUsersToProjectAction(Request $request)
-//    {
-////        if ($projectLeader == null || $projectSecretary == null || $projectLeader == $projectSecretary) {
-////
-////            retutn ;
-////        } else {
-//        //User $projectLeader, User $projectSecretary
-//        $form = $this->createForm(AddKeyUsersToProjectForm::class);
-//
-//
-//        $form->handleRequest($request);
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            /**
-//             * @var Project $project
-//             */
-//            $project = $form->getData();
-//            $em = $this->getDoctrine()->getManager();
-//            $em->persist($project);
-//            $em->flush();
-//            $this->addFlash('success', "Project was crated");
-//            return $this->redirectToRoute('new_project');
-//        }
-//        return $this->render('project/addusers.html.twig', array(
-//            "pageHeader" => "Project supervising",
-//            "subHeader" => "Create new Project",
-//            "form" => $form->createView()
-//
-//        ));
-//    }
-//    }
-
 }
