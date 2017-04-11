@@ -36,6 +36,7 @@ class User implements UserInterface
 
     /**
      * @ORM\Column(type="string", unique=true)
+     * @var String $email
      */
     private $email;
 

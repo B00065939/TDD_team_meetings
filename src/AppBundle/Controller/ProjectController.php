@@ -6,13 +6,50 @@ use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
-use AppBundle\Form\AddKeyUsersToProjectForm;
 use AppBundle\Form\NewProjectForm;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProjectController extends Controller
 {
+    public function showAction(Request $request, Project $project)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        $roleSecretary = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Secretary"]);
+
+        $secretary = $em->getRepository(ProjectHasUser::class)->findOneBy([
+            'project' => $project,
+            'projectRole' => $roleSecretary
+        ]);
+
+        $roleLeader = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Leader"]);
+        $leader = $em->getRepository(ProjectHasUser::class)->findOneBy([
+            'project' => $project,
+            'projectRole' => $roleLeader
+        ]);
+        $roleSupervisor = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Supervisor"]);
+        $supervisor = $em->getRepository(ProjectHasUser::class)->findOneBy([
+            'project' => $project,
+            'projectRole'=>$roleSupervisor
+        ]);
+
+        $projectHasUsersList = $em->getRepository(ProjectHasUser::class)->findBy(['project'=>$project]);
+
+        return $this->render('project/project.html.twig', array(
+            "pageHeader" => "Project supervising",
+            "subHeader" => "Project ". $project->getTitle() . " details.",
+            "project" => $project,
+            "secretary" => $secretary,
+            "leader" => $leader,
+            "supervisor" => $supervisor,
+            "projectHasUsersList" => $projectHasUsersList
+        ));
+    }
+
+    public function testAction()
+    {
+    }
 
     /**
      * Locking or unlocking project
@@ -49,13 +86,16 @@ class ProjectController extends Controller
         return $this->redirectToRoute('homepage');
     }
 
+
     /**
      * Create new project
      * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse |\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request)
     {
+//        dump("jeblo");
+//        die();
 
         $form = $this->createForm(NewProjectForm::class);
         $form->handleRequest($request);

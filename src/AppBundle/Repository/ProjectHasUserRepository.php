@@ -28,6 +28,8 @@ class ProjectHasUserRepository extends EntityRepository
 
 
     }
+
+
     public function findAllProjectsWhereUserHasRole(User $user, ProjectRole $role)
     {
         return $this->createQueryBuilder('projects')

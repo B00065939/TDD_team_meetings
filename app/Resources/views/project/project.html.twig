@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+
+{% block body %}
+    <p>Project Leader: {{ leader.user.fullName }} - {{ leader.user.email }}</p>
+    <p>Project Secretary: {{ secretary.user.fullName }} - {{ secretary.user.email }} </p>
+
+
+    <table class="table table-striped">
+        <caption>Project members</caption>
+        <thead>
+        <tr>
+            <td>Name</td>
+            <td>Role</td>
+            {# If users' role is supervisor or project leader alowes to add or remove user to and from project #}
+            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
+                <td>Remove</td>
+            {% endif %}
+
+        </tr>
+        </thead>
+        <tbody>
+        {% for phul in projectHasUsersList %}
+            <tr>
+                {#phul.projectRole.name != "Project Secretary"#}
+                {% if( phul.user != leader.user and phul.user != secretary.user and phul.user != supervisor.user) %}
+                    <td>{{ phul.user.fullName }}</td>
+                    <td>{{ phul.projectRole.name }}</td>
+                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
+                        <td><a href="{{ path(
+                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a></td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

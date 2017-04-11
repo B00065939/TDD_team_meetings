@@ -1,17 +1,26 @@
+test:
+  path: /project/removeuserfromproject/{project}/{user}
+  defaults: {_controller: AppBundle:ProjectHasUser:remove}
+new_project:
+  path: /project/newproject
+  defaults: {_controller: AppBundle:Project:new}
+remove_user_from_project:
+  path: /project/removeuserfromproject/{project}/{user}
+  defaults: {_controller: AppBundle:ProjectHasUser:remove}
 # Project has user section
 add_user_to_project:
-    path: /project/addusertoproject
-    defaults: {_controller : AppBundle:ProjectHasUser:add}
+  path: /project/addusertoproject
+  defaults: {_controller: AppBundle:ProjectHasUser:add}
 # Project section
-new_project:
-    path: /project/newproject
-    defaults: {_controller : AppBundle:Project:new}
+show_project:
+  path: /project/{project}
+  defaults: {_controller: AppBundle:Project:show}
 delete_project:
     path: /project/deleteproject/{project}
-    defaults: {_controller : AppBundle:Project:delete}
+    defaults: {_controller: AppBundle:Project:delete}
 turn_project_lock:
     path: /project/turnprojectlock/{project}
-    defaults: {_controller : AppBundle:Project:turnLock}
+    defaults: {_controller: AppBundle:Project:turnLock}
 # Project role section
 new_project_role:
     path: /role/newrole
@@ -19,29 +28,30 @@ new_project_role:
 delete_role:
     path: /role/deleterole/{projectRole}
     defaults: {_controller: AppBundle:Role:delete}
-#Admin section
+# Admin section
 new_user:
     path: /admin/newuser
-    defaults: {_controller : AppBundle:Admin:new}
+    defaults: {_controller: AppBundle:Admin:new}
 edit_user:
     path: /admin/edituser/{userID}
-    defaults: {_controller : AppBundle:Admin:edit}
+    defaults: {_controller: AppBundle:Admin:edit}
 delete_user:
     path: /admin/deleteuser/{userID}
-    defaults: {_controller : AppBundle:Admin:delete}
-#MAIN CONTROLLER section
+    defaults: {_controller: AppBundle:Admin:delete}
+# MAIN CONTROLLER section
 sup_panel:
     path: /sup/suppanel
-    defaults: {_controller : AppBundle:Main:supPanel}
+    defaults: {_controller: AppBundle:Main:supPanel}
 user_panel:
     path: /user/userpanel
-    defaults: {_controller : AppBundle:Main:userPanel}
+    defaults: {_controller: AppBundle:Main:userPanel}
 homepage:
     path: /
-    defaults: {_controller : AppBundle:Main:homepage}
+    defaults: {_controller: AppBundle:Main:homepage}
 admin_panel:
     path: /admin/adminpanel
-    defaults: {_controller : AppBundle:Main:adminPanel}
+    defaults: {_controller: AppBundle:Main:adminPanel}
 logout:
     path: /logout
-    defaults: { _controller : AppBundle:Main:logout}
+    defaults: {_controller: AppBundle:Main:logout}
+

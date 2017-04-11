@@ -7,8 +7,8 @@
         <thead>
         <tr>
             <th>Tilte</th>
+            <th>Details</th>
             <th>Lock</th>
-            <th>Delete</th>
 
         </tr>
         </thead>
@@ -17,6 +17,9 @@
             <tr>
 
                 <td>{{ project.project.title }}</td>
+                <td><a href="{{ path('show_project',{'project': project.project.id}) }}"><span
+                class="fa fa-eye"></span></a></td>
+
                 <td><a href="{{ path('turn_project_lock',{'project': project.project.id}) }}">
                         {% if project.project.lock %}
                             <i class="fa fa-lock" aria-hidden="true"></i>
@@ -25,8 +28,8 @@
                         {% endif %}
                     </a>
                 </td>
-                <td><a href="{{ path('delete_project',{'project': project.project.id}) }}"><span
-                                class="glyphicon glyphicon-trash"></span></a></td>
+                {#<td><a href="{{ path('delete_project',{'project': project.project.id}) }}"><span#}
+                                {#class="glyphicon glyphicon-trash"></span></a></td>#}
             </tr>
         {% endfor %}
         </tbody>
