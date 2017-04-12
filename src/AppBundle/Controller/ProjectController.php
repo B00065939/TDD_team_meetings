@@ -15,35 +15,29 @@ class ProjectController extends Controller
     public function showAction(Request $request, Project $project)
     {
 
+
+        // $roleSecretary = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Secretary"]);
+//        $secretary = $em->getRepository(ProjectHasUser::class)->findOneBy([
+//            'project' => $project,
+//            'projectRole' => $roleSecretary
+//        ]);
         $em = $this->getDoctrine()->getManager();
-        $roleSecretary = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Secretary"]);
+        $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
+        $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
+        $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
 
-        $secretary = $em->getRepository(ProjectHasUser::class)->findOneBy([
-            'project' => $project,
-            'projectRole' => $roleSecretary
-        ]);
+        //$projectHasUsersList = $em->getRepository('AppBundle:ProjectHasUser')->findAllNoKeyUsersForProject($project);
 
-        $roleLeader = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Leader"]);
-        $leader = $em->getRepository(ProjectHasUser::class)->findOneBy([
-            'project' => $project,
-            'projectRole' => $roleLeader
-        ]);
-        $roleSupervisor = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Supervisor"]);
-        $supervisor = $em->getRepository(ProjectHasUser::class)->findOneBy([
-            'project' => $project,
-            'projectRole'=>$roleSupervisor
-        ]);
-
-        $projectHasUsersList = $em->getRepository(ProjectHasUser::class)->findBy(['project'=>$project]);
+        $projectHasUsersList = $em->getRepository(ProjectHasUser::class)->findBy(['project' => $project]);
 
         return $this->render('project/project.html.twig', array(
             "pageHeader" => "Project supervising",
-            "subHeader" => "Project ". $project->getTitle() . " details.",
+            "subHeader" => "Project " . $project->getTitle() . " details.",
             "project" => $project,
             "secretary" => $secretary,
             "leader" => $leader,
             "supervisor" => $supervisor,
-            "projectHasUsersList" => $projectHasUsersList
+            "projectHasUsersList" => $projectHasUsersList,
         ));
     }
 

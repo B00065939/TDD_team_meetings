@@ -68,6 +68,28 @@ class Meeting
     private $meetingStatus;
 
     /**
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param string $location
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+    }
+
+    /**
+     * @ORM\Column(type="string")
+     * @var string $location
+     */
+    private $location;
+
+    /**
      * @return int
      */
     public function getId()

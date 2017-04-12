@@ -6,6 +6,7 @@ use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
+use phpDocumentor\Reflection\Types\Array_;
 
 
 /**
@@ -16,6 +17,58 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProjectHasUserRepository extends EntityRepository
 {
+
+    public function createUsersFromProjectQueryBuilder()
+    {
+
+    }
+
+    public function findAllNoKeyUsersForProject(Project $project)
+    {
+        $userList = array();
+        $roleSecretary = $this->getEntityManager()->getRepository(ProjectRole::class)->findOneBy(['name' => "Project Secretary"]);
+        $roleLeader = $this->getEntityManager()->getRepository(ProjectRole::class)->findOneBy(['name' => "Project Leader"]);
+        $data = $this->createQueryBuilder('phu')
+            ->where('phu.project = :projectP')
+            ->andWhere('phu.projectRole != :roleS')
+            ->andWhere('phu.projectRole != :roleL')
+            ->setParameters([
+                'projectP' => $project,
+                'roleS' => $roleSecretary,
+                'roleL' => $roleLeader
+            ])
+            ->getQuery()
+            ->execute();
+        foreach ($data as $item) {
+            $userList[] = $item->getUser();
+        }
+        return $userList;
+    }
+
+
+    public function findProjectUserWithRole(Project $project, $projectRole)
+    {
+        $role = $this->getEntityManager()->getRepository(ProjectRole::class)->findOneBy(['name' => $projectRole]);
+        // dump($role);die();
+        if ($role == null) {
+            return null;
+        }
+        $data = $this->createQueryBuilder('phu')
+            ->where('phu.projectRole = :projectRoleP')
+            ->andWhere('phu.project = :projectP')
+            ->setParameters([
+                'projectP' => $project,
+                'projectRoleP' => $role
+            ])
+            ->getQuery()
+            ->execute();
+        if ($data == null) {
+            return null;
+        }
+
+        return $data[0]->getUser();
+    }
+
     public function findIfUserHasRoleInProject(Project $project, ProjectRole $projectRole, User $user)
     {
         return $this->createQueryBuilder('users')
@@ -33,11 +86,13 @@ class ProjectHasUserRepository extends EntityRepository
     public function findAllProjectsWhereUserHasRole(User $user, ProjectRole $role)
     {
         return $this->createQueryBuilder('projects')
-            ->where ('projects.user = :userP and projects.$projectRole = :roleP' )
+            ->where('projects.user = :userP and projects.$projectRole = :roleP')
             ->setParameters([
                 'userP' => $user,
                 'roleP' => $role
             ]);
 
     }
+
+
 }

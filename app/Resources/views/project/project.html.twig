@@ -3,12 +3,40 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-    <p>Project Leader: {{ leader.user.fullName }} - {{ leader.user.email }}</p>
-    <p>Project Secretary: {{ secretary.user.fullName }} - {{ secretary.user.email }} </p>
+    <p>Project Leader: {{ leader.fullName }} - {{ leader.email }}</p>
+    <p>Project Secretary: {{ secretary.fullName }} - {{ secretary.email }} </p>
 
 
     <table class="table table-striped">
-        <caption>Project members</caption>
+        <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
+        <caption>Project meetings list:</caption>
+        <thead>
+        <tr>
+            <td>Date and Time</td>
+            <td>Location</td>
+            <td>Agenda</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for phul in projectHasUsersList %}
+            <tr>
+                {#phul.projectRole.name != "Project Secretary"#}
+                {% if( phul.user != leader and phul.user != secretary and phul.user != supervisor) %}
+                    <td>{{ phul.user.fullName }}</td>
+                    <td>{{ phul.projectRole.name }}</td>
+                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
+                        <td><a href="{{ path(
+                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a>
+                        </td>
+                    {% endif %}
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <table class="table table-striped">
+        <caption>Project members list:</caption>
         <thead>
         <tr>
             <td>Name</td>
@@ -23,13 +51,14 @@
         <tbody>
         {% for phul in projectHasUsersList %}
             <tr>
-                {#phul.projectRole.name != "Project Secretary"#}
-                {% if( phul.user != leader.user and phul.user != secretary.user and phul.user != supervisor.user) %}
+
+                {% if( phul.user != leader and phul.user != secretary and phul.user != supervisor) %}
                     <td>{{ phul.user.fullName }}</td>
                     <td>{{ phul.projectRole.name }}</td>
-                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
+                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) %}
                         <td><a href="{{ path(
-                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a></td>
+                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a>
+                        </td>
                     {% endif %}
                 {% endif %}
             </tr>
