@@ -1,37 +1,37 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bemben
- * Date: 11/04/2017
- * Time: 12:21
- */
 
 namespace AppBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Class MeetingStatus
- * @package AppBundle\Entity
- * @ORM\Entity()
+ * MeetingStatus
+ *
  * @ORM\Table(name="meeting_status")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\MeetingStatusRepository")
  */
 class MeetingStatus
 {
     /**
-     * @ORM\Id()
+     * @var int
+     *
+     * @ORM\Column(name="id", type="integer")
+     * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @ORM\Column(type="integer")
-     * @var integer $id
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string")
-     * @var string $status
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255)
      */
-    private $status;
+    private $name;
+
 
     /**
+     * Get id
+     *
      * @return int
      */
     public function getId()
@@ -40,28 +40,27 @@ class MeetingStatus
     }
 
     /**
-     * @param int $id
+     * Set name
+     *
+     * @param string $name
+     *
+     * @return MeetingStatus
      */
-    public function setId($id)
+    public function setName($name)
     {
-        $this->id = $id;
+        $this->name = $name;
+
+        return $this;
     }
 
     /**
+     * Get name
+     *
      * @return string
      */
-    public function getStatus()
+    public function getName()
     {
-        return $this->status;
+        return $this->name;
     }
-
-    /**
-     * @param string $status
-     */
-    public function setStatus($status)
-    {
-        $this->status = $status;
-    }
-
-
 }
+

@@ -32,7 +32,6 @@ class Meeting
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\Column(type="")
      * @var User $chair
      */
     private $chair;
@@ -63,6 +62,7 @@ class Meeting
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\MeetingStatus")
+     * @ORM\JoinColumn(name="id", referencedColumnName="id")
      * @var MeetingStatus $meetingStatus
      */
     private $meetingStatus;

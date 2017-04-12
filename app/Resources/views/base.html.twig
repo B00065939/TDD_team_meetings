@@ -61,6 +61,10 @@
                     <li><a href="{{ path('new_project_role') }}">New Project Role</a></li>
                     <li><a href="{{ path('add_user_to_project') }}">Add user to the project</a></li>
                 </ul>
+                <ul>
+                    <li><a href="{{ path('add_user_to_project') }}">Add user to the project</a></li>
+                </ul>
+
             {% endif %}
 
             {% if (is_granted('ROLE_USER')) %}
@@ -70,8 +74,8 @@
             {% endif %}
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-            <h1 class="page-header"> {% block pageHeader %}  pageHeader {% endblock %} </h1>
-            <h2 class="sub-header">  {% block subHeader %} subHeader {% endblock %} </h2>
+            <h1 class="page-header"> {% block pageHeader %} pageHeader {% endblock %} </h1>
+            <h2 class="sub-header"> {% block subHeader %} subHeader {% endblock %} </h2>
             <div class="main-content">
                 {% for msg in app.session.flashBag.get('success') %}
                     <div class="alert alert-success">
@@ -79,7 +83,7 @@
                     </div>
                 {% endfor %}
                 {% for msg in app.session.flashBag.get('error') %}
-                    <div class="alert alert-success">
+                    <div class="alert alert-warning">
                         {{ msg }}
                     </div>
                 {% endfor %}

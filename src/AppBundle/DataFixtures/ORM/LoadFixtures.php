@@ -9,6 +9,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 
+use AppBundle\Entity\MeetingStatus;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
@@ -34,6 +35,23 @@ class LoadFixtures implements FixtureInterface
         $pr = new ProjectRole();
         $pr->setName('Project Supervisor');
         $manager->persist($pr);
+        $manager->flush();
+        $pr = new ProjectRole();
+        $pr->setName('Project Member');
+        $manager->persist($pr);
+        $manager->flush();
+
+        $ms = new MeetingStatus();
+        $ms->setName("Future");
+        $manager->persist($ms);
+        $manager->flush();
+        $ms = new MeetingStatus();
+        $ms->setName("Past");
+        $manager->persist($ms);
+        $manager->flush();
+        $ms = new MeetingStatus();
+        $ms->setName("Canceled");
+        $manager->persist($ms);
         $manager->flush();
 
         $u = new User();

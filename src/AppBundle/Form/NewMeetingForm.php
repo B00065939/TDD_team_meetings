@@ -48,9 +48,11 @@ class NewMeetingForm extends AbstractType
             ])
             ->add('duration', IntegerType::class, [
                 'data' => 90,
-                'label' => "Duration"
+
             ])
-            ->add('location');
+            ->add('location',TextType::class,[
+                'label' => "Meeting location"
+            ]);
 
     }
 
