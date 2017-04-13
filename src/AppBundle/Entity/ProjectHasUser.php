@@ -26,19 +26,24 @@ class ProjectHasUser
     private $id;
 
     /**
+     * Many entries can have one user
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(name="usrr_id"), referencedColumnName="id"
      * @var User $user
      */
     private $user;
 
     /**
+     * Many entries can have a one project
      * @ORM\ManyToOne(targetEntity="Project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * @var Project $project
      */
     private $project;
 
     /**
-     * @ORM\ManyToOne(targetEntity="ProjectRole")
+     * @ORM\ManyToOne(targetEntity="ProjectRole", inversedBy="projectsHaveUsers")
+     * @ORM\JoinColumn(name="project_role_id", referencedColumnName="id")
      * @var ProjectRole $projectRole
      */
     private $projectRole;

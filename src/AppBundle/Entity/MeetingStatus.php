@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -12,6 +13,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class MeetingStatus
 {
+    function __construct()
+    {
+        $this->projects = new ArrayCollection();
+    }
+
     /**
      * @var int
      *
@@ -28,6 +34,12 @@ class MeetingStatus
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Meeting", mappedBy="meetingStatus")
+     * @var ArrayCollection $projects
+     *
+     */
+    private $projects;
 
     /**
      * Get id

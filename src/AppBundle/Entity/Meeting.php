@@ -8,19 +8,34 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints\Date;
+
 use Symfony\Component\Validator\Constraints\DateTime;
-use Symfony\Component\Validator\Constraints\Time;
 
 /**
  * Class Meeting
  * @package AppBundle\Entity
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\MeetingRepository")
  * @ORM\Table(name="meeting")
  */
 class Meeting
 {
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgendaItems()
+    {
+        return $this->agendaItems;
+    }
+
+    /**
+     * @param ArrayCollection $agendaItems
+     */
+    public function setAgendaItems($agendaItems)
+    {
+        $this->agendaItems = $agendaItems;
+    }
 
     /**
      * @ORM\Id()
@@ -31,13 +46,19 @@ class Meeting
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @var Project $project
+     * @ORM\ManyToOne(targetEntity="Project", inversedBy="project")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     */
+    private $project;
+    /**
+     * @ORM\ManyToOne(targetEntity="User")
      * @var User $chair
      */
     private $chair;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="User")
      * @var User $secretary
      */
     private $secretary;
@@ -61,8 +82,12 @@ class Meeting
     private $agendaDeadline;
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\MeetingStatus")
-     * @ORM\JoinColumn(name="id", referencedColumnName="id")
+     * @var ArrayCollection $agendaItems
+     */
+    private $agendaItems;
+    /**
+     * @ORM\ManyToOne(targetEntity="MeetingStatus",inversedBy="projects")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      * @var MeetingStatus $meetingStatus
      */
     private $meetingStatus;
@@ -202,4 +227,28 @@ class Meeting
     }
 
 
+
+    /**
+     * Set project
+     *
+     * @param Project $project
+     *
+     * @return Meeting
+     */
+    public function setProject(Project $project = null)
+    {
+        $this->project = $project;
+
+        return $this;
+    }
+
+    /**
+     * Get project
+     *
+     * @return Project
+     */
+    public function getProject()
+    {
+        return $this->project;
+    }
 }

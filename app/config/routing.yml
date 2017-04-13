@@ -1,3 +1,7 @@
+app_meeting_attendance:
+    resource: "@AppBundle/Controller/MeetingAttendanceController.php"
+    type:     annotation
+
 app_meeting_status:
     resource: "@AppBundle/Controller/MeetingStatusController.php"
     type:     annotation

@@ -9,7 +9,9 @@
 namespace AppBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use phpDocumentor\Reflection\Types\String_;
+use Symfony\Component\Security\Core\Role\Role;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -21,7 +23,19 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User implements UserInterface
 {
+    function __construct()
+    {
+        $this->agendaItems = new ArrayCollection();
+//        $this->projects = new ArrayCollection();
+    }
 
+//    /**
+//      * Many projects has many users
+//     * @var ArrayCollection $projects
+//     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
+//      *
+//     */
+//    private $projects;
     /**
      * @ORM\Column(type="json_array")
      */
@@ -52,6 +66,11 @@ class User implements UserInterface
      */
     private $password;
 
+    /**
+     * @var ArrayCollection $agendaItems
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="proposer")
+     */
+    private $agendaItems;
     /**
      * A non-persisted field that's used to create the encoded password.
      *
@@ -86,7 +105,7 @@ class User implements UserInterface
      * and populated in any number of different ways when the user object
      * is created.
      *
-     * @return (Role|string)[] The user roles
+     * @return Role
      */
     public function getRoles()
     {
@@ -185,7 +204,7 @@ class User implements UserInterface
      */
     function __toString()
     {
-        return $this->getFullName().' ('.$this->getEmail().')';
+        return $this->getFullName() . ' (' . $this->getEmail() . ')';
     }
 
     /**

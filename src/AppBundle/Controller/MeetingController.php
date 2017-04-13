@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Meeting;
+use AppBundle\Entity\MeetingAttendance;
 use AppBundle\Entity\MeetingStatus;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
@@ -13,6 +14,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MeetingController extends Controller
 {
+
+
     public function newAction(Request $request, Project $project)
     {
         $em = $this->getDoctrine()->getManager();
@@ -82,12 +85,11 @@ class MeetingController extends Controller
             dump($currDate);
             dump($mDateTime);
 
-            if ($mDateTime < $currDate){
+            if ($mDateTime < $currDate) {
                 $errorMsg = "The meeting time must be at least 24 hours later than current date ";
                 $this->addFlash('error', "$errorMsg");
                 return $this->redirectToRoute('new_meeting', array('project' => $project->getId()));
             }
-
 
             $newMeeting->setChair($meetingChair);
             $newMeeting->setSecretary($meetingSecretary);
@@ -97,6 +99,8 @@ class MeetingController extends Controller
             $newMeeting->setLocation($location);
             $newMeeting->setMeetingStatus($meetingStatus);
 
+            // Now we need to create +++++++ Meeting Attendance ++++++++
+            $this->createMeetingAttendanceEntries($newMeeting);
 
 //            /**
 //             * @var Project $project
@@ -112,9 +116,19 @@ class MeetingController extends Controller
 
         return $this->render('meeting/newmeeting.html.twig', array(
             "pageHeader" => "Project supervising",
-            "subHeader" => "Create new meeting for project: ".$project->getTitle(),
+            "subHeader" => "Create new meeting for project: " . $project->getTitle(),
             "form" => $form->createView()
         ));
+    }
+
+    private function createMeetingAttendanceEntries(Meeting $meeting)
+    {
+        $project = $meeting->getProject();
+        $em = $this->getDoctrine()->getManager();
+        // all users belonging to project
+        $users = $em->getRepository('AppBundle:ProjectHasUser')->findAllUsersForProject($project);
+        $attendance = new MeetingAttendance();
+
     }
 
 

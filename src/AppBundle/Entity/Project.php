@@ -8,7 +8,9 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Class Project
  * @package AppBundle\Entity
@@ -16,7 +18,13 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Table(name="project")
  */
 class Project
+
 {
+    function __construct()
+    {
+        $this->meetings = new ArrayCollection();
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -25,6 +33,11 @@ class Project
      */
     private $id;
 
+    /**
+     * @var Meeting $meeting
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="project")
+     */
+    private $meetings;
     /**
      * @ORM\Column(type="string")
      * @var String $title
@@ -36,6 +49,8 @@ class Project
      * @var boolean $lock
      */
     private $locked = false;
+
+    ///////////////////////////////////////////////////
 
     /**
      * @return int
@@ -91,4 +106,62 @@ class Project
     }
 
 
+
+    /**
+     * Set locked
+     *
+     * @param boolean $locked
+     *
+     * @return Project
+     */
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
+
+        return $this;
+    }
+
+    /**
+     * Get locked
+     *
+     * @return boolean
+     */
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    /**
+     * Add meeting
+     *
+     * @param Meeting $meeting
+     *
+     * @return Project
+     */
+    public function addMeeting(Meeting $meeting)
+    {
+        $this->meetings[] = $meeting;
+
+        return $this;
+    }
+
+    /**
+     * Remove meeting
+     *
+     * @param Meeting $meeting
+     */
+    public function removeMeeting(Meeting $meeting)
+    {
+        $this->meetings->removeElement($meeting);
+    }
+
+    /**
+     * Get meetings
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMeetings()
+    {
+        return $this->meetings;
+    }
 }

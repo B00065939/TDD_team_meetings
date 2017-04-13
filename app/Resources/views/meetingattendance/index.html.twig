@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Meetingattendances list</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Attendance</th>
+                <th>Presence</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for meetingAttendance in meetingAttendances %}
+            <tr>
+                <td><a href="{{ path('meetingattendance_show', { 'id': meetingAttendance.id }) }}">{{ meetingAttendance.id }}</a></td>
+                <td>{{ meetingAttendance.attendance }}</td>
+                <td>{{ meetingAttendance.presence }}</td>
+                <td>
+                    <ul>
+                        <li>
+                            <a href="{{ path('meetingattendance_show', { 'id': meetingAttendance.id }) }}">show</a>
+                        </li>
+                        <li>
+                            <a href="{{ path('meetingattendance_edit', { 'id': meetingAttendance.id }) }}">edit</a>
+                        </li>
+                    </ul>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <ul>
+        <li>
+            <a href="{{ path('meetingattendance_new') }}">Create a new meetingAttendance</a>
+        </li>
+    </ul>
+{% endblock %}

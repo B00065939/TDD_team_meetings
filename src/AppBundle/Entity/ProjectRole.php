@@ -7,6 +7,7 @@
  */
 
 namespace AppBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,6 +17,10 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class ProjectRole
 {
+    function __construct()
+    {
+        $this->projectsHaveUsers = new ArrayCollection();
+    }
 
     /**
      * @ORM\Id
@@ -31,6 +36,11 @@ class ProjectRole
      */
     private $name;
 
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\ProjectHasUser", mappedBy="projectRole")
+     * @var ArrayCollection $projectsHaveUsers
+     */
+    private $projectsHaveUsers;
     /**
      * @return integer
      */

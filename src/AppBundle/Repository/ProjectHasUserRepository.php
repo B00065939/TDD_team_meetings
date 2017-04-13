@@ -17,6 +17,21 @@ use phpDocumentor\Reflection\Types\Array_;
  */
 class ProjectHasUserRepository extends EntityRepository
 {
+    public function findAllUsersForProject(Project $project)
+    {
+        $userList = array();
+        $data = $this->createQueryBuilder('phu')
+            ->where('phu.project = :projectP')
+            ->setParameters([
+                'projectP' => $project
+            ])
+            ->getQuery()
+            ->execute();
+        foreach ($data as $item) {
+            $userList[] = $item->getUser();
+        }
+        return $userList;
+    }
 
     public function createUsersFromProjectQueryBuilder()
     {
