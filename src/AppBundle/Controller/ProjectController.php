@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Meeting;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
@@ -15,12 +16,6 @@ class ProjectController extends Controller
     public function showAction(Request $request, Project $project)
     {
 
-
-        // $roleSecretary = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Secretary"]);
-//        $secretary = $em->getRepository(ProjectHasUser::class)->findOneBy([
-//            'project' => $project,
-//            'projectRole' => $roleSecretary
-//        ]);
         $em = $this->getDoctrine()->getManager();
         $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
@@ -29,6 +24,14 @@ class ProjectController extends Controller
         //$projectHasUsersList = $em->getRepository('AppBundle:ProjectHasUser')->findAllNoKeyUsersForProject($project);
 
         $projectHasUsersList = $em->getRepository(ProjectHasUser::class)->findBy(['project' => $project]);
+//        dump($project->getMeetings());die();
+
+//        $meetings = $em->getRepository(Meeting::class)->findBy(['project' => $project]);
+        $meetings = $project->getMeetings();
+//       dump($meetings); die();
+        foreach ($meetings as $meeting) {
+            dump($meeting->getChair());
+        }
 
         return $this->render('project/project.html.twig', array(
             "pageHeader" => "Project supervising",
@@ -38,6 +41,7 @@ class ProjectController extends Controller
             "leader" => $leader,
             "supervisor" => $supervisor,
             "projectHasUsersList" => $projectHasUsersList,
+            "meetingsList" => $meetings,
         ));
     }
 

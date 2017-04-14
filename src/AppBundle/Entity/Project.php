@@ -34,10 +34,12 @@ class Project
     private $id;
 
     /**
-     * @var Meeting $meeting
+     *
+     * @var ArrayCollection $meetings
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\Meeting", mappedBy="project")
      */
     private $meetings;
+
     /**
      * @ORM\Column(type="string")
      * @var String $title
@@ -158,7 +160,7 @@ class Project
     /**
      * Get meetings
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getMeetings()
     {

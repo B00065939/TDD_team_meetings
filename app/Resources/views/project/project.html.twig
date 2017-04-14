@@ -14,22 +14,17 @@
         <tr>
             <td>Date and Time</td>
             <td>Location</td>
-            <td>Agenda</td>
+            <td>Details</td>
         </tr>
         </thead>
         <tbody>
-        {% for phul in projectHasUsersList %}
+        {% for meeting in meetingsList %}
             <tr>
-                {#phul.projectRole.name != "Project Secretary"#}
-                {% if( phul.user != leader and phul.user != secretary and phul.user != supervisor) %}
-                    <td>{{ phul.user.fullName }}</td>
-                    <td>{{ phul.projectRole.name }}</td>
-                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
-                        <td><a href="{{ path(
-                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a>
-                        </td>
-                    {% endif %}
-                {% endif %}
+                <td>{{ meeting.getMDateTime()| date() }}</td>
+                <td>{{ meeting.getLocation() }}</td>
+               <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><span
+                class="fa fa-eye"></span></a></td>
+
             </tr>
         {% endfor %}
         </tbody>

@@ -5,16 +5,13 @@
 
 
 {% block body %}
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right" aria-hidden="true"></i> Next</button>
-                {{ form_end(form) }}
-
-            </div>
-        </div>
+    <div class="col-xs-6">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
+                                                                        aria-hidden="true"></i> Next
+        </button>
+        {{ form_end(form) }}
     </div>
 {% endblock %}
 

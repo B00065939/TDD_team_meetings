@@ -11,7 +11,9 @@ app_meeting_status:
 new_meeting:
   path: /meeting/new/{project}
   defaults: {_controller: AppBundle:Meeting:new}
-
+show_meeting:
+  path: /meeting/meeting/{meeting}
+  defaults: {_controller: AppBundle:Meeting:show}
 test:
   path: /project/removeuserfromproject/{project}/{user}
   defaults: {_controller: AppBundle:ProjectHasUser:remove}

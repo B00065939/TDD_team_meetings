@@ -21,20 +21,10 @@ use Symfony\Component\Validator\Constraints\DateTime;
  */
 class Meeting
 {
-    /**
-     * @return ArrayCollection
-     */
-    public function getAgendaItems()
+    function __construct()
     {
-        return $this->agendaItems;
-    }
-
-    /**
-     * @param ArrayCollection $agendaItems
-     */
-    public function setAgendaItems($agendaItems)
-    {
-        $this->agendaItems = $agendaItems;
+        $this->meetingAttendances = new ArrayCollection();
+        $this->agendas = new ArrayCollection();
     }
 
     /**
@@ -46,11 +36,29 @@ class Meeting
     private $id;
 
     /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="meeting")
+     */
+    private $agendas;
+
+    /**
      * @var Project $project
-     * @ORM\ManyToOne(targetEntity="Project", inversedBy="project")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project", inversedBy="meetings")
      * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
     private $project;
+
+    /**
+     * @var ArrayCollection $meetingAttendances
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MeetingAttendance", mappedBy="meeting")
+     */
+    private $meetingAttendances;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="postponedTo")
+     */
+    private $postponedAgendaItems;
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @var User $chair
@@ -85,17 +93,26 @@ class Meeting
      * @var ArrayCollection $agendaItems
      */
     private $agendaItems;
+
     /**
      * @ORM\ManyToOne(targetEntity="MeetingStatus",inversedBy="projects")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="meeting_status_id", referencedColumnName="id")
      * @var MeetingStatus $meetingStatus
      */
     private $meetingStatus;
 
     /**
+     * @ORM\Column(type="string")
+     * @var string $location
+     */
+    private $location;
+
+    /////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
+    /**
      * @return string
      */
-    public function getLocation()
+     public function getLocation()
     {
         return $this->location;
     }
@@ -107,12 +124,6 @@ class Meeting
     {
         $this->location = $location;
     }
-
-    /**
-     * @ORM\Column(type="string")
-     * @var string $location
-     */
-    private $location;
 
     /**
      * @return int
@@ -226,7 +237,21 @@ class Meeting
         $this->meetingStatus = $meetingStatus;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgendaItems()
+    {
+        return $this->agendaItems;
+    }
 
+    /**
+     * @param ArrayCollection $agendaItems
+     */
+    public function setAgendaItems($agendaItems)
+    {
+        $this->agendaItems = $agendaItems;
+    }
 
     /**
      * Set project
@@ -251,4 +276,54 @@ class Meeting
     {
         return $this->project;
     }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMeetingAttendances()
+    {
+        return $this->meetingAttendances;
+    }
+
+    /**
+     * @param ArrayCollection $meetingAttendances
+     */
+    public function setMeetingAttendances($meetingAttendances)
+    {
+        $this->meetingAttendances = $meetingAttendances;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgendas()
+    {
+        return $this->agendas;
+    }
+
+    /**
+     * @param ArrayCollection $agendas
+     */
+    public function setAgendas($agendas)
+    {
+        $this->agendas = $agendas;
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getPostponedAgendaItems()
+    {
+        return $this->postponedAgendaItems;
+    }
+
+    /**
+     * @param ArrayCollection $postponedAgendaItems
+     */
+    public function setPostponedAgendaItems($postponedAgendaItems)
+    {
+        $this->postponedAgendaItems = $postponedAgendaItems;
+    }
+
+
 }

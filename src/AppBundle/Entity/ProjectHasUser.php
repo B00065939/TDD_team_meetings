@@ -28,7 +28,7 @@ class ProjectHasUser
     /**
      * Many entries can have one user
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumn(name="usrr_id"), referencedColumnName="id"
+     * @ORM\JoinColumn(name="user_id"), referencedColumnName="id"
      * @var User $user
      */
     private $user;

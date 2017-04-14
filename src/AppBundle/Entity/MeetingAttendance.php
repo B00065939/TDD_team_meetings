@@ -23,7 +23,8 @@ class MeetingAttendance
 
     /**
      * @var Meeting $meeting
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="meetingAttendances")
+     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id")
      *
      */
     private $meeting;
@@ -37,13 +38,13 @@ class MeetingAttendance
     /**
      * @var string $attendance
      *
-     * @ORM\Column(name="attendance", type="string", length=55)
+     * @ORM\Column(name="attendance", type="string", length=55, nullable=true)
      */
     private $attendance;
 
     /**
      * @var string $presence
-     * @ORM\Column(name="presence", type="string", length=55)
+     * @ORM\Column(name="presence", type="string", length=55, nullable=true)
      */
     private $presence;
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\AgendaItem;
 use AppBundle\Entity\Meeting;
 use AppBundle\Entity\MeetingAttendance;
 use AppBundle\Entity\MeetingStatus;
@@ -15,6 +16,33 @@ use Symfony\Component\HttpFoundation\Request;
 class MeetingController extends Controller
 {
 
+
+    /**
+     * @param Meeting $meeting
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function showAction(Meeting $meeting, Request $request)
+    {
+
+        $em = $this->getDoctrine()->getManager();
+        // all users for this meeting same as all user for this project
+        $usersAttendanceList = $meeting->getMeetingAttendances();
+//        foreach ($usersAttendanceList as $item) {
+//            dump($item->getUser()->getEmail());
+//        }
+//        die();
+        //$usersAttendanceList = $em->getRepository('AppBundle:MeetingAttendance')->findBy(['meeting' => $meeting]);
+        //dump($usersAttendanceList);die();
+        $currUserAttendance = $em->getRepository('AppBundle:MeetingAttendance')->findOneBy(['meeting' => $meeting, 'user' => $this->getUser()]);
+
+        return $this->render('meeting/meeting.html.twig', array(
+            "pageHeader" => "Project supervising",
+            "subHeader" => "Details of the meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
+            "usersAttendanceList" => $usersAttendanceList,
+            "currUserAttendance" => $currUserAttendance,
+        ));
+    }
 
     public function newAction(Request $request, Project $project)
     {
@@ -51,7 +79,7 @@ class MeetingController extends Controller
              * @var MeetingStatus $meetingStatus
              */
             $meetingStatus = $em->getRepository(MeetingStatus::class)->findOneBy(['name' => "Future"]);
-            $location = $form->get('secretary')->getData();
+            $location = $form->get('location')->getData();
             $mDateTime = $form->get('mDateTime')->getData();
             $aDateTime = $form->get('agendaDeadline')->getData();
             $duration = $form->get('duration')->getData();
@@ -82,8 +110,8 @@ class MeetingController extends Controller
 
             $currDate = new DateTime();
             date_add($currDate, date_interval_create_from_date_string('23 hour'));
-            dump($currDate);
-            dump($mDateTime);
+//            dump($currDate);
+//            dump($mDateTime);
 
             if ($mDateTime < $currDate) {
                 $errorMsg = "The meeting time must be at least 24 hours later than current date ";
@@ -91,6 +119,7 @@ class MeetingController extends Controller
                 return $this->redirectToRoute('new_meeting', array('project' => $project->getId()));
             }
 
+            $newMeeting->setProject($project);
             $newMeeting->setChair($meetingChair);
             $newMeeting->setSecretary($meetingSecretary);
             $newMeeting->setAgendaDeadline($aDateTime);
@@ -98,9 +127,15 @@ class MeetingController extends Controller
             $newMeeting->setDuration($duration);
             $newMeeting->setLocation($location);
             $newMeeting->setMeetingStatus($meetingStatus);
-
+            //$project->addMeeting($newMeeting);
+            //$em->persist($project);
+            $em->persist($newMeeting);
+            $em->flush();
             // Now we need to create +++++++ Meeting Attendance ++++++++
             $this->createMeetingAttendanceEntries($newMeeting);
+
+            // Now we neet to create ++++++++++ 3 Default Agenda Items +++
+            $this->createThreeMandatoryAgendaItems($newMeeting);
 
 //            /**
 //             * @var Project $project
@@ -111,7 +146,9 @@ class MeetingController extends Controller
 //            $em->persist($project);
 
             //
-            // stworz liste obecnosci ????
+
+            $this->addFlash('success', "Meeting was crated");
+            return $this->redirectToRoute('show_project', array('project' => $project->getId()));
         }
 
         return $this->render('meeting/newmeeting.html.twig', array(
@@ -121,13 +158,32 @@ class MeetingController extends Controller
         ));
     }
 
+    private function createThreeMandatoryAgendaItems(Meeting $meeting)
+    {
+        $firstAgendaItem = New AgendaItem();
+
+    }
+
     private function createMeetingAttendanceEntries(Meeting $meeting)
     {
         $project = $meeting->getProject();
         $em = $this->getDoctrine()->getManager();
         // all users belonging to project
         $users = $em->getRepository('AppBundle:ProjectHasUser')->findAllUsersForProject($project);
-        $attendance = new MeetingAttendance();
+
+        foreach ($users as $user) {
+            /**
+             * @var MeetingAttendance $attendance
+             */
+            $attendance = new MeetingAttendance();
+            $attendance->setMeeting($meeting);
+            $attendance->setUser($user);
+            $attendance->setAttendance("Maybe");
+
+            $em->persist($attendance);
+            $em->flush();
+        }
+
 
     }
 
