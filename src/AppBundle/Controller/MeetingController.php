@@ -3,11 +3,13 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\AgendaItem;
+use AppBundle\Entity\ApologiesNote;
 use AppBundle\Entity\Meeting;
 use AppBundle\Entity\MeetingAttendance;
 use AppBundle\Entity\MeetingStatus;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\User;
+use AppBundle\Form\ConfirmAttendance;
 use AppBundle\Form\NewMeetingForm;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,19 +30,30 @@ class MeetingController extends Controller
         $em = $this->getDoctrine()->getManager();
         // all users for this meeting same as all user for this project
         $usersAttendanceList = $meeting->getMeetingAttendances();
-//        foreach ($usersAttendanceList as $item) {
-//            dump($item->getUser()->getEmail());
-//        }
-//        die();
-        //$usersAttendanceList = $em->getRepository('AppBundle:MeetingAttendance')->findBy(['meeting' => $meeting]);
-        //dump($usersAttendanceList);die();
         $currUserAttendance = $em->getRepository('AppBundle:MeetingAttendance')->findOneBy(['meeting' => $meeting, 'user' => $this->getUser()]);
+        $currNote = $currUserAttendance->getApologiesNote();
+        $form = $this->createForm(ConfirmAttendance::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $attendance = $form->get('attendance')->getData();
+            $note = $form->get('apologiesNote')->getData();
+
+            $currUserAttendance->setApologiesNote($note);
+            $currUserAttendance->setAttendance($attendance);
+            $em->persist($currUserAttendance);
+            $em->flush();
+
+
+        }
 
         return $this->render('meeting/meeting.html.twig', array(
             "pageHeader" => "Project supervising",
             "subHeader" => "Details of the meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
             "usersAttendanceList" => $usersAttendanceList,
             "currUserAttendance" => $currUserAttendance,
+            "currNote" => $currNote,
+            'form' => $form->createView()
         ));
     }
 
@@ -51,10 +64,6 @@ class MeetingController extends Controller
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
         $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
 
-        $dataTime = new DateTime();
-        //$dataTime->format('Y-m-d H:i:s');
-        //$dataTime->
-        //dump($dataTime->format('Y-m-d H:i:s'));die();
         $form = $this->createForm(NewMeetingForm::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -110,8 +119,6 @@ class MeetingController extends Controller
 
             $currDate = new DateTime();
             date_add($currDate, date_interval_create_from_date_string('23 hour'));
-//            dump($currDate);
-//            dump($mDateTime);
 
             if ($mDateTime < $currDate) {
                 $errorMsg = "The meeting time must be at least 24 hours later than current date ";
@@ -179,7 +186,7 @@ class MeetingController extends Controller
             $attendance->setMeeting($meeting);
             $attendance->setUser($user);
             $attendance->setAttendance("Maybe");
-
+            $attendance->setApologiesNote("");
             $em->persist($attendance);
             $em->flush();
         }

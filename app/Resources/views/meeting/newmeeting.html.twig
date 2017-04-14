@@ -3,18 +3,12 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-
-    <div class="container">
-
-        <div class="col-xs-10">
-            {{ form_start(form) }}
-            {{ form_widget(form) }}
-            <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
-                                                                            aria-hidden="true"></i>Create Meeting
-            </button>
-            {{ form_end(form) }}
-
-        </div>
-
+    <div class="col-xs-4">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
+                                                                        aria-hidden="true"></i>Create Meeting
+        </button>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

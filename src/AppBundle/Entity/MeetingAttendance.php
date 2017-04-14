@@ -36,6 +36,12 @@ class MeetingAttendance
     private $user;
 
     /**
+     * @var string $apologiesNote
+     * @ORM\Column(name="apologies_note")
+     */
+    private $apologiesNote;
+
+    /**
      * @var string $attendance
      *
      * @ORM\Column(name="attendance", type="string", length=55, nullable=true)
@@ -154,4 +160,21 @@ class MeetingAttendance
     {
         return $this->user;
     }
+
+    /**
+     * @return string
+     */
+    public function getApologiesNote()
+    {
+        return $this->apologiesNote;
+    }
+
+    /**
+     * @param string $apologiesNote
+     */
+    public function setApologiesNote($apologiesNote = null)
+    {
+        $this->apologiesNote = $apologiesNote;
+    }
+
 }
