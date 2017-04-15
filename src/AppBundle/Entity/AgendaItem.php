@@ -8,7 +8,6 @@
 
 namespace AppBundle\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -20,6 +19,11 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class AgendaItem
 {
+    function __construct()
+    {
+        $this->creationDate = new \DateTime();
+    }
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -29,11 +33,29 @@ class AgendaItem
     private $id;
 
     /**
+     * @var string $title
+     * @ORM\Column(name="title")
+     */
+    private $title;
+
+    /**
+     * @var string $description
+     * @ORM\Column(name="description")
+     */
+    private $description;
+
+    /**
      * @var Meeting $meeting
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="agendas")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="agendaItems")
      * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id")
      */
     private $meeting;
+    /**
+     * @var AgendaStatus $status
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaStatus", inversedBy="agendaItems")
+     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
+     */
+    private $status;
 
     /**
      * One agenda item has one lestVersion agenda item
@@ -49,19 +71,15 @@ class AgendaItem
     private $nextVersion;
 
     /**
-     * @var string $title
-     */
-    private $title;
-
-    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="postponedAgendaItems")
-     * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="postponed_to", referencedColumnName="id")
      * @var Meeting $postponedTo
      */
     private $postponedTo;
 
     /**
      * @var int $sequenceNo
+     * @ORM\Column(name="sequence_no", type="integer")
      */
     private $sequenceNo;
 
@@ -69,6 +87,7 @@ class AgendaItem
      * @var User $proposer
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="agendaItems")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     *
      */
     private $proposer;
 
@@ -78,19 +97,10 @@ class AgendaItem
      */
     private $creationDate;
 
-    /**
-     * @var AgendaStatus $status
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaStatus", inversedBy="agendaItems")
-     * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
-     */
-    private $status;
-
-
+    /********************** GETTERS SETTERS ****************************************/
 
     /**
-     * Get id
-     *
-     * @return integer
+     * @return int
      */
     public function getId()
     {
@@ -98,46 +108,46 @@ class AgendaItem
     }
 
     /**
-     * Set creationDate
-     *
-     * @param \DateTime $creationDate
-     *
-     * @return AgendaItem
+     * @param int $id
      */
-    public function setCreationDate(\DateTime $creationDate)
+    public function setId($id)
     {
-        $this->creationDate = $creationDate;
-
-        return $this;
+        $this->id = $id;
     }
 
     /**
-     * Get creationDate
-     *
-     * @return \DateTime
+     * @return string
      */
-    public function getCreationDate()
+    public function getTitle()
     {
-        return $this->creationDate;
+        return $this->title;
     }
 
     /**
-     * Set meeting
-     *
-     * @param Meeting $meeting
-     *
-     * @return AgendaItem
+     * @param string $title
      */
-    public function setMeeting(Meeting $meeting = null)
+    public function setTitle($title)
     {
-        $this->meeting = $meeting;
-
-        return $this;
+        $this->title = $title;
     }
 
     /**
-     * Get meeting
-     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
      * @return Meeting
      */
     public function getMeeting()
@@ -146,23 +156,31 @@ class AgendaItem
     }
 
     /**
-     * Set lastVersion
-     *
-     * @param AgendaItem $lastVersion
-     *
-     * @return AgendaItem
+     * @param Meeting $meeting
      */
-    public function setLastVersion(AgendaItem $lastVersion = null)
+    public function setMeeting($meeting)
     {
-        $this->lastVersion = $lastVersion;
-
-        return $this;
+        $this->meeting = $meeting;
     }
 
     /**
-     * Get lastVersion
-     *
-     * @return AgendaItem
+     * @return AgendaStatus
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param AgendaStatus $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * @return mixed
      */
     public function getLastVersion()
     {
@@ -170,23 +188,15 @@ class AgendaItem
     }
 
     /**
-     * Set nextVersion
-     *
-     * @param AgendaItem $nextVersion
-     *
-     * @return AgendaItem
+     * @param mixed $lastVersion
      */
-    public function setNextVersion(AgendaItem $nextVersion = null)
+    public function setLastVersion($lastVersion)
     {
-        $this->nextVersion = $nextVersion;
-
-        return $this;
+        $this->lastVersion = $lastVersion;
     }
 
     /**
-     * Get nextVersion
-     *
-     * @return AgendaItem
+     * @return mixed
      */
     public function getNextVersion()
     {
@@ -194,22 +204,14 @@ class AgendaItem
     }
 
     /**
-     * Set postponedTo
-     *
-     * @param Meeting $postponedTo
-     *
-     * @return AgendaItem
+     * @param mixed $nextVersion
      */
-    public function setPostponedTo(Meeting $postponedTo = null)
+    public function setNextVersion($nextVersion)
     {
-        $this->postponedTo = $postponedTo;
-
-        return $this;
+        $this->nextVersion = $nextVersion;
     }
 
     /**
-     * Get postponedTo
-     *
      * @return Meeting
      */
     public function getPostponedTo()
@@ -218,22 +220,30 @@ class AgendaItem
     }
 
     /**
-     * Set proposer
-     *
-     * @param User $proposer
-     *
-     * @return AgendaItem
+     * @param Meeting $postponedTo
      */
-    public function setProposer(User $proposer = null)
+    public function setPostponedTo($postponedTo)
     {
-        $this->proposer = $proposer;
-
-        return $this;
+        $this->postponedTo = $postponedTo;
     }
 
     /**
-     * Get proposer
-     *
+     * @return int
+     */
+    public function getSequenceNo()
+    {
+        return $this->sequenceNo;
+    }
+
+    /**
+     * @param int $sequenceNo
+     */
+    public function setSequenceNo($sequenceNo)
+    {
+        $this->sequenceNo = $sequenceNo;
+    }
+
+    /**
      * @return User
      */
     public function getProposer()
@@ -242,26 +252,27 @@ class AgendaItem
     }
 
     /**
-     * Set status
-     *
-     * @param AgendaStatus $status
-     *
-     * @return AgendaItem
+     * @param User $proposer
      */
-    public function setStatus(AgendaStatus $status = null)
+    public function setProposer($proposer)
     {
-        $this->status = $status;
-
-        return $this;
+        $this->proposer = $proposer;
     }
 
     /**
-     * Get status
-     *
-     * @return AgendaStatus
+     * @return \DateTime
      */
-    public function getStatus()
+    public function getCreationDate()
     {
-        return $this->status;
+        return $this->creationDate;
     }
+
+    /**
+     * @param \DateTime $creationDate
+     */
+    public function setCreationDate($creationDate)
+    {
+        $this->creationDate = $creationDate;
+    }
+
 }

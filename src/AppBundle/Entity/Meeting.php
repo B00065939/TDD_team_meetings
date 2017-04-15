@@ -11,7 +11,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
-use Symfony\Component\Validator\Constraints\DateTime;
+
 
 /**
  * Class Meeting
@@ -24,7 +24,7 @@ class Meeting
     function __construct()
     {
         $this->meetingAttendances = new ArrayCollection();
-        $this->agendas = new ArrayCollection();
+        $this->agendaItems = new ArrayCollection();
     }
 
     /**
@@ -35,30 +35,6 @@ class Meeting
      */
     private $id;
 
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="meeting")
-     */
-    private $agendas;
-
-    /**
-     * @var Project $project
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project", inversedBy="meetings")
-     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
-     */
-    private $project;
-
-    /**
-     * @var ArrayCollection $meetingAttendances
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MeetingAttendance", mappedBy="meeting")
-     */
-    private $meetingAttendances;
-
-    /**
-     * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="postponedTo")
-     */
-    private $postponedAgendaItems;
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @var User $chair
@@ -72,8 +48,14 @@ class Meeting
     private $secretary;
 
     /**
+     * @ORM\Column(type="string")
+     * @var string $location
+     */
+    private $location;
+
+    /**
      * @ORM\Column(type="datetime")
-     * @var DateTime
+     * @var \DateTime
      */
     private $mDateTime;
 
@@ -85,14 +67,16 @@ class Meeting
 
     /**
      * @ORM\Column(type="datetime")
-     * @var DateTime
+     * @var \DateTime
      */
     private $agendaDeadline;
 
     /**
-     * @var ArrayCollection $agendaItems
+     * @var Project $project
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Project", inversedBy="meetings")
+     * @ORM\JoinColumn(name="project_id", referencedColumnName="id")
      */
-    private $agendaItems;
+    private $project;
 
     /**
      * @ORM\ManyToOne(targetEntity="MeetingStatus",inversedBy="projects")
@@ -102,17 +86,33 @@ class Meeting
     private $meetingStatus;
 
     /**
-     * @ORM\Column(type="string")
-     * @var string $location
+     * Collection of all Agenda Items
+     * @var ArrayCollection $agendaItems
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="meeting")
      */
-    private $location;
+    private $agendaItems;
 
-    /////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * Collection of all meeting attendances
+     * @var ArrayCollection $meetingAttendances
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MeetingAttendance", mappedBy="meeting")
+     */
+    private $meetingAttendances;
+
+    /**
+     * Collection of Postponed Agenda Items for this meeting
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="postponedTo")
+     */
+    private $postponedAgendaItems;
+
+
+    /******************** GETTERS SETTERS **********************************/
+
     /**
      * @return string
      */
-     public function getLocation()
+    public function getLocation()
     {
         return $this->location;
     }
@@ -134,14 +134,6 @@ class Meeting
     }
 
     /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
-    }
-
-    /**
      * @return User
      */
     public function getChair()
@@ -152,7 +144,7 @@ class Meeting
     /**
      * @param User $chair
      */
-    public function setChair($chair)
+    public function setChair(User $chair)
     {
         $this->chair = $chair;
     }
@@ -168,13 +160,13 @@ class Meeting
     /**
      * @param mixed $secretary
      */
-    public function setSecretary($secretary)
+    public function setSecretary(User $secretary)
     {
         $this->secretary = $secretary;
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getMDateTime()
     {
@@ -182,9 +174,9 @@ class Meeting
     }
 
     /**
-     * @param DateTime $mDateTime
+     * @param \DateTime $mDateTime
      */
-    public function setMDateTime($mDateTime)
+    public function setMDateTime(\DateTime $mDateTime)
     {
         $this->mDateTime = $mDateTime;
     }
@@ -206,7 +198,7 @@ class Meeting
     }
 
     /**
-     * @return DateTime
+     * @return \DateTime
      */
     public function getAgendaDeadline()
     {
@@ -214,9 +206,9 @@ class Meeting
     }
 
     /**
-     * @param DateTime $agendaDeadline
+     * @param \DateTime $agendaDeadline
      */
-    public function setAgendaDeadline($agendaDeadline)
+    public function setAgendaDeadline(\DateTime $agendaDeadline)
     {
         $this->agendaDeadline = $agendaDeadline;
     }
@@ -232,26 +224,11 @@ class Meeting
     /**
      * @param MeetingStatus $meetingStatus
      */
-    public function setMeetingStatus($meetingStatus)
+    public function setMeetingStatus(MeetingStatus $meetingStatus)
     {
         $this->meetingStatus = $meetingStatus;
     }
 
-    /**
-     * @return ArrayCollection
-     */
-    public function getAgendaItems()
-    {
-        return $this->agendaItems;
-    }
-
-    /**
-     * @param ArrayCollection $agendaItems
-     */
-    public function setAgendaItems($agendaItems)
-    {
-        $this->agendaItems = $agendaItems;
-    }
 
     /**
      * Set project
@@ -277,6 +254,9 @@ class Meeting
         return $this->project;
     }
 
+    ///////////////////////////////////////////////////////////////////////////////
+
+
     /**
      * @return ArrayCollection
      */
@@ -286,28 +266,22 @@ class Meeting
     }
 
     /**
-     * @param ArrayCollection $meetingAttendances
+     * @param MeetingAttendance $meetingAttendance
      */
-    public function setMeetingAttendances($meetingAttendances)
+    public function addMeetingAttendance(MeetingAttendance $meetingAttendance)
     {
-        $this->meetingAttendances = $meetingAttendances;
+        $this->meetingAttendances[] = $meetingAttendance;
     }
 
     /**
-     * @return ArrayCollection
+     * @param MeetingAttendance $meetingAttendance
      */
-    public function getAgendas()
+    public function removeMeetingAttendance(MeetingAttendance $meetingAttendance)
     {
-        return $this->agendas;
+        $this->meetingAttendances->removeElement($meetingAttendance);
     }
 
-    /**
-     * @param ArrayCollection $agendas
-     */
-    public function setAgendas($agendas)
-    {
-        $this->agendas = $agendas;
-    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * @return ArrayCollection
@@ -318,12 +292,51 @@ class Meeting
     }
 
     /**
-     * @param ArrayCollection $postponedAgendaItems
+     * @param AgendaItem $postponedAgendaItem
      */
-    public function setPostponedAgendaItems($postponedAgendaItems)
+    public function addPostponedAgendaItem(AgendaItem $postponedAgendaItem)
     {
-        $this->postponedAgendaItems = $postponedAgendaItems;
+        $this->postponedAgendaItems[] = $postponedAgendaItem;
     }
 
+    /**
+     * Remove postponed Agenda Item
+     *
+     * @param AgendaItem $postponedAgendaItem
+     */
+    public function removePostponedAgendaItem(AgendaItem $postponedAgendaItem)
+    {
+        $this->postponedAgendaItems->removeElement($postponedAgendaItem);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgendaItems()
+    {
+        return $this->agendaItems;
+    }
+
+    /**
+     * @param AgendaItem $agendaItem
+     */
+    public function addAgendaItem(AgendaItem $agendaItem)
+    {
+        $this->agendaItems[] = $agendaItem;
+    }
+
+    /**
+     * Remove agendaItem
+     *
+     * @param AgendaItem $agendaItem
+     */
+    public function removeAgendaItem(AgendaItem $agendaItem)
+    {
+        $this->agendaItems->removeElement($agendaItem);
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 }

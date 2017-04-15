@@ -3,6 +3,7 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\AgendaItem;
+use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\ApologiesNote;
 use AppBundle\Entity\Meeting;
 use AppBundle\Entity\MeetingAttendance;
@@ -32,6 +33,11 @@ class MeetingController extends Controller
         $usersAttendanceList = $meeting->getMeetingAttendances();
         $currUserAttendance = $em->getRepository('AppBundle:MeetingAttendance')->findOneBy(['meeting' => $meeting, 'user' => $this->getUser()]);
         $currNote = $currUserAttendance->getApologiesNote();
+       //$agendaItems = $em->getRepository('AppBundle:AgendaItem')->findBy(['meeting'-]),
+        $agendaItems = $meeting->getAgendaItems();
+
+        //$test = $meeting->getProject()->getMeetings();
+        //dump(count($agendaItems));die();
         $form = $this->createForm(ConfirmAttendance::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -43,8 +49,6 @@ class MeetingController extends Controller
             $currUserAttendance->setAttendance($attendance);
             $em->persist($currUserAttendance);
             $em->flush();
-
-
         }
 
         return $this->render('meeting/meeting.html.twig', array(
@@ -53,7 +57,8 @@ class MeetingController extends Controller
             "usersAttendanceList" => $usersAttendanceList,
             "currUserAttendance" => $currUserAttendance,
             "currNote" => $currNote,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'agendaItems' => $agendaItems,
         ));
     }
 
@@ -96,13 +101,11 @@ class MeetingController extends Controller
             if ($meetingChair != null && $meetingChair === $meetingSecretary) {
                 $errorMsg = "The Meeting chair and secretary need to be different person";
 
-
                 $this->addFlash('error', "$errorMsg");
                 return $this->redirectToRoute('new_meeting', array('project' => $project->getId()));
 
             } else {
                 // Validation of chair and secretary
-
                 if ($meetingChair == null) {
                     $meetingChair = $leader;
                 }
@@ -134,25 +137,14 @@ class MeetingController extends Controller
             $newMeeting->setDuration($duration);
             $newMeeting->setLocation($location);
             $newMeeting->setMeetingStatus($meetingStatus);
-            //$project->addMeeting($newMeeting);
-            //$em->persist($project);
+
             $em->persist($newMeeting);
             $em->flush();
             // Now we need to create +++++++ Meeting Attendance ++++++++
             $this->createMeetingAttendanceEntries($newMeeting);
 
-            // Now we neet to create ++++++++++ 3 Default Agenda Items +++
+            // Now we need to create ++++++++++ 3 Default Agenda Items +++
             $this->createThreeMandatoryAgendaItems($newMeeting);
-
-//            /**
-//             * @var Project $project
-//             */
-//            $project = new Project();
-//            $project->setTitle($form->get('title')->getData());
-//            $project->setLock($form->get('lock')->getData());
-//            $em->persist($project);
-
-            //
 
             $this->addFlash('success', "Meeting was crated");
             return $this->redirectToRoute('show_project', array('project' => $project->getId()));
@@ -167,7 +159,54 @@ class MeetingController extends Controller
 
     private function createThreeMandatoryAgendaItems(Meeting $meeting)
     {
+        //dump($meeting->getId());die();
+        /*
+          * (1)	Note apologies received from team members unable to be present
+          * (2)	agree agenda
+          * (3)	Accept minutes of previous meeting (unless meeting is first for this project!)
+         */
+
+        $em = $this->getDoctrine()->getManager();
+        $meeting = $em->find(Meeting::class, $meeting->getId());
+        $draftStatus = $em->getRepository(AgendaStatus::class)->findOneBy(['name' => 'draft']);
+
         $firstAgendaItem = New AgendaItem();
+        $firstAgendaItem->setMeeting($meeting);
+        $firstAgendaItem->setProposer($meeting->getChair());
+        $firstAgendaItem->setTitle("Apologies notes");
+        $firstAgendaItem->setDescription("Note apologies received from team members unable to be present ");
+        $firstAgendaItem->setSequenceNo(1);
+        $firstAgendaItem->setStatus($draftStatus);
+        $em->persist($firstAgendaItem);
+
+        $secondAgendaItem = New AgendaItem();
+        $secondAgendaItem->setMeeting($meeting);
+        $secondAgendaItem->setProposer($meeting->getChair());
+        $secondAgendaItem->setTitle("Agree agenda");
+        $secondAgendaItem->setDescription("Meeting Secretary is presenting agree agenda ");
+        $secondAgendaItem->setSequenceNo(2);
+        $secondAgendaItem->setStatus($draftStatus);
+        $em->persist($secondAgendaItem);
+
+        $thirdAgendaItem = New AgendaItem();
+        $thirdAgendaItem->setMeeting($meeting);
+        $thirdAgendaItem->setProposer($meeting->getChair());
+        $thirdAgendaItem->setTitle("Accept minutes");
+        $thirdAgendaItem->setDescription("Accept minutes of previous meeting (unless meeting is first for this project!) ");
+        $thirdAgendaItem->setSequenceNo(3);
+        $thirdAgendaItem->setStatus($draftStatus);
+        $em->persist($thirdAgendaItem);
+        $em->flush();
+
+//dump($firstAgendaItem->getMeeting()->getId());
+//dump($secondAgendaItem->getMeeting()->getId());
+//dump($thirdAgendaItem->getMeeting()->getId());
+//$test2 = $em->find("AppBundle:User",3);
+//$test2->getAgendaItems();
+//dump(count($test2->getAgendaItems()));
+
+
+        //znajdz wszystkie agenda itemsy withot meeting and add them to agenda chenging ther status to draft
 
     }
 
@@ -190,9 +229,5 @@ class MeetingController extends Controller
             $em->persist($attendance);
             $em->flush();
         }
-
-
     }
-
-
 }

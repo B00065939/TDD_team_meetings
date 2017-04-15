@@ -223,5 +223,27 @@ class User implements UserInterface
         $this->fullName = $fullName;
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getAgendaItems()
+    {
+        return $this->agendaItems;
+    }
+
+    /**
+     * @param AgendaItem $agendaItem
+     */
+    public function addAgendaItems(AgendaItem $agendaItem)
+    {
+        $this->agendaItems[] = $agendaItem;
+    }
+
+    public function removeAgendaItem(AgendaItem $agendaItem)
+    {
+        $this->agendaItems->removeElement($agendaItem);
+    }
+
+
 
 }

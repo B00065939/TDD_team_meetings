@@ -5,7 +5,7 @@
 {% block body %}
     <p>Project Leader: {{ leader.fullName }} - {{ leader.email }}</p>
     <p>Project Secretary: {{ secretary.fullName }} - {{ secretary.email }} </p>
-
+    <p>Project Supervisor: {{ supervisor.fullName }} - {{ supervisor.email }} </p>
 
     <table class="table table-striped">
         <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
@@ -22,8 +22,8 @@
             <tr>
                 <td>{{ meeting.getMDateTime()| date() }}</td>
                 <td>{{ meeting.getLocation() }}</td>
-               <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><span
-                class="fa fa-eye"></span></a></td>
+                <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><span
+                                class="fa fa-eye"></span></a></td>
 
             </tr>
         {% endfor %}
@@ -40,13 +40,11 @@
             {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
                 <td>Remove</td>
             {% endif %}
-
         </tr>
         </thead>
         <tbody>
         {% for phul in projectHasUsersList %}
             <tr>
-
                 {% if( phul.user != leader and phul.user != secretary and phul.user != supervisor) %}
                     <td>{{ phul.user.fullName }}</td>
                     <td>{{ phul.projectRole.name }}</td>

@@ -9,6 +9,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 
+use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\MeetingStatus;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
@@ -78,7 +79,35 @@ class LoadFixtures implements FixtureInterface
         $manager->persist($u);
         $manager->flush();
 
+        $as = new AgendaStatus();
+        $as->setName("draft");
+        $as->setDescription("agenda item before agenda deadline, or before leader will change it status to draft minute");
+        $manager->persist($as);
+        $manager->flush();
 
+        $as = new AgendaStatus();
+        $as->setName("draft minute");
+        $as->setDescription("agenda item after agenda deadline, during meeting, before secretary will change it on next meeting to minute");
+        $manager->persist($as);
+        $manager->flush();
+
+        $as = new AgendaStatus();
+        $as->setName("minute");
+        $as->setDescription("Minute item after 3rd accepting minutes from previous meeting no change possible to make");
+        $manager->persist($as);
+        $manager->flush();
+
+        $as = new AgendaStatus();
+        $as->setName("postponed");
+        $as->setDescription("Agenda item postponed for future meeting without specifying it");
+        $manager->persist($as);
+        $manager->flush();
+
+        $as = new AgendaStatus();
+        $as->setName("postponed to");
+        $as->setDescription("Agenda item postponed for future meeting");
+        $manager->persist($as);
+        $manager->flush();
 
         $objects = Fixtures::load(
             __DIR__.'/fixtures.yml',
