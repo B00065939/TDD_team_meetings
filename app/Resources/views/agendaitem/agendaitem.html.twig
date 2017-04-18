@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <ul>
+        <li>
+            <a href="{{ path('show_meeting', {'meeting' : agendaItem.meeting.id}) }}">Back to the list</a>
+        </li>
+
+    </ul>
+    <div class="row">
+        <div class="col-md-4">
+            <table class="table table-striped table-bordered">
+                <caption>Current agenda items</caption>
+                <tbody>
+                <tr>
+                    <th>Sequence No</th>
+                    <td>{{ agendaItem.sequenceNo }}</td>
+                </tr>
+                <tr>
+                    <th>Creation date</th>
+                    <td>{% if agendaItem.creationDate %}{{ agendaItem.creationDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                </tr>
+                <tr>
+                    <th>Created by</th>
+                    <td>{{ agendaItem.proposer }}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td>{{ agendaItem.title }}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{ agendaItem.description }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Proposed new new version of this agenda </h3>
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
+            <input type="submit" value="Save"/>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-striped table-bordered">
+                <caption>Previous version of this agenda items</caption>
+                {% set counter = 1 %}
+                {% for agenda in prevAgendaItems %}
+                    <tr>
+                        <th>Version {{ counter }} proposed by:</th>
+                        <td>{{ agenda.proposer }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of proposed change</th>
+                        <td>{% if agenda.creationDate %}{{ agenda.creationDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Sequence No</th>
+                        <td>{{ agenda.sequenceNo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ agenda.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ agenda.description }}</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2"></th>
+                    </tr>
+                    {% set counter = counter +1 %}
+                {% endfor %}
+
+            </table>
+        </div>
+
+        <div class="col-md-6">
+            <table class="table table-striped table-bordered">
+                <caption>Suggested version of this agenda items</caption>
+                {% set counter = 1 %}
+                {% for agenda in nextAgendaItems %}
+                    <tr>
+                        <th>Version {{ counter }} proposed by:</th>
+                        <td>{{ agenda.proposer }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date of proposed change</th>
+                        <td>{% if agenda.creationDate %}{{ agenda.creationDate|date('Y-m-d H:i:s') }}{% endif %}</td>
+                    </tr>
+                    <tr>
+                        <th>Sequence No</th>
+                        <td>{{ agenda.sequenceNo }}</td>
+                    </tr>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ agenda.title }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td>{{ agenda.description }}</td>
+                    </tr>
+                    <tr>
+
+                        <th colspan="2"><a href="{{ path('make_current_agenda_item', {'agendaItem' : agenda.id}) }}">Make
+                                it current</a></th>
+                    </tr>
+                    <tr>
+                        <th colspan="2"></th>
+                    </tr>
+                    {% set counter = counter +1 %}
+                {% endfor %}
+
+            </table>
+        </div>
+
+    </div>
+
+
+{% endblock %}

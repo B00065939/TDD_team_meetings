@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+{% block body %}
+    <ul>
+        <li>
+            <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">Back to the agendas list</a>
+        </li>
+    </ul>    <div class="col-xs-6">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <input type="submit" value="Create"/>
+        {{ form_end(form) }}
+
+
+    </div>
+{% endblock %}

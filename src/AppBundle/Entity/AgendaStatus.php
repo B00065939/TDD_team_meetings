@@ -146,4 +146,9 @@ class AgendaStatus
     {
         $this->agendaItems->removeElement($agendaItem);
     }
+
+    function __toString()
+    {
+        return $this->getName();
+    }
 }

@@ -33,8 +33,13 @@ class MeetingController extends Controller
         $usersAttendanceList = $meeting->getMeetingAttendances();
         $currUserAttendance = $em->getRepository('AppBundle:MeetingAttendance')->findOneBy(['meeting' => $meeting, 'user' => $this->getUser()]);
         $currNote = $currUserAttendance->getApologiesNote();
-       //$agendaItems = $em->getRepository('AppBundle:AgendaItem')->findBy(['meeting'-]),
+        //$agendaItems = $em->getRepository('AppBundle:AgendaItem')->findBy(['meeting'-]),
         $agendaItems = $meeting->getAgendaItems();
+        foreach ($agendaItems as $agendaItem) {
+            if ($agendaItem->getStatus() != "draft") {
+                $agendaItems->removeElement($agendaItem);
+            }
+        }
 
         //$test = $meeting->getProject()->getMeetings();
         //dump(count($agendaItems));die();
@@ -197,16 +202,6 @@ class MeetingController extends Controller
         $thirdAgendaItem->setStatus($draftStatus);
         $em->persist($thirdAgendaItem);
         $em->flush();
-
-//dump($firstAgendaItem->getMeeting()->getId());
-//dump($secondAgendaItem->getMeeting()->getId());
-//dump($thirdAgendaItem->getMeeting()->getId());
-//$test2 = $em->find("AppBundle:User",3);
-//$test2->getAgendaItems();
-//dump(count($test2->getAgendaItems()));
-
-
-        //znajdz wszystkie agenda itemsy withot meeting and add them to agenda chenging ther status to draft
 
     }
 

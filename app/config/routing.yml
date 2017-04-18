@@ -11,6 +11,16 @@ app_meeting_status:
     type:     annotation
 
 
+#Agenda item
+make_current_agenda_item:
+  path: /agendaitem/makeitcurrent/{agendaItem}
+  defaults: {_controller: AppBundle:AgendaItem:makeCurrent}
+show_agenda_item:
+  path: /agendaitem/{agendaItem}
+  defaults: {_controller: AppBundle:AgendaItem:show}
+new_agenda_item:
+  path: /agendaitem/new/{meeting}
+  defaults: {_controller: AppBundle:AgendaItem:new}
 # Meeting section
 new_meeting:
   path: /meeting/new/{project}

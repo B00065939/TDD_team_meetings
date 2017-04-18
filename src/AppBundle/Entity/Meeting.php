@@ -338,5 +338,8 @@ class Meeting
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
-
+    function __toString()
+    {
+        return $this->getMDateTime()->format('Y:m:D HH:MM') . " - " .  $this->getLocation();
+    }
 }

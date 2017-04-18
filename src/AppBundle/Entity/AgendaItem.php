@@ -8,6 +8,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 
@@ -22,6 +23,8 @@ class AgendaItem
     function __construct()
     {
         $this->creationDate = new \DateTime();
+        $this->nextVersions = new ArrayCollection();
+        $this->prevVersions = new ArrayCollection();
     }
 
     /**
@@ -40,7 +43,7 @@ class AgendaItem
 
     /**
      * @var string $description
-     * @ORM\Column(name="description")
+     * @ORM\Column(name="description", type="text")
      */
     private $description;
 
@@ -56,19 +59,38 @@ class AgendaItem
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     private $status;
+////////////////////////////////////////////////////////////////////////////////////////////////
+    /**
+     * One agenda item has may lestVersion agenda item
+     * @var ArrayCollection $prevVersions
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="replacedBy")
+     */
+    private $prevVersions;
 
     /**
-     * One agenda item has one lestVersion agenda item
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AgendaItem")
-     * @ORM\JoinColumn(name="last_version_id", referencedColumnName="id")
+     * @var AgendaItem $replacedBy
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="prevVersions")
+     * @ORM\JoinColumn(name="replaced_by_id", referencedColumnName="id")     *
      */
-    private $lastVersion;
+    private $replacedBy;
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AgendaItem")
-     * @ORM\JoinColumn(name="next_version_id", referencedColumnName="id")
+     * One agenda item has many next versions
+     * @var ArrayCollection $nextVersions
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="updateFor")
      */
-    private $nextVersion;
+    private $nextVersions;
+
+    /**
+     * @var AgendaItem $updateFor
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="nextVersions")
+     * @ORM\JoinColumn(name="update_for_id", referencedColumnName="id")
+     */
+    private $updateFor;
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="postponedAgendaItems")
@@ -182,34 +204,86 @@ class AgendaItem
     /**
      * @return mixed
      */
-    public function getLastVersion()
+    public function getPrevVersions()
     {
-        return $this->lastVersion;
+        return $this->prevVersions;
     }
 
     /**
-     * @param mixed $lastVersion
+     * @param AgendaItem $prevVersion
      */
-    public function setLastVersion($lastVersion)
+    public function addPrevVersion(AgendaItem $prevVersion)
     {
-        $this->lastVersion = $lastVersion;
+        $this->prevVersions[] = $prevVersion;
+    }
+
+    /**
+     * @param AgendaItem $prevVersion
+     */
+    public function removePrevVersion(AgendaItem $prevVersion)
+    {
+        $this->prevVersions->removeElement($prevVersion);
     }
 
     /**
      * @return mixed
      */
-    public function getNextVersion()
+    public function getReplacedBy()
     {
-        return $this->nextVersion;
+        return $this->replacedBy;
     }
 
     /**
-     * @param mixed $nextVersion
+     * @param mixed $replacedBy
      */
-    public function setNextVersion($nextVersion)
+    public function setReplacedBy($replacedBy)
     {
-        $this->nextVersion = $nextVersion;
+        $this->replacedBy = $replacedBy;
     }
+
+
+//////////////////////////
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getNextVersions()
+    {
+        return $this->nextVersions;
+    }
+
+    /**
+     * @param AgendaItem $nextVersion
+     */
+    public function addNextVersion(AgendaItem $nextVersion)
+    {
+        $this->nextVersions[] = $nextVersion;
+    }
+
+    /**
+     * @param AgendaItem $nextVersion
+     */
+    public function removeNextVersion(AgendaItem $nextVersion)
+    {
+        $this->nextVersions->removeElement($nextVersion);
+    }
+
+    /**
+     * @return AgendaItem
+     */
+    public function getUpdateFor()
+    {
+        return $this->updateFor;
+    }
+
+    /**
+     * @param AgendaItem $updateFor
+     */
+    public function setUpdateFor($updateFor)
+    {
+        $this->updateFor = $updateFor;
+    }
+
 
     /**
      * @return Meeting

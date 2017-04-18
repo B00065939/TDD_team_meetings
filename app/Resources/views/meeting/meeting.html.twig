@@ -19,17 +19,21 @@
     <div class="tab-content">
 
         <div id="agendas" class="tab-pane fade in active">
-            <a href="#">New Agenda Item</a>
+            <ul>
+                <li>
+                    <a href="{{ path('new_agenda_item',{'meeting': currUserAttendance.meeting.id}) }}">New Agenda
+                        Item</a>
+                </li>
+            </ul>
 
             <table class="table table-striped">
                 <caption>Agenda items list</caption>
-
-                <caption>Project meetings list:</caption>
                 <thead>
                 <tr>
                     <td>Sequence No</td>
                     <td>Title</td>
                     <td>Description</td>
+                    <td>Details</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -38,8 +42,8 @@
                         <td>{{ aItem.sequenceNo }}</td>
                         <td>{{ aItem.title }}</td>
                         <td>{{ aItem.description }}</td>
-                        {#<td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><span#}
-                                        {#class="fa fa-eye"></span></a></td>#}
+                        <td><a href="{{ path('show_agenda_item',{'agendaItem': aItem.id}) }}"><span
+                        class="fa fa-eye"></span></a></td>
 
                     </tr>
                 {% endfor %}

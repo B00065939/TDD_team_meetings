@@ -3,30 +3,23 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
+    <div class="col-xs-6">
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        <button type="submit" class="btn btn-primary" formnovalidate>Add</button>
+        {{ form_end(form) }}
+        <h3>Current Project roles:</h3>
+        <table>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                {{ form_start(form) }}
-                {{ form_row(form.name) }}
-                <button type="submit" class="btn btn-primary" formnovalidate>Add</button>
-                {{ form_end(form) }}
-                <h3>Current Project roles:</h3>
-                <table>
+            {% for role in roles %}
 
-                    {% for role in roles %}
+                <tr>
+                    <td>{{ role.name }}</td>
+                    <td><a href="{{ path('delete_role',{'projectRole': role.id}) }}"><span
+                                    class="glyphicon glyphicon-trash"></span></a></td>
 
-                        <tr>
-                            <td>{{ role.name }}</td>
-                            <td><a href="{{ path('delete_role',{'projectRole': role.id}) }}"><span
-                                            class="glyphicon glyphicon-trash"></span></a></td>
-
-                        </tr>
-                    {% endfor %}
-                </table>
-
-
-            </div>
-        </div>
+                </tr>
+            {% endfor %}
+        </table>
     </div>
 {% endblock %}
