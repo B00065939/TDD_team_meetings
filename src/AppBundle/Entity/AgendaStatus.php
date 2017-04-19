@@ -16,6 +16,7 @@ class AgendaStatus
     function __construct()
     {
         $this->agendaItems = new ArrayCollection();
+        $this->minuteItems = new ArrayCollection();
     }
 
     /**
@@ -47,6 +48,14 @@ class AgendaStatus
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="status")
      */
     private $agendaItems;
+
+    /**
+     * @var ArrayCollection $minuteItems
+     *
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="status")
+     */
+    private $minuteItems;
+    /********************** GETTERS SETTERS ****************************************/
 
     /**
      * Get id
@@ -124,27 +133,58 @@ class AgendaStatus
     }
 
     /**
-     * Add agendaItem
-     *
-     * @param \AppBundle\Entity\AgendaItem $agendaItem
-     *
-     * @return AgendaStatus
+     * Get Agenda Items
+     * @return ArrayCollection
      */
-    public function addAgendaItem(\AppBundle\Entity\AgendaItem $agendaItem)
+    public function getAgendaItem()
+    {
+        return $this->agendaItems;
+    }
+
+    /**
+     * Add agendaItem
+     * @param \AppBundle\Entity\AgendaItem $agendaItem
+     */
+    public function addAgendaItem(AgendaItem $agendaItem)
     {
         $this->agendaItems[] = $agendaItem;
-
-        return $this;
     }
 
     /**
      * Remove agendaItem
-     *
      * @param \AppBundle\Entity\AgendaItem $agendaItem
      */
-    public function removeAgendaItem(\AppBundle\Entity\AgendaItem $agendaItem)
+    public function removeAgendaItem(AgendaItem $agendaItem)
     {
         $this->agendaItems->removeElement($agendaItem);
+    }
+
+    /**
+     * Get Agenda Items
+     * @return ArrayCollection
+     */
+    public function getMinuteItem()
+    {
+        return $this->minuteItems;
+    }
+
+    /**
+     * Add minuteItem
+     * @param MinuteItem $minuteItem
+     */
+    public function addMinuteItem(MinuteItem $minuteItem)
+    {
+        $this->minuteItems[] = $minuteItem;
+
+    }
+
+    /**
+     * Remove minuteItem
+     * @param MinuteItem $minuteItem
+     */
+    public function removeMinuteItem(MinuteItem $minuteItem)
+    {
+        $this->minuteItems->removeElement($minuteItem);
     }
 
     function __toString()

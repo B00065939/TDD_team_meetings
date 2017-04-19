@@ -54,7 +54,11 @@ class MeetingAttendance
      */
     private $presence;
 
-
+    /**
+     * @var string $note
+     * @ORM\Column(name="note", type="text", nullable=true)
+     */
+    private $note;
     /**
      * Get id
      *
@@ -176,5 +180,22 @@ class MeetingAttendance
     {
         $this->apologiesNote = $apologiesNote;
     }
+
+    /**
+     * @return string
+     */
+    public function getNote()
+    {
+        return $this->note;
+    }
+
+    /**
+     * @param string $note
+     */
+    public function setNote($note)
+    {
+        $this->note = $note;
+    }
+
 
 }

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+
+{% block body %}
+    <ul>
+        <li>Current agenda item is : {{ agendaItem.sequenceNo }} of {{ countAI }} <a href="{% if nextAI is not null %}
+                                {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItem' : nextAI.id}) }}
+                                {% endif %}{% if nextAI is null %}#{% endif %}"><i
+                        class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a></li>
+    </ul>
+    <p>{{ agendaItem.description }}</p>
+
+
+
+{% endblock %}

@@ -26,6 +26,7 @@ class User implements UserInterface
     function __construct()
     {
         $this->agendaItems = new ArrayCollection();
+        $this->minuteItems = new ArrayCollection();
 //        $this->projects = new ArrayCollection();
     }
 
@@ -71,6 +72,13 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="proposer")
      */
     private $agendaItems;
+
+    /**
+     * @var ArrayCollection $minuteItems
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteItem", mappedBy="proposer")
+     */
+    private $minuteItems;
+
     /**
      * A non-persisted field that's used to create the encoded password.
      *
@@ -151,7 +159,6 @@ class User implements UserInterface
      */
     public function getSalt()
     {
-        // TODO: Implement getSalt() method.
     }
 
     /**
@@ -244,6 +251,27 @@ class User implements UserInterface
         $this->agendaItems->removeElement($agendaItem);
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getMinuteItems()
+    {
+        return $this->minuteItems;
+    }
 
+    /**
+     * @param MinuteItem $minuteItem
+     */
+    public function addMinuteItems(MinuteItem $minuteItem)
+    {
+        $this->minuteItems[] = $minuteItem;
+    }
 
+    /**
+     * @param MinuteItem $minuteItem
+     */
+    public function removeMinuteItem(MinuteItem $minuteItem)
+    {
+        $this->minuteItems->removeElement($minuteItem);
+    }
 }

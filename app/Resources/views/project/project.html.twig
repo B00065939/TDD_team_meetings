@@ -14,6 +14,7 @@
         <tr>
             <td>Date and Time</td>
             <td>Location</td>
+            <td>Start Meeting</td>
             <td>Details</td>
         </tr>
         </thead>
@@ -22,8 +23,9 @@
             <tr>
                 <td>{{ meeting.getMDateTime()| date() }}</td>
                 <td>{{ meeting.getLocation() }}</td>
-                <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><span
-                                class="fa fa-eye"></span></a></td>
+                <td><a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}"><i class="fa fa-play" aria-hidden="true"></i>cos</a></td>
+                <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><i
+                                class="fa fa-eye"></i></a></td>
 
             </tr>
         {% endfor %}

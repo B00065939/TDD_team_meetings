@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+
+{% block body %}
+    <ul>
+        <li>Current agenda item is : {{ lastAISequenceNo - 1 }} of {{ countAI }} <a
+                    href="{{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItem' : currAI.id}) }}"><i
+                        class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a></li>
+    </ul>
+    <p>
+        Meeting Chairman : {{ meeting.chair.fullName }} <br>
+        Meeting Secretary : {{ meeting.secretary.fullName }}
+    </p>
+
+{% endblock %}

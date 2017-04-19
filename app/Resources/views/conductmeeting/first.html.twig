@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+
+{% block body %}
+    <ul>
+        <li>Current agenda item is : {{ agendaItem.sequenceNo }} of {{ countAI }} <a href="{% if nextAI is not null %}
+                                {{ path('next_agenda_on_meeting',
+            {'meeting': meeting.id , 'agendaItem' : nextAI.id}) }}
+                                {% endif %}{% if nextAI is null %}#{% endif %}"><i
+                        class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a></li>
+    </ul>
+    <p>{{ agendaItem.description }}</p>
+
+    {% if form is defined %}
+
+        <div class="row">
+            <div class="col-md-4">
+                <table class="table table-striped">
+                    <caption>User</caption>
+                    <tbody>
+                    <tr>
+                        <td>Name</td>
+                        <td>{{ meetingAttendance.user.fullName }}</td>
+                    </tr>
+                    <tr>
+                        <td>Declared presence</td>
+                        <td>{{ meetingAttendance.attendance }}</td>
+                    </tr>
+                    <tr>
+                        <td>Apologies note</td>
+                        <td>{{ meetingAttendance.apologiesNote }}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-md-4">
+                {{ form_start(form) }}
+                {{ form_widget(form) }}
+                <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
+                                                                                aria-hidden="true"></i>Update Attendance
+                </button>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    {% endif %}
+    <table class="table table-striped">
+        <caption>Meetings participants attendance list</caption>
+        <thead>
+        <tr>
+            <th>User</th>
+            <th>Declared presence</th>
+            <th>Apologies note</th>
+            <th>Presence</th>
+            <th>Secretary note</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for userAttendance in usersAttendanceList %}
+            <tr>
+                <td>{{ userAttendance.user.fullName }}</td>
+                <td>{{ userAttendance.attendance }}</td>
+                <td>{{ userAttendance.apologiesNote }}</td>
+                {% if userAttendance.presence is not null %}
+                    <td>{{ userAttendance.presence }}</td>
+                    <td>{{ userAttendance.note }}</td>
+                {% endif %}
+                {% if userAttendance.presence is null %}
+                    <td colspan="2"><a
+                                href="{{ path('presence_check',{'meeting':meeting.id ,'agendaItem' : agendaItem.id, 'meetingAttendance' : userAttendance.id }) }}">check</a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -10,7 +10,16 @@ app_meeting_status:
     resource: "@AppBundle/Controller/MeetingStatusController.php"
     type:     annotation
 
-
+# Conduct Meeting
+presence_check:
+  path: /conductmeeting/next/{meeting}/{agendaItem}/{meetingAttendance}
+  defaults: {_controller: AppBundle:ConductMeeting:presenceCheck}
+next_agenda_on_meeting:
+  path: /conductmeeting/next/{meeting}/{agendaItem}
+  defaults: {_controller: AppBundle:ConductMeeting:next}
+start_meeting:
+  path: /conductmeeting/start/{meeting}
+  defaults: {_controller: AppBundle:ConductMeeting:start}
 #Agenda item
 make_current_agenda_item:
   path: /agendaitem/makeitcurrent/{agendaItem}

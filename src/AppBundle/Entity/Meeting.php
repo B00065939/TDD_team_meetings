@@ -25,6 +25,7 @@ class Meeting
     {
         $this->meetingAttendances = new ArrayCollection();
         $this->agendaItems = new ArrayCollection();
+        $this->minuteItems = new ArrayCollection();
     }
 
     /**
@@ -89,8 +90,17 @@ class Meeting
      * Collection of all Agenda Items
      * @var ArrayCollection $agendaItems
      * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="meeting")
+     * @ORM\OrderBy({"sequenceNo" = "ASC"})
      */
     private $agendaItems;
+
+    /**
+     * Collection of all Agenda Items
+     * @var ArrayCollection $minuteItems
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteItem", mappedBy="meeting")
+     * @ORM\OrderBy({"sequenceNo" = "ASC"})
+     */
+    private $minuteItems;
 
     /**
      * Collection of all meeting attendances
@@ -106,8 +116,31 @@ class Meeting
      */
     private $postponedAgendaItems;
 
+    /**
+     * @var ConductMeeting $conductMeeting
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\ConductMeeting", mappedBy="meeting")
+     */
+    private $conductMeeting;
 
     /******************** GETTERS SETTERS **********************************/
+    /******************** GETTERS SETTERS **********************************/
+    /******************** GETTERS SETTERS **********************************/
+
+    /**
+     * @return ConductMeeting
+     */
+    public function getConductMeeting()
+    {
+        return $this->conductMeeting;
+    }
+
+    /**
+     * @param ConductMeeting $conductMeeting
+     */
+    public function setConductMeeting(ConductMeeting $conductMeeting)
+    {
+        $this->conductMeeting = $conductMeeting;
+    }
 
     /**
      * @return string
@@ -337,6 +370,33 @@ class Meeting
         $this->agendaItems->removeElement($agendaItem);
     }
 
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getMinuteItems()
+    {
+        return $this->minuteItems;
+    }
+
+    /**
+     * @param MinuteItem $minuteItem
+     */
+    public function addMinuteItem(MinuteItem $minuteItem)
+    {
+        $this->agendaItems[] = $minuteItem;
+    }
+
+    /**
+     * Remove agendaItem
+     *
+     * @param MinuteItem $minuteItem
+     */
+    public function removeMinuteItem(MinuteItem $minuteItem)
+    {
+        $this->agendaItems->removeElement($minuteItem);
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////
     function __toString()
     {
