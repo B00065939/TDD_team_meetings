@@ -10,12 +10,23 @@ app_meeting_status:
     resource: "@AppBundle/Controller/MeetingStatusController.php"
     type:     annotation
 
+# Minute Action
+edit_minute_action:
+  path: /minuteaction/edit/{minuteItem}
+  defaults: {_controller: AppBundle:MinuteAction:edit}
+delete_minute_action:
+  path: /minuteaction/delete/{minuteItem}/{minuteAction}
+  defaults: {_controller: AppBundle:MinuteAction:delete}
+new_minute_action:
+  path: /minuteaction/new/{minuteItem}
+  defaults: {_controller: AppBundle:MinuteAction:new}
 # Conduct Meeting
 presence_check:
   path: /conductmeeting/next/{meeting}/{agendaItem}/{meetingAttendance}
   defaults: {_controller: AppBundle:ConductMeeting:presenceCheck}
 next_agenda_on_meeting:
-  path: /conductmeeting/next/{meeting}/{agendaItem}
+#  path: /conductmeeting/next/{meeting}/{agendaItem}
+  path: /conductmeeting/next/{meeting}/{agendaItemSequenceNo}
   defaults: {_controller: AppBundle:ConductMeeting:next}
 start_meeting:
   path: /conductmeeting/start/{meeting}

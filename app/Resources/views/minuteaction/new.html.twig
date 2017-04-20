@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
+{% block body %}
+    <ul>
+        <li>
+            <a href="{{ path('next_agenda_on_meeting', {'meeting': minuteItem.meeting.id , 'agendaItemSequenceNo' : minuteItem.sequenceNo}) }}">
+                <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Beck to the meeting</a>
+        </li>
+    </ul>
+
+
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right" aria-hidden="true"></i>Update Comment </button>
+    {{ form_end(form) }}
+{% endblock %}

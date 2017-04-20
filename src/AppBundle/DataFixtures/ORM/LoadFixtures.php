@@ -9,6 +9,7 @@
 namespace AppBundle\DataFixtures\ORM;
 
 
+use AppBundle\Entity\ActionStatus;
 use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\MeetingStatus;
 use AppBundle\Entity\ProjectHasUser;
@@ -108,27 +109,55 @@ class LoadFixtures implements FixtureInterface
         $as->setDescription("Agenda item postponed for future meeting");
         $manager->persist($as);
         $manager->flush();
+        /************************** Action Status ********************************************/
+        $actionStatus = new ActionStatus();
+        $actionStatus->setName("in progress");
+        $manager->persist($actionStatus);
+        $manager->flush();
+
+        $actionStatus = new ActionStatus();
+        $actionStatus->setName("work under review");
+        $manager->persist($actionStatus);
+        $manager->flush();
+
+        $actionStatus = new ActionStatus();
+        $actionStatus->setName("late");
+        $manager->persist($actionStatus);
+        $manager->flush();
+
+        $actionStatus = new ActionStatus();
+        $actionStatus->setName("completed");
+        $manager->persist($actionStatus);
+        $manager->flush();
+
+        $actionStatus = new ActionStatus();
+        $actionStatus->setName("no longer required");
+        $manager->persist($actionStatus);
+        $manager->flush();
 
         $objects = Fixtures::load(
-            __DIR__.'/fixtures.yml',
+            __DIR__ . '/fixtures.yml',
             $manager,
             [
-                'providers'=>[$this]
+                'providers' => [$this]
             ]
         );
     }
-    public function securityRole() {
-        $values =[
+
+    public function securityRole()
+    {
+        $values = [
             'ROLE_ADMIN',
             'ROLE_USER',
             'ROLE_SUPERVISOR'
         ];
         return $values[array_rand($values)];
     }
+
     public function projectRoleName()
     {
-        $values =[
-           'Project Treasurer',
+        $values = [
+            'Project Treasurer',
             'Project Member'
         ];
         return $values[array_rand($values)];

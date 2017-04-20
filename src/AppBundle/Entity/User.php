@@ -27,6 +27,9 @@ class User implements UserInterface
     {
         $this->agendaItems = new ArrayCollection();
         $this->minuteItems = new ArrayCollection();
+        $this->actionsToDo = new ArrayCollection();
+        $this->proposedActions = new ArrayCollection();
+
 //        $this->projects = new ArrayCollection();
     }
 
@@ -69,13 +72,13 @@ class User implements UserInterface
 
     /**
      * @var ArrayCollection $agendaItems
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="proposer")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="proposer", cascade={"persist", "remove"})
      */
     private $agendaItems;
 
     /**
      * @var ArrayCollection $minuteItems
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteItem", mappedBy="proposer")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteItem", mappedBy="proposer", cascade={"persist", "remove"})
      */
     private $minuteItems;
 
@@ -85,6 +88,22 @@ class User implements UserInterface
      * @var string
      */
     private $plainPassword;
+
+    /**
+     * @var ArrayCollection $proposedActions
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteAction", mappedBy="proposer", cascade={"persist", "remove"})
+     */
+    private $proposedActions;
+
+    /**
+     * @var ArrayCollection $actionsToDo
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteAction", mappedBy="doer", cascade={"persist", "remove"})
+     */
+    private $actionsToDo;
+
+    /********************** GETTERS SETTERS ****************************************/
+    /********************** GETTERS SETTERS ****************************************/
+    /********************** GETTERS SETTERS ****************************************/
 
     public function getPlainPassword()
     {
@@ -273,5 +292,53 @@ class User implements UserInterface
     public function removeMinuteItem(MinuteItem $minuteItem)
     {
         $this->minuteItems->removeElement($minuteItem);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getProposedActions()
+    {
+        return $this->proposedActions;
+    }
+
+    /**
+     * @param MinuteAction $proposedAction
+     */
+    public function addProposedAction(MinuteAction $proposedAction)
+    {
+        $this->proposedActions[] = $proposedAction;
+    }
+
+    /**
+     * @param MinuteAction $proposedAction
+     */
+    public function removeProposedAction(MinuteAction $proposedAction)
+    {
+        $this->proposedActions->removeElement($proposedAction);
+    }
+
+    /**
+     * @return ArrayCollection
+     */
+    public function getActionsToDo()
+    {
+        return $this->actionsToDo;
+    }
+
+    /**
+     * @param MinuteAction $actionToDo
+     */
+    public function addActionToDo(MinuteAction $actionToDo)
+    {
+        $this->actionsToDo[] = $actionToDo;
+    }
+
+    /**
+     * @param MinuteAction $actionToDo
+     */
+    public function removeActionToDo(MinuteAction $actionToDo)
+    {
+        $this->actionsToDo->removeElement($actionToDo);
     }
 }

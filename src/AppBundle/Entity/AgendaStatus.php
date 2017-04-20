@@ -52,9 +52,12 @@ class AgendaStatus
     /**
      * @var ArrayCollection $minuteItems
      *
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="status")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteItem", mappedBy="status")
      */
     private $minuteItems;
+
+    /********************** GETTERS SETTERS ****************************************/
+    /********************** GETTERS SETTERS ****************************************/
     /********************** GETTERS SETTERS ****************************************/
 
     /**

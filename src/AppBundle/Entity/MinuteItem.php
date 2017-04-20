@@ -80,13 +80,13 @@ class MinuteItem
 
     /**
      * @var MinuteAction $actions
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteAction", mappedBy="minuteItem")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MinuteAction", mappedBy="minuteItem", cascade={"persist", "remove"})
      */
     private $actions;
 
     /**
      * @var string $comment
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $comment;
     /********************** GETTERS SETTERS ****************************************/
