@@ -27,10 +27,16 @@ class RoleController extends Controller
              * @var ProjectRole $projectRole
              */
             $projectRole = $form->getData();
+            foreach ($roles as $item) {
+                if ($item->getName() == $projectRole->getName()) {
+                    $this->addFlash('success', "Project role already exists");
+                    return $this->redirectToRoute('new_project_role');
+                }
+            }
             $em = $this->getDoctrine()->getManager();
             $em->persist($projectRole);
             $em->flush();
-            $this->addFlash('success', "Project role was added");
+            $this->addFlash('error', "Project role was added");
             return $this->redirectToRoute('new_project_role');
         }
         return $this->render('role/newrole.html.twig', array(

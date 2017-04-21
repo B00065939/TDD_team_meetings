@@ -4,7 +4,6 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\AgendaItem;
 use AppBundle\Entity\AgendaStatus;
-use AppBundle\Entity\ApologiesNote;
 use AppBundle\Entity\Meeting;
 use AppBundle\Entity\MeetingAttendance;
 use AppBundle\Entity\MeetingStatus;
@@ -13,6 +12,7 @@ use AppBundle\Entity\User;
 use AppBundle\Form\ConfirmAttendance;
 use AppBundle\Form\NewMeetingForm;
 use DateTime;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,6 +21,7 @@ class MeetingController extends Controller
 
 
     /**
+     * @Security("is_granted('ROLE_SHOW_MEETING')")
      * @param Meeting $meeting
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
@@ -57,22 +58,30 @@ class MeetingController extends Controller
         }
 
         return $this->render('meeting/meeting.html.twig', array(
-            "pageHeader" => "Project supervising",
+            "pageHeader" => "Project:  \"" . $meeting->getProject()->getTitle() . "\" ",
             "subHeader" => "Details of the meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
             "usersAttendanceList" => $usersAttendanceList,
             "currUserAttendance" => $currUserAttendance,
             "currNote" => $currNote,
             'form' => $form->createView(),
             'agendaItems' => $agendaItems,
+            'project' => $meeting->getProject(),
+            'meeting' => $meeting
         ));
     }
 
+    /**
+     * @Security("is_granted('ROLE_NEW_MEETING')")
+     * @param Request $request
+     * @param Project $project
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function newAction(Request $request, Project $project)
     {
         $em = $this->getDoctrine()->getManager();
         $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
-        $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
+//        $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
 
         $form = $this->createForm(NewMeetingForm::class);
         $form->handleRequest($request);
@@ -156,12 +165,16 @@ class MeetingController extends Controller
         }
 
         return $this->render('meeting/newmeeting.html.twig', array(
-            "pageHeader" => "Project supervising",
-            "subHeader" => "Create new meeting for project: " . $project->getTitle(),
-            "form" => $form->createView()
+            "pageHeader" => "Project: \"" . $project->getTitle() . "\"",
+            "subHeader" => "Create new meeting",
+            "form" => $form->createView(),
+            'project' => $project,
         ));
     }
 
+    /**
+     * @param Meeting $meeting
+     */
     private function createThreeMandatoryAgendaItems(Meeting $meeting)
     {
         //dump($meeting->getId());die();
@@ -205,6 +218,9 @@ class MeetingController extends Controller
 
     }
 
+    /**
+     * @param Meeting $meeting
+     */
     private function createMeetingAttendanceEntries(Meeting $meeting)
     {
         $project = $meeting->getProject();

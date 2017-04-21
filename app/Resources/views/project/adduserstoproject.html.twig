@@ -5,11 +5,23 @@
 
 
 {% block body %}
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            {% if project is defined %}
+            {% if is_granted('ROLE_SHOW_PROJECT') %}
+                <li>
+                    <a href="{{ path('show_project', {'project' : project.id}) }}">Back to project</a>
+                </li>
+            {% endif %}
+
+            {% endif %}
+        </ul>
+    </div>
     <div class="col-xs-6">
         {{ form_start(form) }}
         {{ form_widget(form) }}
-        <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
-                                                                        aria-hidden="true"></i> Next
+        <button type="submit" class="btn btn-primary" formnovalidate>
+            <i class="fa fa-check" aria-hidden="true"></i> Add User
         </button>
         {{ form_end(form) }}
     </div>

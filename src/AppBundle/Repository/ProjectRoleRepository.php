@@ -17,11 +17,13 @@ class ProjectRoleRepository extends EntityRepository
     {
         $prjLeader = 'Project Leader';
         $prjSecretary = 'Project Secretary';
+        $prjSupervisor = 'Project Supervisor';
         return $this->createQueryBuilder('projectRole')
-            ->where('projectRole.name != :project_leader and projectRole.name != :project_secretary')
+            ->where('projectRole.name != :project_leader and projectRole.name != :project_secretary and projectRole.name != :project_supervisor')
             ->setParameters([
                 'project_leader' => $prjLeader,
-                'project_secretary' => $prjSecretary
+                'project_secretary' => $prjSecretary,
+                'project_supervisor' => $prjSupervisor,
             ]);
 
     }

@@ -14,17 +14,21 @@
     <ul class="nav nav-tabs" id="myTab">
         <li class="active"><a data-toggle="tab" href="#agendas">Agendas</a></li>
         <li><a data-toggle="tab" href="#attendance">User Attendance</a></li>
-
     </ul>
-    <div class="tab-content">
 
+    <div class="tab-content">
         <div id="agendas" class="tab-pane fade in active">
-            <ul>
-                <li>
-                    <a href="{{ path('new_agenda_item',{'meeting': currUserAttendance.meeting.id}) }}">New Agenda
-                        Item</a>
-                </li>
-            </ul>
+            <div class="container-fluid">
+                <ul class="nav navbar-nav">
+                    {% if is_granted('ROLE_NEW_AGENDA_ITEM') %}
+                        <li>
+                            <a href="{{ path('new_agenda_item',{'meeting': currUserAttendance.meeting.id}) }}">New
+                                Agenda Item</a>
+                        </li>
+                    {% endif %}
+
+                </ul>
+            </div>
 
             <table class="table table-striped">
                 <caption>Agenda items list</caption>
@@ -43,7 +47,7 @@
                         <td>{{ aItem.title }}</td>
                         <td>{{ aItem.description }}</td>
                         <td><a href="{{ path('show_agenda_item',{'agendaItem': aItem.id}) }}"><span
-                        class="fa fa-eye"></span></a></td>
+                                        class="fa fa-eye"></span></a></td>
 
                     </tr>
                 {% endfor %}
@@ -59,9 +63,8 @@
                 {{ form_start(form) }}
                 {{ form_row(form.attendance) }}
                 {{ form_row(form.apologiesNote ,{'value' : currNote }) }}
-
-                <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
-                                                                                aria-hidden="true"></i>Update Attendance
+                <button type="submit" class="btn btn-primary" formnovalidate>
+                    <i class="fa fa-check" aria-hidden="true"></i> Update Attendance
                 </button>
                 {{ form_end(form) }}
             </div>

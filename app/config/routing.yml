@@ -1,6 +1,6 @@
-app_agenda_item:
-    resource: "@AppBundle/Controller/AgendaItemController.php"
-    type:     annotation
+#app_agenda_item:
+#    resource: "@AppBundle/Controller/AgendaItemController.php"
+#    type:     annotation
 
 app_meeting_attendance:
     resource: "@AppBundle/Controller/MeetingAttendanceController.php"
@@ -48,9 +48,6 @@ new_meeting:
 show_meeting:
   path: /meeting/meeting/{meeting}
   defaults: {_controller: AppBundle:Meeting:show}
-test:
-  path: /project/removeuserfromproject/{project}/{user}
-  defaults: {_controller: AppBundle:ProjectHasUser:remove}
 new_project:
   path: /project/newproject
   defaults: {_controller: AppBundle:Project:new}
@@ -58,6 +55,10 @@ remove_user_from_project:
   path: /project/removeuserfromproject/{project}/{user}
   defaults: {_controller: AppBundle:ProjectHasUser:remove}
 # Project has user section
+
+add_user_to_current_project:
+  path: /project/addusertoproject/{project}
+  defaults: {_controller: AppBundle:ProjectHasUser:addTo}
 add_user_to_project:
   path: /project/addusertoproject
   defaults: {_controller: AppBundle:ProjectHasUser:add}

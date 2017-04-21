@@ -6,20 +6,20 @@ use AppBundle\Entity\AgendaItem;
 use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\Meeting;
 use AppBundle\Form\AgendaItemUpdateType;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Agendaitem controller.
- *
- * @Route("agendaitem")
+ * Class AgendaItemController
+ * @package AppBundle\Controller
  */
 class AgendaItemController extends Controller
 {
-
     /**
+     * @Security("is_granted('ROLE_MAKE_AGENDA_ITEM_CURRENT')")
      * Make agenda current
      * @param Request $request
      * @param AgendaItem $agendaItem
@@ -28,12 +28,8 @@ class AgendaItemController extends Controller
     public function makeCurrentAction(Request $request, AgendaItem $agendaItem)
     {
         $em = $this->getDoctrine()->getManager();
-
         // get agenda version to replace
         $currAI = $agendaItem->getUpdateFor();
-
-
-        //replace order of agendas
 
         $maxSequenceNo = 0;
         $minSequenceNo = 4;
@@ -68,15 +64,12 @@ class AgendaItemController extends Controller
                     $item->setSequenceNo($item->getSequenceNo() + 1);
                 }
             }
-
-
             foreach ($agendaItems as $item) {
                 if ($item->getSequenceNo() > $currSequenceNo && $item->getSequenceNo() <= $newSequenceNo && $item->getStatus()->getName() == "draft") {
                     $item->setSequenceNo($item->getSequenceNo() - 1);
                 }
             }
         }
-
 
         $nextAgendaItems = $currAI->getNextVersions();
         foreach ($nextAgendaItems as $item) {
@@ -88,15 +81,13 @@ class AgendaItemController extends Controller
             $item->setReplacedBy($agendaItem);
         }
 
-//current AI is replaced by new one and get status null
+        // current AI is replaced by new one and get status null
         $currAI->setReplacedBy($agendaItem);
         $currAI->setStatus(null);
 
-// New agenda get status "draft" and become curr agenda
+        // New agenda get status "draft" and become curr agenda
         $agendaItem->setStatus($em->getRepository(AgendaStatus::class)->findOneBy(['name' => 'draft']));
         $agendaItem->setUpdateFor(null);
-//$em ->persist($currAI);
-//$em ->persist($agendaItem);
 
         $em->flush();
         return $this->redirectToRoute('show_agenda_item', array('agendaItem' => $agendaItem->getId()));
@@ -104,6 +95,7 @@ class AgendaItemController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_SHOW_AGENDA_ITEM')")
      * Finds and displays a agendaItem entity.
      * @param Request $request
      * @param AgendaItem $agendaItem
@@ -139,15 +131,20 @@ class AgendaItemController extends Controller
 
         }
         return $this->render('agendaitem/agendaitem.html.twig', array(
+            'pageHeader' => "Project: \"" . $agendaItem->getMeeting()->getProject()->getTitle(). "\". Meeting at : " . $agendaItem->getMeeting()->getMDateTime()->format('Y-m-d H:i:s') ,
+            'subHeader' => "Propose new agenda item version",
             'agendaItem' => $agendaItem,
             'prevAgendaItems' => $prevAgendaItems,
             'nextAgendaItems' => $nextAgendaItems,
             'form' => $form->createView(),
+            'meeting' => $agendaItem->getMeeting(),
+            'project' => $agendaItem->getMeeting()->getProject(),
         ));
 
     }
 
     /**
+     * @Security("is_granted('ROLE_NEW_AGENDA_ITEM')")
      * @param Meeting $meeting
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
@@ -181,72 +178,12 @@ class AgendaItemController extends Controller
         }
 
         return $this->render(':agendaitem:newagendaitem.html.twig', array(
+            'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s') ,
+            'subHeader' => "Create new agenda item",
             'agendaItem' => $agendaItem,
             'form' => $form->createView(),
-            "pageHeader" => "Project supervising",
-            "subHeader" => "Create new agenda item",
-            "meeting" => $meeting,
+            'project' => $meeting->getProject(),
+            'meeting' => $meeting,
         ));
     }
-
-//
-//    /**
-//     * Displays a form to edit an existing agendaItem entity.
-//     *
-//     * @Route("/{id}/edit", name="agendaitem_edit")
-//     * @Method({"GET", "POST"})
-//     */
-//    public function editAction(Request $request, AgendaItem $agendaItem)
-//    {
-//        $deleteForm = $this->createDeleteForm($agendaItem);
-//        $editForm = $this->createForm('AppBundle\Form\AgendaItemType', $agendaItem);
-//        $editForm->handleRequest($request);
-//
-//        if ($editForm->isSubmitted() && $editForm->isValid()) {
-//            $this->getDoctrine()->getManager()->flush();
-//
-//            return $this->redirectToRoute('agendaitem_edit', array('id' => $agendaItem->getId()));
-//        }
-//
-//        return $this->render('agendaitem/edit.html.twig', array(
-//            'agendaItem' => $agendaItem,
-//            'edit_form' => $editForm->createView(),
-//            'delete_form' => $deleteForm->createView(),
-//        ));
-//    }
-//
-//    /**
-//     * Deletes a agendaItem entity.
-//     *
-//     * @Route("/{id}", name="agendaitem_delete")
-//     * @Method("DELETE")
-//     */
-//    public function deleteAction(Request $request, AgendaItem $agendaItem)
-//    {
-//        $form = $this->createDeleteForm($agendaItem);
-//        $form->handleRequest($request);
-//
-//        if ($form->isSubmitted() && $form->isValid()) {
-//            $em = $this->getDoctrine()->getManager();
-//            $em->remove($agendaItem);
-//            $em->flush($agendaItem);
-//        }
-//
-//        return $this->redirectToRoute('agendaitem_index');
-//    }
-//
-//    /**
-//     * Creates a form to delete a agendaItem entity.
-//     *
-//     * @param AgendaItem $agendaItem The agendaItem entity
-//     *
-//     * @return \Symfony\Component\Form\Form The form
-//     */
-//    private function createDeleteForm(AgendaItem $agendaItem)
-//    {
-//        return $this->createFormBuilder()
-//            ->setAction($this->generateUrl('agendaitem_delete', array('id' => $agendaItem->getId())))
-//            ->setMethod('DELETE')
-//            ->getForm();
-//    }
 }

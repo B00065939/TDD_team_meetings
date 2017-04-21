@@ -9,8 +9,11 @@
 namespace AppBundle\Controller;
 
 
+use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
+use AppBundle\Entity\User;
 use AppBundle\Form\LoginForm;
+use AppBundle\Repository\ProjectHasUserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
@@ -79,13 +82,24 @@ class MainController extends Controller
         }
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function userPanelAction()
     {
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
+            $em = $this->getDoctrine()->getManager();
+            /**
+             * @var User $user
+             */
+            $user = new User();
+            $user = $this->getUser();
+            $projects = $em->getRepository(ProjectHasUser::class)->findBy(['user' => $user]);
             return $this->render(
                 'user/userpanel.html.twig',[
                     "pageHeader" => "User Panel",
-                    "subHeader" => "Project List"
+                    "subHeader" => "Project List",
+                    "projects" => $projects
                 ]
             );
         } else {

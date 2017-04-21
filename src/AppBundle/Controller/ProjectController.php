@@ -8,11 +8,18 @@ use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
 use AppBundle\Form\NewProjectForm;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProjectController extends Controller
 {
+    /**
+     * @Security("is_granted('ROLE_SHOW_PROJECT')")
+     * @param Request $request
+     * @param Project $project
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function showAction(Request $request, Project $project)
     {
 
@@ -34,8 +41,8 @@ class ProjectController extends Controller
         }
 
         return $this->render('project/project.html.twig', array(
-            "pageHeader" => "Project supervising",
-            "subHeader" => "Project " . $project->getTitle() . " details.",
+            "pageHeader" => "Project:  \"" . $project->getTitle() . "\" ",
+            "subHeader" => "Project details.",
             "project" => $project,
             "secretary" => $secretary,
             "leader" => $leader,
@@ -45,11 +52,8 @@ class ProjectController extends Controller
         ));
     }
 
-    public function testAction()
-    {
-    }
-
     /**
+     * @Security("is_granted('ROLE_LOCK_PROJECT')")
      * Locking or unlocking project
      * @param Request $request
      * @param Project $project
@@ -69,6 +73,7 @@ class ProjectController extends Controller
     }
 
     /**
+     * @Security("is_granted('ROLE_DELETE_PROJECT')")
      * Delete project (not used to many relations between replace by lock project)
      * @param Request $request
      * @param Project $project
@@ -86,15 +91,13 @@ class ProjectController extends Controller
 
 
     /**
+     * @Security("is_granted('ROLE_NEW_PROJECT')")
      * Create new project
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse |\Symfony\Component\HttpFoundation\Response
      */
     public function newAction(Request $request)
     {
-//        dump("jeblo");
-//        die();
-
         $form = $this->createForm(NewProjectForm::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -104,20 +107,29 @@ class ProjectController extends Controller
              * @var Project $project
              */
             $project = new Project();
+            if ($form->get('title')->getData() == ""  ){
+                $this->addFlash('error', "Project need to have a title");
+                return $this->redirectToRoute('new_project');
+            }
+
+            $em->persist($project);
             $project->setTitle($form->get('title')->getData());
             $project->setLock($form->get('lock')->getData());
+            $projectTest = $em->getRepository(Project::class)->findOneBy(['title' => $project->getTitle() ]);
+            if ($projectTest != null  ){
+                $this->addFlash('error', "Project already exist");
+                return $this->redirectToRoute('new_project');
+            }
             $em->persist($project);
 
             /**
              * @var User $projectLeader
              */
-            $projectLeader = new User();
             $projectLeader = $form->get('projectLeader')->getData();
 
             /**
              * @var User $projectSecretary
              */
-            $projectSecretary = new User();
             $projectSecretary = $form->get('projectSecretary')->getData();
 
             /**
@@ -145,10 +157,10 @@ class ProjectController extends Controller
             $em->flush();
 
             $this->addFlash('success', "Project was crated");
-            return $this->redirectToRoute('new_project');
+            return $this->redirectToRoute('sup_panel');
         }
         return $this->render('project/newproject.html.twig', array(
-            "pageHeader" => "Project supervising",
+            "pageHeader" => "Project supervision",
             "subHeader" => "Create new Project",
             "form" => $form->createView()
 

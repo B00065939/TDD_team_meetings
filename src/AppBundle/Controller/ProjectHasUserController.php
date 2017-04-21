@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\User;
+use AppBundle\Form\AddUserToCurrentProjectForm;
 use AppBundle\Form\AddUserToProjectForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -33,7 +34,53 @@ class ProjectHasUserController extends Controller
     }
 
     /**
-     * @Security("is_granted('ROLE_REMOVE_USER_FROM_PROJECT')")
+     * @Security("is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT')")
+     * @param Project $project
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
+    public function addToAction(Project $project, Request $request)
+    {
+        $form = $this->createForm(AddUserToCurrentProjectForm::class);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $userToAdd = $form->get('userToAdd')->getData();
+            $roleToAdd = $form->get('projectRole')->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $jhr = $em->getRepository(ProjectHasUser::class)->findBy([
+                'project' => $project,
+                'user' => $userToAdd
+            ]);
+            if ($jhr == null) {
+                /**
+                 * @var ProjectHasUser $projectHasUser
+                 */
+                $projectHasUser = new ProjectHasUser();
+                $projectHasUser->setProject($project);
+                $projectHasUser->setUser($userToAdd);
+                $projectHasUser->setProjectRole($roleToAdd);
+
+                $em->persist($projectHasUser);
+                $em->flush();
+                $this->addFlash('success', "User added to the project");
+            } else {
+                $this->addFlash('error', "User already has a role in this project");
+            }
+            return $this->redirectToRoute('add_user_to_current_project', ['project' => $project->getId()]);
+        }
+
+        return $this->render('project/adduserstoproject.html.twig', array(
+            "pageHeader" => "Project: \"" . $project->getTitle() ."\"",
+            "subHeader" => "Add user to this project",
+            'project' => $project,
+            "form" => $form->createView(),
+        ));
+    }
+
+    /**
+     * @Security("is_granted('ROLE_ADD_USER_TO_PROJECT')")
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
      */
@@ -74,8 +121,9 @@ class ProjectHasUserController extends Controller
         }
 
         return $this->render('project/adduserstoproject.html.twig', array(
-            "pageHeader" => "Project supervising",
+            "pageHeader" => "Project supervision",
             "subHeader" => "Add user to the project",
+
             "form" => $form->createView()
         ));
     }

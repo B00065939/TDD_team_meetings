@@ -2,19 +2,50 @@
 {% block pageHeader %} {{ pageHeader }} {% endblock %}
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
+{% block leftMenu %}
+    {#<li><a href="#"></a>PROJECT: {{ project.title }}</li>#}
+    {% if is_granted('ROLE_NEW_MEETING') %}
+        <li>
+            <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
+        </li>
+    {% endif %}
+    {% if is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') %}
+        <li>
+            <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
+
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            {% if is_granted('ROLE_NEW_MEETING') %}
+                <li>
+                    <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
+                </li>
+            {% endif %}
+            {% if is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') %}
+                <li>
+                    <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+
     <p>Project Leader: {{ leader.fullName }} - {{ leader.email }}</p>
     <p>Project Secretary: {{ secretary.fullName }} - {{ secretary.email }} </p>
     <p>Project Supervisor: {{ supervisor.fullName }} - {{ supervisor.email }} </p>
 
     <table class="table table-striped">
-        <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
         <caption>Project meetings list:</caption>
         <thead>
         <tr>
             <td>Date and Time</td>
             <td>Location</td>
-            <td>Start Meeting</td>
+            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == secretary)) %}
+                <td>Start Meeting</td>
+            {% endif %}
             <td>Details</td>
         </tr>
         </thead>
@@ -23,9 +54,16 @@
             <tr>
                 <td>{{ meeting.getMDateTime()| date() }}</td>
                 <td>{{ meeting.getLocation() }}</td>
-                <td><a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}"><i class="fa fa-play" aria-hidden="true"></i>cos</a></td>
-                <td><a href="{{ path('show_meeting',{'meeting': meeting.id}) }}"><i
-                                class="fa fa-eye"></i></a></td>
+                {% if (is_granted('ROLE_SUPERVISOR') or (app.user == secretary)) %}
+                    <td>
+                        <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
+                            <i class="fa fa-play" aria-hidden="true"></i> start</a>
+                    </td>
+                {% endif %}
+                <td>
+                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">
+                        <i class="fa fa-eye"></i></a>
+                </td>
 
             </tr>
         {% endfor %}
@@ -39,7 +77,7 @@
             <td>Name</td>
             <td>Role</td>
             {# If users' role is supervisor or project leader alowes to add or remove user to and from project #}
-            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader.user)) %}
+            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) %}
                 <td>Remove</td>
             {% endif %}
         </tr>

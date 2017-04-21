@@ -23,6 +23,7 @@ class Project
     function __construct()
     {
         $this->meetings = new ArrayCollection();
+        $this->projectUsers = new ArrayCollection();
     }
 
     /**
@@ -52,7 +53,9 @@ class Project
      */
     private $locked = false;
 
-    ///////////////////////////////////////////////////
+    /********************** GETTERS SETTERS ****************************************/
+    /********************** GETTERS SETTERS ****************************************/
+    /********************** GETTERS SETTERS ****************************************/
 
     /**
      * @return int
@@ -60,14 +63,6 @@ class Project
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @param int $id
-     */
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     /**
@@ -106,8 +101,6 @@ class Project
     {
         return $this->getTitle();
     }
-
-
 
     /**
      * Set locked

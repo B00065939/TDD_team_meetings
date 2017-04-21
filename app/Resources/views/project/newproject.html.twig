@@ -3,16 +3,15 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
+    <div class="row">
+        <div class="col-md-6">
+            {{ form_start(form) }}
+            {{ form_widget(form) }}
 
-    <div class="container">
-        <div class="row">
-            <div class="col-xs-12">
-                {{ form_start(form) }}
-                {{ form_widget(form) }}
-                <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right" aria-hidden="true"></i> Next</button>
-                {{ form_end(form) }}
-
-            </div>
+            <button type="submit" class="btn btn-primary" formnovalidate><i class="fa fa-check" aria-hidden="true"></i>
+                Create
+            </button>
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}

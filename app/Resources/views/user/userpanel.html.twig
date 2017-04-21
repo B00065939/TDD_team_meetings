@@ -1,7 +1,34 @@
 {% extends 'base.html.twig' %}
+{% block pageHeader %} {{ pageHeader }} {% endblock %}
+{% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-    <h1>User Panel</h1>
-    <a id="logout" href="{{ path('logout') }}">logout</a>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Title</th>
+            <th>Details</th>
+            <th>Lock</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for project in projects %}
+            <tr>
+                <td>{{ project.project.title }}</td>
+                <td><a href="{{ path('show_project',{'project': project.project.id}) }}"><span
+                                class="fa fa-eye"></span></a></td>
+                <td>
+                    {% if project.project.lock %}
+                        <i class="fa fa-lock" aria-hidden="true"></i>
+                    {% else %}
+                        <i class="fa fa-unlock" aria-hidden="true"></i>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}
+
+
 
