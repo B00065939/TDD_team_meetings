@@ -39,25 +39,29 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
+
+
                 <li><i class="link_header">S.T.P.S.</i></li>
                 <li><a href="{{ path('homepage') }}">Dashboard</a></li>
                 {% if (is_granted('ROLE_USER')) %}
-                    <li ><a href="{{ path('user_panel') }}">Projects</a></li>
+                    <li><a href="{{ path('user_panel') }}">Projects</a></li>
                 {% endif %}
                 {% if ( is_granted('ROLE_ADMIN')) %}
                     <li><a href="{{ path('new_user') }}">New User</a></li>
                 {% endif %}
                 {% if is_granted('ROLE_SUPERVISOR') %}
                     <li><a href="{{ path('new_project') }}">New Project</a></li>
-                {% endif %}
-                {% if is_granted('ROLE_ADD_USER_TO_PROJECT') %}
                     <li><a href="{{ path('add_user_to_project') }}">Add user to the project</a></li>
-                {% endif %}
-                {% if is_granted('ROLE_NEW_PROJECT_ROLE') %}
                     <li><a href="{{ path('new_project_role') }}">New Project Role</a></li>
                 {% endif %}
             </ul>
             {% if project is defined %}
+                {% set isCurrLeader = false %}
+                {% if leader is defined %}
+                    {% if (leader == app.user) %}
+                        {% set isCurrLeader = true %}
+                    {% endif %}
+                {% endif %}
                 <hr>
 
                 <ul class="nav nav-sidebar">
@@ -68,12 +72,13 @@
                         </li>
                     {% endif %}
 
-                    {% if is_granted('ROLE_NEW_MEETING') %}
+                    {% if (is_granted('ROLE_SUPERVISOR') and project.lock == false) or (is_granted('ROLE_USER') and project.lock == false and isCurrLeader == true ) %}
+                        {#{% if isCurrLeader == true  %}#}
                         <li>
                             <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
                         </li>
-                    {% endif %}
-                    {% if is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') %}
+                    {#{% endif %}#}
+                    {#{% if ( isCurrLeader == true or is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') ) and project.lock == false %}#}
                         <li>
                             <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
                         </li>

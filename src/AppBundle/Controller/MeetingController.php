@@ -30,6 +30,17 @@ class MeetingController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        if($em->find('AppBundle:Meeting', $meeting->getId()) == null) {
+            $this->addFlash('error', 'Something went wrong!');
+            return $this->redirectToRoute('homepage');
+        }
+        $project = $meeting->getProject();
+        $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
+        $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
+        $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
+
+
+
         $afterAgendaDeadline = $meeting->getAgendaDeadline() < new \DateTime();
         // all users for this meeting same as all user for this project
         $usersAttendanceList = $meeting->getMeetingAttendances();
@@ -68,6 +79,7 @@ class MeetingController extends Controller
             'agendaItems' => $agendaItems,
             'project' => $meeting->getProject(),
             'meeting' => $meeting,
+            'leader' => $leader,
             'afterAgendaDeadline' => $afterAgendaDeadline,
         ));
     }
@@ -108,7 +120,7 @@ class MeetingController extends Controller
             /**
              * @var MeetingStatus $meetingStatus
              */
-            $meetingStatus = $em->getRepository(MeetingStatus::class)->findOneBy(['name' => "Future"]);
+            $meetingStatus = $em->getRepository(MeetingStatus::class)->findOneBy(['name' => "future"]);
             $location = $form->get('location')->getData();
             $mDateTime = $form->get('mDateTime')->getData();
             $aDateTime = $form->get('agendaDeadline')->getData();

@@ -41,6 +41,17 @@ class ProjectHasUserController extends Controller
      */
     public function addToAction(Project $project, Request $request)
     {
+        $em = $this->getDoctrine()->getManager();
+        if($em->find('AppBundle:Project',$project->getId()) == null) {
+            $this->addFlash('error', 'Something went wrong!');
+            return $this->redirectToRoute('homepage');
+        }
+//        $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
+        $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
+        if ($leader != $this->getUser()){
+            $this->addFlash('error', 'To add user to the project you need to be project leader!');
+            return $this->redirectToRoute('show_project', ['project' => $project]);
+        }
         $form = $this->createForm(AddUserToCurrentProjectForm::class);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

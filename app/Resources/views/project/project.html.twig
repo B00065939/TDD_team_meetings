@@ -3,16 +3,18 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block leftMenu %}
-    {#<li><a href="#"></a>PROJECT: {{ project.title }}</li>#}
-    {% if is_granted('ROLE_NEW_MEETING') %}
-        <li>
-            <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
-        </li>
-    {% endif %}
-    {% if is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') %}
-        <li>
-            <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
-        </li>
+
+    {% if project.lock != true %}
+        {% if is_granted('ROLE_NEW_MEETING') or ((leader is defined and leader == app.user)) %}
+            <li>
+                <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
+            </li>
+        {% endif %}
+        {% if (is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT')  or leader == app.user )%}
+            <li>
+                <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
+            </li>
+        {% endif %}
     {% endif %}
 {% endblock %}
 
@@ -20,16 +22,20 @@
 
     <div class="container-fluid">
         <ul class="nav navbar-nav">
-            {% if is_granted('ROLE_NEW_MEETING') %}
-                <li>
-                    <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
-                </li>
+            {% if project.lock != true %}
+                {#{% if (is_granted('ROLE_SUPERVISOR') and project.lock == false) or (is_granted('ROLE_USER') and project.lock == false and isCurrLeader == true ) %}#}
+                {% if is_granted('ROLE_SUPERVISOR') or leader == app.user %}
+                    <li>
+                        <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
+                    </li>
+                {% endif %}
+                {% if is_granted('ROLE_SUPERVISOR') or leader == app.user %}
+                    <li>
+                        <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
+                    </li>
+                {% endif %}
             {% endif %}
-            {% if is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') %}
-                <li>
-                    <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
-                </li>
-            {% endif %}
+
         </ul>
     </div>
 

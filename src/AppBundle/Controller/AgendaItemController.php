@@ -29,7 +29,13 @@ class AgendaItemController extends Controller
     public function makeCurrentAction(Request $request, AgendaItem $agendaItem)
     {
         $em = $this->getDoctrine()->getManager();
+        $project = $agendaItem->getMeeting()->getProject();
+        $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
         // get agenda version to replace
+        if ($leader != $this->getUser()){
+            $this->addFlash('error', 'Something went wrong!');
+            return $this->redirectToRoute('show_agenda_item', ['agendaItem' => $agendaItem]);
+        }
         $currAI = $agendaItem->getUpdateFor();
 
         $maxSequenceNo = 0;
@@ -111,7 +117,15 @@ class AgendaItemController extends Controller
     public function showAction(Request $request, AgendaItem $agendaItem)
     {
         $em = $this->getDoctrine()->getManager();
+        $project = $agendaItem->getMeeting()->getProject();
+        $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
+        if ($leader == $this->getUser()){
+            $isLeader = true;
+        } else {
+            $isLeader = false;
 
+        }
+       // dump($isLeader);die();
         $afterAgendaDeadline = $agendaItem->getMeeting()->getAgendaDeadline() < new \DateTime();
 //        dump(new DateTime());
 //        dump($agendaItem->getMeeting()->getAgendaDeadline());
@@ -144,6 +158,7 @@ class AgendaItemController extends Controller
             return $this->redirectToRoute('show_agenda_item', array('agendaItem' => $agendaItem->getId()));
 
         }
+
         return $this->render('agendaitem/agendaitem.html.twig', array(
             'pageHeader' => "Project: \"" . $agendaItem->getMeeting()->getProject()->getTitle() . "\". Meeting at : " . $agendaItem->getMeeting()->getMDateTime()->format('Y-m-d H:i:s'),
             'subHeader' => "Propose new agenda item version",
@@ -152,8 +167,9 @@ class AgendaItemController extends Controller
             'nextAgendaItems' => $nextAgendaItems,
             'form' => $form->createView(),
             'meeting' => $agendaItem->getMeeting(),
-            'project' => $agendaItem->getMeeting()->getProject(),
-            'afterAgendaDeadline' => $afterAgendaDeadline
+            'project' => $project,
+            'afterAgendaDeadline' => $afterAgendaDeadline,
+            'leader' => $leader,
         ));
 
     }

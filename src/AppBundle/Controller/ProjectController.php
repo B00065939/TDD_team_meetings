@@ -24,9 +24,14 @@ class ProjectController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        if($em->find('AppBundle:Project',$project->getId()) == null) {
+            $this->addFlash('error', 'Something went wrong!');
+            return $this->redirectToRoute('homepage');
+        }
         $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
         $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
+
 
         //$projectHasUsersList = $em->getRepository('AppBundle:ProjectHasUser')->findAllNoKeyUsersForProject($project);
 
