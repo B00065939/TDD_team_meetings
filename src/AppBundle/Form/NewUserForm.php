@@ -30,6 +30,7 @@ class NewUserForm extends AbstractType
                     'User' => 'ROLE_USER',
                     'Supervisor' => 'ROLE_SUPERVISOR'
                 ],
+                'required' => true,
             ]) ;
     }
 

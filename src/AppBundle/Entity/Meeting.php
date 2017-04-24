@@ -10,7 +10,7 @@ namespace AppBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
@@ -49,6 +49,7 @@ class Meeting
     private $secretary;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string")
      * @var string $location
      */
@@ -61,6 +62,7 @@ class Meeting
     private $mDateTime;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="integer")
      * @var integer $duration
      */

@@ -3,24 +3,25 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-    <ul>
-        <li>Current agenda item is : {{ minuteItem.sequenceNo }} of {{ countAI }}
+    <p>Current agenda item is : {{ minuteItem.sequenceNo }} of {{ countAI }}<br>{{ minuteItem.description }}</p>
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li>
+                {% if minuteItem.sequenceNo < countAI %}
+                    <a href=" {{ path('next_agenda_on_meeting',
+                    {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}">
+                        <i class=" fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
+                {% endif %}
+                {% if minuteItem.sequenceNo >= countAI %}
+                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">Back to meeting page</a>
+                    {#<a href=" {{ path('finish_meeting') }}">Finish meeting</a>#}
+                {% endif %}
+            </li>
 
-            {% if minuteItem.sequenceNo < countAI %}
-                <a href=" {{ path('next_agenda_on_meeting',
-                {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}">
-                <i class=" fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
-            {% endif %}
-            {% if minuteItem.sequenceNo >= countAI %} Meeting is over
-            <a href="{{ path('homepage') }}">Back to dashboard</a>
-            {% endif %}
+        </ul>
+    </div>
 
-        </li>
-        <li>Add new Action
-            <a href="{{ path('new_minute_action', { 'minuteItem': minuteItem.id}) }}">Add</a>
-        </li>
-    </ul>
-    <p>{{ minuteItem.description }}</p>
+
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit" name="minute_comment" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"

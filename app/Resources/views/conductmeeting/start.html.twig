@@ -3,11 +3,14 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-    <ul>
-        <li>Current agenda item is : {{ lastAISequenceNo - 1 }} of {{ countAI }} <a
-                    href="{{ path('next_agenda_on_meeting', {'meeting': meeting.id, 'agendaItemSequenceNo' : 1}) }}"><i
-                        class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a></li>
-    </ul>
+    <p>Current agenda item is : {{ lastAISequenceNo - 1 }} of {{ countAI }} </p>
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li><a href="{{ path('next_agenda_on_meeting', {'meeting': meeting.id, 'agendaItemSequenceNo' : 1}) }}">
+                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a></li>
+
+        </ul>
+    </div>
     <p>
         Meeting Chairman : {{ meeting.chair.fullName }} <br>
         Meeting Secretary : {{ meeting.secretary.fullName }}

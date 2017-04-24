@@ -3,16 +3,20 @@
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
 {% block body %}
-    <ul>
-        <li>Current agenda item is : {{ currAgendaItem.sequenceNo }} of {{ countAI }}
-            <a href="
+    <p>Current agenda item is : {{ currAgendaItem.sequenceNo }} of {{ countAI }}<br>{{ currAgendaItem.description }}</p>
+    <div class="container-fluid">
+        <ul class="nav navbar-nav">
+            <li>
+                <a href="
                 {% if currAgendaItem.sequenceNo <= countAI %}
                     {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}
                 {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
-                <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
-        </li>
-    </ul>
-    <p>{{ currAgendaItem.description }}</p>
+                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
+            </li>
+
+        </ul>
+    </div>
+
     <table class="table table-striped">
         <caption>Agenda items list</caption>
         <thead>

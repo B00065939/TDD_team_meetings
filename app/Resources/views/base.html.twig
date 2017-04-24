@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="web/vendor/bootstrap/css/dashboard.css"/>
+    <link rel="stylesheet" type="text/css" href="web/vendor/bootstrap/css/dashboard.css"/>
     <meta charset="UTF-8"/>
-    <title>{% block title %}Welcome!{% endblock %}</title>
+    <title>{% block title %}S.T.P.S.{% endblock %}</title>
     {% block stylesheets %}
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('vendor/bootstrap/css/dashboard.css') }}">
@@ -15,23 +17,15 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">S.T.M.S</a>
+            <span class="prj_title">Student Teamwork Project System</span>
+
+            {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUPERVISOR') or  is_granted('ROLE_ADMIN')) %}
+                <span class="prj_title">Hi, {{ app.user.fullName }}</span>
+            {% endif %}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
-                {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUPERVISOR') or  is_granted('ROLE_ADMIN')) %}
-                    <li><a>Welcome {{ app.user.email }}</a></li>
-
-                {% endif %}
-                <li><a href="{{ path('homepage') }}">Dashboard</a></li>
-                <li><a href="#">Help</a></li>
+                <li><a disabled="true" href="#">About</a></li>
                 {% if (is_granted('ROLE_USER') or is_granted('ROLE_SUPERVISOR') or  is_granted('ROLE_ADMIN')) %}
                     <li><a href="{{ path('logout') }}">Logout</a></li>
 
@@ -45,6 +39,7 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
+                <li><i class="link_header">S.T.P.S.</i></li>
                 <li><a href="{{ path('homepage') }}">Dashboard</a></li>
                 {% if (is_granted('ROLE_USER')) %}
                     <li ><a href="{{ path('user_panel') }}">Projects</a></li>
@@ -64,9 +59,9 @@
             </ul>
             {% if project is defined %}
                 <hr>
-                <h4>Project:<br> {{ project.title }}</h4>
-                <ul class="nav nav-sidebar">
 
+                <ul class="nav nav-sidebar">
+                    <li><i class="link_header">Project: "{{ project.title }}"</i></li>
                     {% if is_granted('ROLE_SHOW_PROJECT') %}
                         <li>
                             <a href="{{ path('show_project', {'project' : project.id}) }}">Show project</a>
@@ -87,8 +82,8 @@
             {% endif %}
             {% if meeting is defined %}
                 <hr>
-                <h4>Meeting:<br> {{ meeting.MDateTime|date }}</h4>
                 <ul class="nav nav-sidebar">
+                    <li><i class="link_header">Meeting: {{ meeting.MDateTime|date }}</i></li>
 
                     {% if is_granted('ROLE_SHOW_MEETING') %}
                         <li>

@@ -32,7 +32,7 @@ class AdminController extends Controller
             $em->persist($user);
             $em->flush();
             $this->addFlash('success', "User added");
-            return $this->redirectToRoute('new_user');
+            return $this->redirectToRoute('admin_panel');
         }
 
         return $this->render('admin/newuser.html.twig', [

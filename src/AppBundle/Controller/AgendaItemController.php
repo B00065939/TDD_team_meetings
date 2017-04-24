@@ -32,7 +32,7 @@ class AgendaItemController extends Controller
         $currAI = $agendaItem->getUpdateFor();
 
         $maxSequenceNo = 0;
-        $minSequenceNo = 4;
+        $minSequenceNo = 3;
         $currSequenceNo = $currAI->getSequenceNo();
         $newSequenceNo = $agendaItem->getSequenceNo();
 
@@ -40,36 +40,39 @@ class AgendaItemController extends Controller
 
         //znajdujemy $maxSequenceNo
         foreach ($agendaItems as $item) {
+
             if ($item->getStatus() == "draft" && $item->getSequenceNo() >= $maxSequenceNo) {
                 $maxSequenceNo = $item->getSequenceNo();
             }
+
+        }
+
+        if ($newSequenceNo <= $minSequenceNo) {
+            $newSequenceNo = $minSequenceNo + 1;
+        } elseif ($newSequenceNo > $maxSequenceNo) {
+            $newSequenceNo = $maxSequenceNo;
         }
 
         // jescli z formularza sequence number wiekszy niz max asign max
         if ($newSequenceNo < $currSequenceNo) {
-            if ($newSequenceNo < $minSequenceNo) {
-                $newSequenceNo = $minSequenceNo;
-            }
+            //dump($newSequenceNo);die();
             foreach ($agendaItems as $item) {
-                if ($item->getSequenceNo() >= $newSequenceNo && $item->getSequenceNo() < $currSequenceNo && $item->getStatus() != null && $item->getStatus()->getName() == "draft") {
-                    $item->setSequenceNo($item->getSequenceNo() + 1);
+                if ($item->getStatus() != null) {
+                    if ($minSequenceNo < $item->getSequenceNo() && $item->getSequenceNo() < $currSequenceNo && $item->getStatus()->getName() == "draft") {
+                        $item->setSequenceNo($item->getSequenceNo() + 1);
+                    }
                 }
             }
-        } elseif ($newSequenceNo > $currSequenceNo) {
-            if ($newSequenceNo >= $maxSequenceNo) {
-                $agendaItem->setSequenceNo($maxSequenceNo);
-            }
+        } elseif ($currSequenceNo < $newSequenceNo) {
             foreach ($agendaItems as $item) {
-                if ($item->getSequenceNo() > $currSequenceNo && $item->getSequenceNo() <= $maxSequenceNo && $item !== $currAI && $item->getStatus() != null && $item->getStatus()->getName() == "draft") {
-                    $item->setSequenceNo($item->getSequenceNo() + 1);
-                }
-            }
-            foreach ($agendaItems as $item) {
-                if ($item->getSequenceNo() > $currSequenceNo && $item->getSequenceNo() <= $newSequenceNo && $item->getStatus()->getName() == "draft") {
-                    $item->setSequenceNo($item->getSequenceNo() - 1);
+                if ($item->getStatus() != null) {
+                    if ($currSequenceNo < $item->getSequenceNo() && $item->getSequenceNo() <= $newSequenceNo && $item !== $currAI && $item->getStatus()->getName() == "draft") {
+                        $item->setSequenceNo($item->getSequenceNo() - 1);
+                    }
                 }
             }
         }
+
 
         $nextAgendaItems = $currAI->getNextVersions();
         foreach ($nextAgendaItems as $item) {
@@ -85,11 +88,14 @@ class AgendaItemController extends Controller
         $currAI->setReplacedBy($agendaItem);
         $currAI->setStatus(null);
 
+
         // New agenda get status "draft" and become curr agenda
         $agendaItem->setStatus($em->getRepository(AgendaStatus::class)->findOneBy(['name' => 'draft']));
         $agendaItem->setUpdateFor(null);
-
+//        dump($newSequenceNo);die();
+        $agendaItem->setSequenceNo($newSequenceNo);
         $em->flush();
+
         return $this->redirectToRoute('show_agenda_item', array('agendaItem' => $agendaItem->getId()));
 
     }
@@ -118,7 +124,10 @@ class AgendaItemController extends Controller
         $form = $this->createForm(AgendaItemUpdateType::class, $newAgendaItem);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
+            if ($newAgendaItem->getSequenceNo() == $agendaItem->getSequenceNo() && $newAgendaItem->getTitle() == $agendaItem->getTitle() && $newAgendaItem->getDescription() == $agendaItem->getDescription()) {
+                $this->addFlash('error', 'You proposed same version, make some changes! ');
+                return $this->redirectToRoute('show_agenda_item', array('agendaItem' => $agendaItem->getId()));
+            }
             $newAgendaItem->setProposer($this->getUser());
             $newAgendaItem->setCreationDate(new \DateTime());
             $newAgendaItem->setUpdateFor($agendaItem);
@@ -126,12 +135,12 @@ class AgendaItemController extends Controller
             $em->persist($newAgendaItem);
 
             $em->flush();
-
+            $this->addFlash('success', 'Proposed version was published for acceptance! ');
             return $this->redirectToRoute('show_agenda_item', array('agendaItem' => $agendaItem->getId()));
 
         }
         return $this->render('agendaitem/agendaitem.html.twig', array(
-            'pageHeader' => "Project: \"" . $agendaItem->getMeeting()->getProject()->getTitle(). "\". Meeting at : " . $agendaItem->getMeeting()->getMDateTime()->format('Y-m-d H:i:s') ,
+            'pageHeader' => "Project: \"" . $agendaItem->getMeeting()->getProject()->getTitle() . "\". Meeting at : " . $agendaItem->getMeeting()->getMDateTime()->format('Y-m-d H:i:s'),
             'subHeader' => "Propose new agenda item version",
             'agendaItem' => $agendaItem,
             'prevAgendaItems' => $prevAgendaItems,
@@ -178,7 +187,7 @@ class AgendaItemController extends Controller
         }
 
         return $this->render(':agendaitem:newagendaitem.html.twig', array(
-            'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s') ,
+            'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
             'subHeader' => "Create new agenda item",
             'agendaItem' => $agendaItem,
             'form' => $form->createView(),

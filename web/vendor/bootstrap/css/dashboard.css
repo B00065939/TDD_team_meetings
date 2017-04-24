@@ -83,7 +83,16 @@ body {
 .main .page-header {
   margin-top: 0;
 }
-
+.prj_title{
+  margin-left: -15px;
+  float: left;
+  height: 50px;
+  padding: 15px 15px;
+  font-size: 18px;
+  line-height: 20px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  color: #FFFFFF;
+}
 
 /*
  * Placeholder dashboard ideas
@@ -102,4 +111,11 @@ body {
 .placeholder img {
   display: inline-block;
   border-radius: 50%;
+}
+
+.link_header {
+  color: #337ab7;
+  font-style: normal;
+  padding-left: 1em;
+  font-size: 1.1em;
 }

@@ -7,7 +7,7 @@
         <ul class="nav navbar-nav">
             {% if is_granted('ROLE_SHOW_AGENDA_ITEM') %}
                 <li>
-                    <a href="{{ path('show_meeting', {'meeting' : agendaItem.meeting.id}) }}">Back to the meetings
+                    <a href="{{ path('show_meeting', {'meeting' : agendaItem.meeting.id}) }}">Back to the agendas
                         list</a>
                 </li>
             {% endif %}

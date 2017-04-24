@@ -1,13 +1,10 @@
 {% extends 'base.html.twig' %}
 
-{% block pageHeader %} Welcome in Student Team Meeting System{% endblock %}
-{% block subHeader %} Login please! {% endblock %}
+{% block pageHeader %} Welcome. Any meeting today?{% endblock %}
+{% block subHeader %} but first... login please! {% endblock %}
 {% block body %}
-    <div class="container">
         <div class="row">
-
-            <div class="col-xs-12">
-
+            <div class="col-md-6">
                 {% if error %}
                     <div class="alert alert-danger">
                         {{ error.messageKey|trans(error.messageData, 'security') }}
@@ -20,5 +17,4 @@
                 {{ form_end(form) }}
             </div>
         </div>
-    </div>
 {% endblock %}

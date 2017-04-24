@@ -40,19 +40,6 @@ class ConductMeetingController extends Controller
             'status' => $draftAIStatus,
         ]);
 
-//        $meeting = $agendaItem->getMeeting();
-//        $project = $meeting->getProject();
-//        $agendaItemSequenceNo = $agendaItem->getSequenceNo();
-//        $countAI = $this->calculateNoOfAI($meeting);
-
-
-//        $nextAI = $em->getRepository(AgendaItem::class)->findOneBy([
-//            'sequenceNo' => $agendaItem->getSequenceNo() + 1,
-//            'meeting' => $meeting,
-//            'status' => $agendaItem->getStatus(),
-//        ]);
-
-
         if ($agendaItemSequenceNo == 1) {
 
             return $this->render(':conductmeeting:first.html.twig', array(
@@ -86,10 +73,6 @@ class ConductMeetingController extends Controller
                 'currAgendaItem' => $currAgendaItem,
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
                 'agreedAgenda' => $agreedAgenda,
-//                "project" => $project,
-//                "nextAI" => $nextAI,
-//                "agendaItem" => $agendaItem,
-//                'agreedAgenda' => $agreedAgenda,
             ));
 
         } elseif ($agendaItemSequenceNo == 3) {
@@ -101,15 +84,6 @@ class ConductMeetingController extends Controller
                 'countAI' => $countOfAgreedAgendaItems,
                 'currAgendaItem' => $currAgendaItem,
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
-
-//                "pageHeader" => "Project: \"" . $project->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
-//                "subHeader" => "Agenda: " . $agendaItem->getTitle(),
-//                "meeting" => $meeting,
-//                "countAI" => $countAI,
-//                "project" => $project,
-//                "nextAI" => $nextAI,
-//                "agendaItem" => $agendaItem,
-//                'agreedAgenda' => $agreedAgenda,
             ));
         } else {
             /**
@@ -119,7 +93,11 @@ class ConductMeetingController extends Controller
                 'meeting' => $meeting,
                 'sequenceNo' => $agendaItemSequenceNo
             ]);
-//            dump($minuteItem);die();
+
+            if ($minuteItem == null){
+                dump($agendaItemSequenceNo);die();
+            }
+
             $minuteItems = $em->getRepository(MinuteAction::class)->findBy(['minuteItem' => $meeting]);
 
 
@@ -141,17 +119,6 @@ class ConductMeetingController extends Controller
                 'minuteItem' => $minuteItem,
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
                 'form' => $formCommentMinute->createView(),
-//                'pageHeader' => "Project: \"" . $project->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
-//                'subHeader' => "Agenda: " . $agendaItem->getTitle(),
-//                'meeting' => $meeting,
-//                'countAI' => $countAI,
-//                'project' => $project,
-//                'nextAI' => $nextAI,
-//                'agendaItem' => $agendaItem,
-//                'minuteItem' => $minuteItem,
-//                'minuteItems' => $minuteItems,
-//                'form' => $formCommentMinute->createView(),
-
             ));
         }
 
@@ -198,17 +165,6 @@ class ConductMeetingController extends Controller
             'usersAttendanceList' => $meeting->getMeetingAttendances(),
             'form' => $form->createView(),
             'meetingAttendance' => $meetingAttendance,
-
-//            "pageHeader" => "Project: \"" . $project->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
-//            "subHeader" => "Agenda: " . $agendaItem->getTitle(),
-//            "meeting" => $meeting,
-//            "countAI" => $countAI,
-//            "project" => $project,
-//            "nextAI" => $nextAI,
-//            "agendaItem" => $agendaItem,
-//            'form' => $form->createView(),
-//            'usersAttendanceList' => $usersAttendanceList,
-//            'meetingAttendance' => $meetingAttendance,
         ));
     }
 
