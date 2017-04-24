@@ -20,7 +20,7 @@
         <div id="agendas" class="tab-pane fade in active">
             <div class="container-fluid">
                 <ul class="nav navbar-nav">
-                    {% if is_granted('ROLE_NEW_AGENDA_ITEM') %}
+                    {% if is_granted('ROLE_NEW_AGENDA_ITEM') and afterAgendaDeadline == false%}
                         <li>
                             <a href="{{ path('new_agenda_item',{'meeting': currUserAttendance.meeting.id}) }}">New
                                 Agenda Item</a>

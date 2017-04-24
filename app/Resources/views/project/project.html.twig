@@ -43,7 +43,7 @@
         <tr>
             <td>Date and Time</td>
             <td>Location</td>
-            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == secretary)) %}
+            {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
                 <td>Start Meeting</td>
             {% endif %}
             <td>Details</td>
@@ -51,21 +51,23 @@
         </thead>
         <tbody>
         {% for meeting in meetingsList %}
-            <tr>
-                <td>{{ meeting.getMDateTime()| date() }}</td>
-                <td>{{ meeting.getLocation() }}</td>
-                {% if (is_granted('ROLE_SUPERVISOR') or (app.user == secretary)) %}
+            {% if meeting.meetingStatus.name == 'future' %}
+                <tr>
+                    <td>{{ meeting.getMDateTime()| date() }}</td>
+                    <td>{{ meeting.getLocation() }}</td>
+                    {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
+                        <td>
+                            <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
+                                <i class="fa fa-play" aria-hidden="true"></i> start</a>
+                        </td>
+                    {% endif %}
                     <td>
-                        <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
-                            <i class="fa fa-play" aria-hidden="true"></i> start</a>
+                        <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">
+                            <i class="fa fa-eye"></i></a>
                     </td>
-                {% endif %}
-                <td>
-                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">
-                        <i class="fa fa-eye"></i></a>
-                </td>
 
-            </tr>
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>
@@ -95,6 +97,35 @@
                     {% endif %}
                 {% endif %}
             </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <hr>
+    <table class="table table-striped">
+        <caption>Past meetings list:</caption>
+        <thead>
+        <tr>
+            <td>Date and Time</td>
+            <td>Location</td>
+            {#{% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}#}
+            <td>Show Meeting</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for meeting in meetingsList %}
+            {% if meeting.meetingStatus.name == 'past' %}
+                <tr>
+                    <td>{{ meeting.getMDateTime()| date() }}</td>
+                    <td>{{ meeting.getLocation() }}</td>
+                    {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
+                        <td>
+                            <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
+                                <i class="fa fa-eye" aria-hidden="true"></i> </a>
+                        </td>
+                    {% endif %}
+
+                </tr>
+            {% endif %}
         {% endfor %}
         </tbody>
     </table>

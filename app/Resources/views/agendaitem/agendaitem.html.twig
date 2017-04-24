@@ -42,7 +42,7 @@
                 </tbody>
             </table>
         </div>
-        {% if agendaItem.sequenceNo > 3 %}
+        {% if agendaItem.sequenceNo > 3 and afterAgendaDeadline == false %}
             <div class="col-md-6">
                 <h3>Proposed new new version of this agenda </h3>
                 {{ form_start(form) }}
@@ -52,6 +52,8 @@
                 </button>
                 {{ form_end(form) }}
             </div>
+        {% else %}
+            <p>Is to late for further changes</p>
         {% endif %}
     </div>
     {% if agendaItem.sequenceNo > 3 %}
@@ -118,7 +120,7 @@
                         </tr>
                         <tr>
                             <th colspan="2">
-                                {% if is_granted('ROLE_MAKE_AGENDA_ITEM_CURRENT') %}
+                                {% if is_granted('ROLE_MAKE_AGENDA_ITEM_CURRENT') and afterAgendaDeadline == false %}
                                     <a href="{{ path('make_current_agenda_item', {'agendaItem' : agenda.id}) }}">
                                         <button class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i>
                                             Make it current

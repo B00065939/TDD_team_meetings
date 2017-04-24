@@ -30,6 +30,7 @@ class MeetingController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
+        $afterAgendaDeadline = $meeting->getAgendaDeadline() < new \DateTime();
         // all users for this meeting same as all user for this project
         $usersAttendanceList = $meeting->getMeetingAttendances();
         $currUserAttendance = $em->getRepository('AppBundle:MeetingAttendance')->findOneBy(['meeting' => $meeting, 'user' => $this->getUser()]);
@@ -66,7 +67,8 @@ class MeetingController extends Controller
             'form' => $form->createView(),
             'agendaItems' => $agendaItems,
             'project' => $meeting->getProject(),
-            'meeting' => $meeting
+            'meeting' => $meeting,
+            'afterAgendaDeadline' => $afterAgendaDeadline,
         ));
     }
 

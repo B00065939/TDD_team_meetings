@@ -11,7 +11,7 @@
                 {% if currAgendaItem.sequenceNo <= countAI %}
                     {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}
                 {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
-                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
+                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
             </li>
 
         </ul>
@@ -66,11 +66,11 @@
                 <td>{{ userAttendance.user.fullName }}</td>
                 <td>{{ userAttendance.attendance }}</td>
                 <td>{{ userAttendance.apologiesNote }}</td>
-                {% if userAttendance.presence is not null %}
+                {% if userAttendance.presence is not null or meetingStatus != 'future' %}
                     <td>{{ userAttendance.presence }}</td>
                     <td>{{ userAttendance.note }}</td>
                 {% endif %}
-                {% if userAttendance.presence is null %}
+                {% if userAttendance.presence is null and meetingStatus == 'future'%}
                     <td colspan="2">
                         <a href="{{ path('presence_check',{'meeting': currAgendaItem.meeting.id ,'agendaItem' : currAgendaItem.id, 'meetingAttendance' : userAttendance.id }) }}">check</a>
                     </td>

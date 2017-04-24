@@ -44,15 +44,15 @@ class LoadFixtures implements FixtureInterface
         $manager->flush();
 
         $ms = new MeetingStatus();
-        $ms->setName("Future");
+        $ms->setName("future");
         $manager->persist($ms);
         $manager->flush();
         $ms = new MeetingStatus();
-        $ms->setName("Past");
+        $ms->setName("past");
         $manager->persist($ms);
         $manager->flush();
         $ms = new MeetingStatus();
-        $ms->setName("Canceled");
+        $ms->setName("canceled");
         $manager->persist($ms);
         $manager->flush();
 

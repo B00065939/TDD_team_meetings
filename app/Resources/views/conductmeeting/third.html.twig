@@ -9,9 +9,16 @@
             <li>
                 <a href="
                 {% if currAgendaItem.sequenceNo <= countAI %}
+                    {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : currAgendaItem.sequenceNo - 1 }) }}
+                {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
+                    <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Previous agenda</a>
+            </li>
+            <li>
+                <a href="
+                {% if currAgendaItem.sequenceNo <= countAI %}
                     {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}
                 {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
-                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
+                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
             </li>
 
         </ul>

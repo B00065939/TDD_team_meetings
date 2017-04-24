@@ -21,6 +21,9 @@ new_minute_action:
   path: /minuteaction/new/{minuteItem}
   defaults: {_controller: AppBundle:MinuteAction:new}
 # Conduct Meeting
+finish_meeting:
+  path: /conductmeeting/finish/{meeting}
+  defaults: {_controller: AppBundle:ConductMeeting:finishMeeting}
 presence_check:
   path: /conductmeeting/next/{meeting}/{agendaItem}/{meetingAttendance}
   defaults: {_controller: AppBundle:ConductMeeting:presenceCheck}

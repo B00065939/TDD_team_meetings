@@ -11,6 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Validator\Constraints\DateTime;
 
 /**
  * Class AgendaItemController
@@ -111,6 +112,10 @@ class AgendaItemController extends Controller
     {
         $em = $this->getDoctrine()->getManager();
 
+        $afterAgendaDeadline = $agendaItem->getMeeting()->getAgendaDeadline() < new \DateTime();
+//        dump(new DateTime());
+//        dump($agendaItem->getMeeting()->getAgendaDeadline());
+//        dump($afterAgendaDeadline);die();
         $prevAgendaItems = $agendaItem->getPrevVersions();
         $nextAgendaItems = $agendaItem->getNextVersions();
 
@@ -148,6 +153,7 @@ class AgendaItemController extends Controller
             'form' => $form->createView(),
             'meeting' => $agendaItem->getMeeting(),
             'project' => $agendaItem->getMeeting()->getProject(),
+            'afterAgendaDeadline' => $afterAgendaDeadline
         ));
 
     }

@@ -7,17 +7,33 @@
     <div class="container-fluid">
         <ul class="nav navbar-nav">
             <li>
-                {% if minuteItem.sequenceNo < countAI %}
-                    <a href=" {{ path('next_agenda_on_meeting',
-                    {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}">
-                        <i class=" fa fa-arrow-circle-o-right" aria-hidden="true"></i> Continue</a>
-                {% endif %}
-                {% if minuteItem.sequenceNo >= countAI %}
-                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">Back to meeting page</a>
-                    {#<a href=" {{ path('finish_meeting') }}">Finish meeting</a>#}
-                {% endif %}
+                <a href="
+                {% if minuteItem.sequenceNo <= countAI %}
+                    {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo - 2 }) }}
+                {% endif %}{% if minuteItem.sequenceNo > countAI %}#{% endif %}">
+                    <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Previous agenda</a>
             </li>
 
+            {% if minuteItem.sequenceNo < countAI %}
+                <li>
+                    <a href=" {{ path('next_agenda_on_meeting',
+                    {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}">
+                        <i class=" fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
+                </li>
+            {% endif %}
+            {% if minuteItem.sequenceNo >= countAI %}
+                <li>
+                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">Back to meeting page</a>
+                </li>
+                {% if meetingStatus != 'past' %}
+                    <li>
+                        <a href=" {{ path('finish_meeting', {'meeting': meeting.id}) }}">Finish meeting</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+            {% if meetingStatus != 'past' %}
+                <li><a href="{{ path('new_minute_action',{'minuteItem': minuteItem.id}) }}">Add action</a></li>
+            {% endif %}
         </ul>
     </div>
 
