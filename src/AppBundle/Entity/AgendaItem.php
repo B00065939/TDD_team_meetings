@@ -49,13 +49,13 @@ class AgendaItem
 
     /**
      * @var Meeting $meeting
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="agendaItems")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="agendaItems", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="meeting_id", referencedColumnName="id")
      */
     private $meeting;
     /**
      * @var AgendaStatus $status
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaStatus", inversedBy="agendaItems")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaStatus", inversedBy="agendaItems", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="status_id", referencedColumnName="id")
      */
     private $status;
@@ -63,14 +63,14 @@ class AgendaItem
     /**
      * One agenda item has may lestVersion agenda item
      * @var ArrayCollection $prevVersions
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="replacedBy")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="replacedBy", cascade={"persist", "remove"})
      */
     private $prevVersions;
 
     /**
      * @var AgendaItem $replacedBy
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="prevVersions")
-     * @ORM\JoinColumn(name="replaced_by_id", referencedColumnName="id")     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="prevVersions", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="replaced_by_id", referencedColumnName="id")
      */
     private $replacedBy;
 
@@ -79,13 +79,13 @@ class AgendaItem
     /**
      * One agenda item has many next versions
      * @var ArrayCollection $nextVersions
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="updateFor")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AgendaItem", mappedBy="updateFor", cascade={"persist", "remove"})
      */
     private $nextVersions;
 
     /**
      * @var AgendaItem $updateFor
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="nextVersions")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AgendaItem", inversedBy="nextVersions", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="update_for_id", referencedColumnName="id")
      */
     private $updateFor;
@@ -93,7 +93,7 @@ class AgendaItem
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="postponedAgendaItems")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="postponedAgendaItems", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="postponed_to", referencedColumnName="id")
      * @var Meeting $postponedTo
      */
@@ -107,7 +107,7 @@ class AgendaItem
 
     /**
      * @var User $proposer
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="agendaItems")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User", inversedBy="agendaItems", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      *
      */

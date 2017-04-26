@@ -10,9 +10,11 @@
                 <a href="
                 {% if currAgendaItem.sequenceNo <= countAI %}
                     {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}
-                {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
+                {% endif %}
+                {% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
                     <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
             </li>
+
 
         </ul>
     </div>

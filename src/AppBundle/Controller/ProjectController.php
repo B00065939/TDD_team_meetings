@@ -40,10 +40,12 @@ class ProjectController extends Controller
 
 //        $meetings = $em->getRepository(Meeting::class)->findBy(['project' => $project]);
         $meetings = $project->getMeetings();
+
 //       dump($meetings); die();
-        foreach ($meetings as $meeting) {
-            dump($meeting->getChair());
-        }
+//        foreach ($meetings as $meeting) {
+//            dump($meeting->getSecretary());
+//        }
+//        die();
 
         return $this->render('project/project.html.twig', array(
             "pageHeader" => "Project:  \"" . $project->getTitle() . "\" ",

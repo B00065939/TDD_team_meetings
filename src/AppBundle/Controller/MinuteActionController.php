@@ -12,10 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MinuteActionController extends Controller
 {
-    public function editAction(MinuteItem $minuteItem, AgendaItem $agendaItem,Request $request)
-    {
-
-    }
 
     public function deleteAction(MinuteItem $minuteItem, MinuteAction $minuteAction)
     {

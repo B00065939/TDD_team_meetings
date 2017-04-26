@@ -10,7 +10,7 @@
                 <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
             </li>
         {% endif %}
-        {% if (is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT')  or leader == app.user )%}
+        {% if (is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT')  or leader == app.user ) %}
             <li>
                 <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
             </li>
@@ -49,9 +49,10 @@
         <tr>
             <td>Date and Time</td>
             <td>Location</td>
-            {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
-                <td>Start Meeting</td>
-            {% endif %}
+            <td>Chair</td>
+            <td>Secretary</td>
+
+            <td>Start Meeting</td>
             <td>Details</td>
         </tr>
         </thead>
@@ -59,14 +60,21 @@
         {% for meeting in meetingsList %}
             {% if meeting.meetingStatus.name == 'future' %}
                 <tr>
-                    <td>{{ meeting.getMDateTime()| date() }}</td>
-                    <td>{{ meeting.getLocation() }}</td>
-                    {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
-                        <td>
+                    {#<td>{{ meeting.getMDateTime()| date() }}</td>#}
+                    <td>{{ meeting.mDateTime| date() }}</td>
+                    <td>{{ meeting.location }}</td>
+                    <td>{{ meeting.chair }}</td>
+                    {#<td>{{ meeting.getSecretary() }}</td>#}
+                    <td>{{ meeting.secretary }}</td>
+
+                    <td>
+                        {% if ((is_granted('ROLE_SUPERVISOR') or app.user == leader or app.user == secretary or meeting.secretary  == app.user) and project.lock == false) %}
                             <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
                                 <i class="fa fa-play" aria-hidden="true"></i> start</a>
-                        </td>
-                    {% endif %}
+                        {% endif %}
+                    </td>
+
+
                     <td>
                         <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">
                             <i class="fa fa-eye"></i></a>
@@ -85,8 +93,8 @@
             <td>Name</td>
             <td>Role</td>
             {# If users' role is supervisor or project leader alowes to add or remove user to and from project #}
-            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) %}
-                <td>Remove</td>
+            {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) and project.lock == false %}
+                <td>Remove from project</td>
             {% endif %}
         </tr>
         </thead>
@@ -96,9 +104,9 @@
                 {% if( phul.user != leader and phul.user != secretary and phul.user != supervisor) %}
                     <td>{{ phul.user.fullName }}</td>
                     <td>{{ phul.projectRole.name }}</td>
-                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) %}
+                    {% if (is_granted('ROLE_SUPERVISOR') or (app.user == leader)) and project.lock == false %}
                         <td><a href="{{ path(
-                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">delete</a>
+                            'remove_user_from_project', {'project': phul.project.id, 'user': phul.user.id}) }}">remove</a>
                         </td>
                     {% endif %}
                 {% endif %}
@@ -123,12 +131,12 @@
                 <tr>
                     <td>{{ meeting.getMDateTime()| date() }}</td>
                     <td>{{ meeting.getLocation() }}</td>
-                    {% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}
-                        <td>
-                            <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
-                                <i class="fa fa-eye" aria-hidden="true"></i> </a>
-                        </td>
-                    {% endif %}
+                    {#{% if ((is_granted('ROLE_SUPERVISOR') or app.user == secretary) and project.lock == false) %}#}
+                    <td>
+                        <a href="{{ path('start_meeting', {'meeting' : meeting.id}) }}">
+                            <i class="fa fa-eye" aria-hidden="true"></i> </a>
+                    </td>
+                    {#{% endif %}#}
 
                 </tr>
             {% endif %}

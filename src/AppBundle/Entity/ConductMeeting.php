@@ -32,7 +32,7 @@ class ConductMeeting
 
     /**
      * @var Meeting $meeting
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="conductMeeting")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\Meeting", inversedBy="conductMeeting", cascade={"persist", "remove"})
      */
     private $meeting;
 
@@ -43,7 +43,7 @@ class ConductMeeting
 
     /**
      * @var AgendaItem $currentAgendaItem
-     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AgendaItem")
+     * @ORM\OneToOne(targetEntity="AppBundle\Entity\AgendaItem", cascade={"persist", "remove"})
      */
     private $currentAgendaItem;
 

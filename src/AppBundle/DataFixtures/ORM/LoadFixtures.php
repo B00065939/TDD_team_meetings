@@ -12,6 +12,7 @@ namespace AppBundle\DataFixtures\ORM;
 use AppBundle\Entity\ActionStatus;
 use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\MeetingStatus;
+use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
 use AppBundle\Entity\User;
@@ -23,25 +24,29 @@ class LoadFixtures implements FixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-
-        $pr = new ProjectRole();
-        $pr->setName('Project Leader');
-        $manager->persist($pr);
+        /********** Project Key Users Role **************************/
+        $prLeaderRole = new ProjectRole();
+        $prLeaderRole->setName('Project Leader');
+        $manager->persist($prLeaderRole);
         $manager->flush();
 
-        $pr = new ProjectRole();
-        $pr->setName('Project Secretary');
-        $manager->persist($pr);
+        $prSecretaryRole = new ProjectRole();
+        $prSecretaryRole->setName('Project Secretary');
+        $manager->persist($prSecretaryRole);
         $manager->flush();
 
-        $pr = new ProjectRole();
-        $pr->setName('Project Supervisor');
-        $manager->persist($pr);
+
+        $prSupRole = new ProjectRole();
+        $prSupRole->setName('Project Supervisor');
+        $manager->persist($prSupRole);
         $manager->flush();
-        $pr = new ProjectRole();
-        $pr->setName('Project Member');
-        $manager->persist($pr);
+
+        $prMemberRole = new ProjectRole();
+        $prMemberRole->setName('Project Member');
+        $manager->persist($prMemberRole);
         $manager->flush();
+
+        /********** Meeting Status **************************/
 
         $ms = new MeetingStatus();
         $ms->setName("future");
@@ -55,30 +60,49 @@ class LoadFixtures implements FixtureInterface
         $ms->setName("canceled");
         $manager->persist($ms);
         $manager->flush();
+        /**********  Key Users **************************/
 
-        $u = new User();
-        $u->setEmail('user@itb.ie');
-        $u->setFullName("Michal Smigiel");
-        $u->setPlainPassword('pass');
-        $u->setRoles(['ROLE_USER']);
-        $manager->persist($u);
+        $user = new User();
+        $user->setEmail('user@itb.ie');
+        $user->setFullName("Michal Smigiel");
+        $user->setPlainPassword('pass');
+        $user->setRoles(['ROLE_USER']);
+        $manager->persist($user);
         $manager->flush();
 
-        $u = new User();
-        $u->setEmail('sup@itb.ie');
-        $u->setFullName("Super Visor");
-        $u->setPlainPassword('pass');
-        $u->setRoles(['ROLE_SUPERVISOR']);
-        $manager->persist($u);
+        $sup = new User();
+        $sup->setEmail('sup@itb.ie');
+        $sup->setFullName("Super Visor");
+        $sup->setPlainPassword('pass');
+        $sup->setRoles(['ROLE_SUPERVISOR']);
+        $manager->persist($sup);
         $manager->flush();
 
-        $u = new User();
-        $u->setEmail('admin@itb.ie');
-        $u->setFullName("Admin Istrator");
-        $u->setPlainPassword('pass');
-        $u->setRoles(['ROLE_ADMIN']);
-        $manager->persist($u);
+        $admin = new User();
+        $admin->setEmail('admin@itb.ie');
+        $admin->setFullName("Admin Istrator");
+        $admin->setPlainPassword('pass');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $manager->persist($admin);
         $manager->flush();
+
+        $leader = new User();
+        $leader->setEmail('adam@itb.ie');
+        $leader->setFullName("Adam Leader");
+        $leader->setPlainPassword('pass');
+        $leader->setRoles(['ROLE_USER']);
+        $manager->persist($leader);
+        $manager->flush();
+
+        $secretary = new User();
+        $secretary->setEmail('ewa@itb.ie');
+        $secretary->setFullName("Ewa Secretary");
+        $secretary->setPlainPassword('pass');
+        $secretary->setRoles(['ROLE_USER']);
+        $manager->persist($secretary);
+        $manager->flush();
+
+        /********** Agenda Status **************************/
 
         $as = new AgendaStatus();
         $as->setName("draft");
@@ -109,6 +133,7 @@ class LoadFixtures implements FixtureInterface
         $as->setDescription("Agenda item postponed for future meeting");
         $manager->persist($as);
         $manager->flush();
+
         /************************** Action Status ********************************************/
         $actionStatus = new ActionStatus();
         $actionStatus->setName("in progress");
@@ -133,6 +158,41 @@ class LoadFixtures implements FixtureInterface
         $actionStatus = new ActionStatus();
         $actionStatus->setName("no longer required");
         $manager->persist($actionStatus);
+        $manager->flush();
+
+        /*************************** Project Fest ***************************************/
+        $project = new Project();
+        $project->setTitle('First Project');
+        $project->setLock(false);
+        $manager->persist($project);
+        $manager->flush();
+
+        $phu = new ProjectHasUser();
+        $phu->setProject($project);
+        $phu->setUser($secretary);
+        $phu->setProjectRole($prSecretaryRole);
+        $manager->persist($phu);
+        $manager->flush();
+
+        $phu = new ProjectHasUser();
+        $phu->setProject($project);
+        $phu->setUser($leader);
+        $phu->setProjectRole($prLeaderRole);
+        $manager->persist($phu);
+        $manager->flush();
+
+        $phu = new ProjectHasUser();
+        $phu->setProject($project);
+        $phu->setUser($user);
+        $phu->setProjectRole($prMemberRole);
+        $manager->persist($phu);
+        $manager->flush();
+
+        $phu = new ProjectHasUser();
+        $phu->setProject($project);
+        $phu->setUser($sup);
+        $phu->setProjectRole($prSupRole);
+        $manager->persist($phu);
         $manager->flush();
 
         $objects = Fixtures::load(

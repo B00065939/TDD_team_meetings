@@ -7,17 +7,28 @@ use AppBundle\Entity\AgendaStatus;
 use AppBundle\Entity\ConductMeeting;
 use AppBundle\Entity\Meeting;
 use AppBundle\Entity\MeetingAttendance;
-use AppBundle\Entity\MinuteAction;
 use AppBundle\Entity\MinuteItem;
 use AppBundle\Form\CommentMinuteItemForm;
-use AppBundle\Form\MinuteActionForm;
 use AppBundle\Form\PresenceForm;
 use Doctrine\Common\Collections\ArrayCollection;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class ConductMeetingController
+ * @package AppBundle\Controller
+ */
 class ConductMeetingController extends Controller
 {
+    /**
+     * Router controller for next agenda of meeting
+     *
+     * @param Meeting $meeting
+     * @param $agendaItemSequenceNo
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function nextAction(Meeting $meeting, $agendaItemSequenceNo, Request $request)
     {
 
@@ -49,11 +60,12 @@ class ConductMeetingController extends Controller
                 'subHeader' => "Agenda: " . $currAgendaItem->getTitle(),
                 'meeting' => $meeting,
                 'countAI' => $countOfAgreedAgendaItems,
-                // "project" => $project,
+                'project' => $meeting->getProject(),
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
                 'currAgendaItem' => $currAgendaItem,
                 'usersAttendanceList' => $meeting->getMeetingAttendances(),
                 'meetingStatus' => $meeting->getMeetingStatus()->getName(),
+
             ));
 
         } elseif ($agendaItemSequenceNo == 2) {
@@ -72,6 +84,7 @@ class ConductMeetingController extends Controller
                 'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
                 'subHeader' => "Agenda: " . $currAgendaItem->getTitle(),
                 'meeting' => $meeting,
+                'project' => $meeting->getProject(),
                 'countAI' => $countOfAgreedAgendaItems,
                 'currAgendaItem' => $currAgendaItem,
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
@@ -80,13 +93,20 @@ class ConductMeetingController extends Controller
 
         } elseif ($agendaItemSequenceNo == 3) {
             //dump($nextAI);die();
+            $lastMeeting = $this->findPreviousCompletedMeeting($meeting);
+            $minuteItems = $lastMeeting->getMinuteItems();
+
             return $this->render(':conductmeeting:third.html.twig', array(
                 'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
                 'subHeader' => "Agenda: " . $currAgendaItem->getTitle(),
                 'meeting' => $meeting,
+                'project' => $meeting->getProject(),
                 'countAI' => $countOfAgreedAgendaItems,
                 'currAgendaItem' => $currAgendaItem,
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
+                'meetingStatus' => $meeting->getMeetingStatus()->getName(),
+                'lastMeeting' => $lastMeeting,
+                'minuteItems'=> $minuteItems,
             ));
         } else {
             /**
@@ -98,11 +118,11 @@ class ConductMeetingController extends Controller
             ]);
 
             if ($minuteItem == null) {
-                $this->addFlash('error','Something is wrong');
-                return $this->redirectToRoute('show_project',['project' => $meeting->getProject()->getId()]);
+                $this->addFlash('error', 'Something is wrong');
+                return $this->redirectToRoute('show_project', ['project' => $meeting->getProject()->getId()]);
             }
 
-            $minuteItems = $em->getRepository(MinuteAction::class)->findBy(['minuteItem' => $meeting]);
+            // $minuteItems = $em->getRepository(MinuteAction::class)->findBy(['minuteItem' => $meeting]);
 
 
             $formCommentMinute = $this->createForm(CommentMinuteItemForm::class, $minuteItem);
@@ -130,6 +150,48 @@ class ConductMeetingController extends Controller
 
     }
 
+    /**
+     * Find Previous Completed Meeting
+     * @param Meeting $meeting
+     * @return Meeting|null
+     */
+    private function findPreviousCompletedMeeting(Meeting $meeting)
+    {
+        $meetingList = $meeting->getProject()->getMeetings();
+        foreach ($meetingList as $item) {
+            if ($item->getMeetingStatus()->getName() != 'past') {
+                $meetingList->removeElement($item);
+            }
+        }
+        foreach ($meetingList as $item) {
+            if ($item->getMDateTime() >= $meeting->getMDateTime()) {
+                $meetingList->removeElement($item);
+            }
+        }
+        if (count($meetingList) == 0) {
+            return null;
+        }
+        if (count($meetingList) > 0) {
+            $lastMeeting = $meetingList->first();
+            foreach ($meetingList as $item) {
+                if ($lastMeeting->getMDateTime() < $item->getMDateTime()) {
+                    $lastMeeting = $item;
+                }
+            }
+            return $lastMeeting;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * ROLE_FINISH_MEETING
+     * @Security("is_granted('ROLE_FINISH_MEETING')")
+     * Route controller
+     * @param Meeting $meeting
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function finishMeetingAction(Meeting $meeting, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -147,6 +209,14 @@ class ConductMeetingController extends Controller
 
     }
 
+    /**
+     * Route controller
+     * @param Meeting $meeting
+     * @param AgendaItem $agendaItem
+     * @param MeetingAttendance $meetingAttendance
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function presenceCheckAction(Meeting $meeting, AgendaItem $agendaItem, MeetingAttendance $meetingAttendance, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -157,14 +227,10 @@ class ConductMeetingController extends Controller
                 $agreedAgenda->removeElement($item);
             }
         }
-
         $countOfAgreedAgendaItems = count($agreedAgenda);
-
-
         $countAI = $this->calculateNoOfAI($meeting);
         $project = $meeting->getProject();
         $form = $this->createForm(PresenceForm::class, $meetingAttendance);
-
         $form->handleRequest($request);
         $usersAttendanceList = $meeting->getMeetingAttendances();
         $nextAI = $em->getRepository(AgendaItem::class)->findOneBy([
@@ -183,6 +249,7 @@ class ConductMeetingController extends Controller
             'meeting' => $meeting,
             'countAI' => $countOfAgreedAgendaItems,
             // "project" => $project,
+            'meetingStatus' => $meeting->getMeetingStatus()->getName(),
             'nextAISequenceNo' => $agendaItem->getSequenceNo() + 1,
             'currAgendaItem' => $agendaItem,
             'usersAttendanceList' => $meeting->getMeetingAttendances(),
@@ -191,13 +258,21 @@ class ConductMeetingController extends Controller
         ));
     }
 
-
+    /**
+     * Route controller
+     * @Security("is_granted('ROLE_START_MEETING')")
+     * @param Meeting $meeting
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function startAction(Meeting $meeting)
     {
-
         $em = $this->getDoctrine()->getManager();
         $draftAIStatus = $em->getRepository(AgendaStatus::class)->findOneBy(['name' => "draft"]);
-
+        $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($meeting->getProject(), "Project Secretary");
+//        if ($this->getUser() != $secretary || $meeting->getProject()->isLock()) {
+//            $this->addFlash('error', 'No access');
+//            return $this->redirectToRoute('homepage');
+//        }
         $conductMeeting = $em->getRepository(ConductMeeting::class)->findOneBy(['meeting' => $meeting]);
         if ($conductMeeting == null) {
             $conductMeeting = new ConductMeeting();
@@ -221,7 +296,7 @@ class ConductMeetingController extends Controller
         }
         // all draft agenda items become draft minutes
         $this->createAgendaMinutes($agreedAgenda);
-        if ($meeting->getAgendaDeadline() > new \DateTime()){
+        if ($meeting->getAgendaDeadline() > new \DateTime()) {
 
             $meeting->setAgendaDeadline(new \DateTime());
             $em->persist($meeting);
@@ -233,16 +308,22 @@ class ConductMeetingController extends Controller
         $countAI = $this->calculateNoOfAI($meeting);
 
         return $this->render(':conductmeeting:start.html.twig', array(
-            "pageHeader" => "Welcome to the \"" . $project->getTitle() . "\" project meeting",
-            "subHeader" => "We will conduct a meeting scheduled for - " . $meeting->getMDateTime()->format('d/m/y  H:m'),
-            "meeting" => $meeting,
-            "currAI" => $currAI,
+            'pageHeader' => "Welcome to the \"" . $project->getTitle() . "\" project meeting",
+            'subHeader' => "We will conduct a meeting scheduled on - " . $meeting->getMDateTime()->format('d/m/y  H:m'),
+            'meeting' => $meeting,
+            'currAI' => $currAI,
             'countAI' => $countAI,
-            "project" => $project,
-            "lastAISequenceNo" => $lastAISequenceNo,
+            'project' => $project,
+            'secretary' => $secretary,
+            'lastAISequenceNo' => $lastAISequenceNo,
         ));
     }
 
+    /**
+     * Calculate No of "draft" agenda items for passed meeting
+     * @param Meeting $meeting
+     * @return int
+     */
     private function calculateNoOfAI(Meeting $meeting)
     {
         $agendaItems = $meeting->getAgendaItems();
@@ -255,16 +336,17 @@ class ConductMeetingController extends Controller
         return $countAI;
     }
 
+    /**
+     * Create Agenda Minutes from collection of agreed agenda items
+     * @param $agreedAgenda
+     */
     private function createAgendaMinutes($agreedAgenda)
     {
         $em = $this->getDoctrine()->getManager();
         $status = $em->getRepository(AgendaStatus::class)->findOneBy(['name' => "draft minute"]);
-
-//        sprawdz czy istnieja minuty dla tego spotkania
+        // sprawdz czy istnieja minuty dla tego spotkania
         $meeting = $agreedAgenda[0]->getMeeting();
-        //[0]->getMeeting;
         $minutes = $em->getRepository(MinuteItem::class)->findBy(['meeting' => $meeting]);
-        // dump($meeting);die();
         if ($minutes == null) {
             foreach ($agreedAgenda as $item) {
                 $mi = new MinuteItem();
@@ -275,11 +357,10 @@ class ConductMeetingController extends Controller
                 $mi->setDescription($item->getDescription());
                 $mi->setTitle($item->getTitle());
                 $mi->setProposer($item->getProposer());
-
                 $em->persist($mi);
                 $em->flush();
             }
-
         }
     }
+
 }

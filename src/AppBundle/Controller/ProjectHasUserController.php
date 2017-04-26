@@ -2,6 +2,8 @@
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Meeting;
+use AppBundle\Entity\MeetingAttendance;
 use AppBundle\Entity\Project;
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\User;
@@ -29,6 +31,7 @@ class ProjectHasUserController extends Controller
         ]);
         $em->remove($entryToRemove);
         $em->flush();
+        $this->removeUserToMeetingsAttendance($user, $project);
         $this->addFlash('success', "User removed from project");
         return $this->redirectToRoute('show_project', array('project' => $project->getId()));
     }
@@ -42,15 +45,16 @@ class ProjectHasUserController extends Controller
     public function addToAction(Project $project, Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        if($em->find('AppBundle:Project',$project->getId()) == null) {
+        if ($em->find('AppBundle:Project', $project->getId()) == null) {
             $this->addFlash('error', 'Something went wrong!');
             return $this->redirectToRoute('homepage');
         }
 //        $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
-        if ($leader != $this->getUser()){
+        $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
+        if ( ($supervisor != $this->getUser()) && ($leader != $this->getUser())) {
             $this->addFlash('error', 'To add user to the project you need to be project leader!');
-            return $this->redirectToRoute('show_project', ['project' => $project]);
+            return $this->redirectToRoute('show_project', ['project' => $project->getId()]);
         }
         $form = $this->createForm(AddUserToCurrentProjectForm::class);
         $form->handleRequest($request);
@@ -72,7 +76,7 @@ class ProjectHasUserController extends Controller
                 $projectHasUser->setProject($project);
                 $projectHasUser->setUser($userToAdd);
                 $projectHasUser->setProjectRole($roleToAdd);
-
+                $this->addUserToMeetingsAttendance($userToAdd, $project);
                 $em->persist($projectHasUser);
                 $em->flush();
                 $this->addFlash('success', "User added to the project");
@@ -83,13 +87,43 @@ class ProjectHasUserController extends Controller
         }
 
         return $this->render('project/adduserstoproject.html.twig', array(
-            "pageHeader" => "Project: \"" . $project->getTitle() ."\"",
+            "pageHeader" => "Project: \"" . $project->getTitle() . "\"",
             "subHeader" => "Add user to this project",
             'project' => $project,
             "form" => $form->createView(),
         ));
     }
 
+    private function addUserToMeetingsAttendance(User $user, Project $project){
+        $em = $this->getDoctrine()->getManager();
+        $meetings = $project->getMeetings();
+        foreach ($meetings as $meeting) {
+            if ($meeting->getMeetingStatus()->getName() == 'future') {
+                $attendance = new MeetingAttendance();
+                $attendance->setMeeting($meeting);
+                $attendance->setUser($user);
+                $attendance->setAttendance("Yes");
+                $attendance->setApologiesNote("");
+                $em->persist($attendance);
+                $em->flush();
+            }
+        }
+    }
+
+
+    private function removeUserToMeetingsAttendance(User $user, Project $project){
+        $em = $this->getDoctrine()->getManager();
+
+
+        $meetings = $project->getMeetings();
+        foreach ($meetings as $meeting) {
+            if ($meeting->getMeetingStatus()->getName() == 'future') {
+                $attendance = $em->getRepository(MeetingAttendance::class)->findOneBy(['user' => $user, 'meeting' =>$meeting]);
+                $em->remove($attendance);
+                $em->flush();
+            }
+        }
+    }
     /**
      * @Security("is_granted('ROLE_ADD_USER_TO_PROJECT')")
      * @param Request $request

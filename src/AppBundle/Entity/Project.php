@@ -102,29 +102,6 @@ class Project
         return $this->getTitle();
     }
 
-    /**
-     * Set locked
-     *
-     * @param boolean $locked
-     *
-     * @return Project
-     */
-    public function setLocked($locked)
-    {
-        $this->locked = $locked;
-
-        return $this;
-    }
-
-    /**
-     * Get locked
-     *
-     * @return boolean
-     */
-    public function getLocked()
-    {
-        return $this->locked;
-    }
 
     /**
      * Add meeting

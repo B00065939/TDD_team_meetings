@@ -7,23 +7,90 @@
     <div class="container-fluid">
         <ul class="nav navbar-nav">
             <li>
-                <a href="
-                {% if currAgendaItem.sequenceNo <= countAI %}
-                    {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : currAgendaItem.sequenceNo - 1 }) }}
-                {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
+                <a href="{{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : currAgendaItem.sequenceNo - 1 }) }}">
                     <i class="fa fa-arrow-circle-o-left" aria-hidden="true"></i> Previous agenda</a>
             </li>
-            <li>
-                <a href="
-                {% if currAgendaItem.sequenceNo <= countAI %}
-                    {{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}
-                {% endif %}{% if currAgendaItem.sequenceNo > countAI %}#{% endif %}">
-                    <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
-            </li>
+
+            {% if currAgendaItem.sequenceNo < countAI %}
+                <li>
+                    <a href="{{ path('next_agenda_on_meeting', {'meeting': meeting.id , 'agendaItemSequenceNo' : nextAISequenceNo}) }}">
+                        <i class="fa fa-arrow-circle-o-right" aria-hidden="true"></i> Next agenda</a>
+                </li>
+            {% endif %}
+
+            {% if currAgendaItem.sequenceNo >= countAI %}
+                <li>
+                    <a href="{{ path('show_meeting',{'meeting': meeting.id}) }}">Back to meeting page</a>
+                </li>
+            {% endif %}
+
+            {% if currAgendaItem.sequenceNo >= countAI and meetingStatus != 'past' and (meeting.chair == app.user or  meeting.secretary == app.user or is_granted('ROLE_FINISH_MEETING')) %}
+                <li>
+                    <a href=" {{ path('finish_meeting', {'meeting': meeting.id}) }}">Finish meeting</a>
+                </li>
+            {% endif %}
 
         </ul>
     </div>
 
+    {% if lastMeeting is defined %}
+        <p>Last meeting for project {{ lastMeeting.project }}
+            <br> was held on {{ lastMeeting.mDateTime |date }}</p>
+
+        {% for minute in minuteItems %}
+            <button data-toggle="collapse" data-target="#{{ minute.id }}">{{ minute.sequenceNo }}. {{ minute.title }}</button>
+            <div id="{{ minute.id }}" class="collapse">
+            Description: {{ minute.description }}<br>
+            Proposer: {{ minute.proposer }}<br>
+            Creation date: {{ minute.creationDate|date }}<br>
+                {% set counter = 1 %}
+                {% for item in minute.actions %}
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <table class="table">
+                                <caption>Action No. {{ counter }} </caption>
+                                <tr>
+                                    <th>Title</th>
+                                    <td>{{ item.title }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Proposer</th>
+                                    <td>{{ item.proposer.fullName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Doer</th>
+                                    <td>{{ item.doer.fullName }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Deadline</th>
+                                    <td>{{ item.deadline|date }}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-md-8">
+                            <table class="table">
+                                <caption>Action description</caption>
+                                <tr>
+                                    <td>{{ item.description }}</td>
+                                </tr>
+
+                            </table>
+                        </div>
+                    </div>
+                    {% set counter = counter + 1 %}
+                {% endfor %}
+            </div>
+            <hr>
+        {% endfor %}
+
+
+
+
+    {% else %}
+        <p>This is a firs meeting </p>
+    {% endif %}
 
 
 

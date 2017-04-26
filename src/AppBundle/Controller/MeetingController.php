@@ -30,7 +30,7 @@ class MeetingController extends Controller
     {
 
         $em = $this->getDoctrine()->getManager();
-        if($em->find('AppBundle:Meeting', $meeting->getId()) == null) {
+        if ($em->find('AppBundle:Meeting', $meeting->getId()) == null) {
             $this->addFlash('error', 'Something went wrong!');
             return $this->redirectToRoute('homepage');
         }
@@ -38,7 +38,6 @@ class MeetingController extends Controller
         $secretary = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Secretary");
         $leader = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Leader");
         $supervisor = $em->getRepository('AppBundle:ProjectHasUser')->findProjectUserWithRole($project, "Project Supervisor");
-
 
 
         $afterAgendaDeadline = $meeting->getAgendaDeadline() < new \DateTime();
@@ -53,7 +52,7 @@ class MeetingController extends Controller
                 $agendaItems->removeElement($agendaItem);
             }
         }
-
+        $meetingStatus = $meeting->getMeetingStatus()->getName();
         //$test = $meeting->getProject()->getMeetings();
         //dump(count($agendaItems));die();
         $form = $this->createForm(ConfirmAttendance::class);
@@ -62,6 +61,12 @@ class MeetingController extends Controller
 
             $attendance = $form->get('attendance')->getData();
             $note = $form->get('apologiesNote')->getData();
+            if ($attendance == 'Yes' && $note == null) {
+                $note = '';
+            } elseif ($attendance != 'Yes' && $note == null) {
+                $this->addFlash('error', 'You need to provide apologies note');
+                return $this->redirectToRoute('show_meeting', ['meeting' => $meeting->getId()]);
+            }
 
             $currUserAttendance->setApologiesNote($note);
             $currUserAttendance->setAttendance($attendance);
@@ -70,16 +75,18 @@ class MeetingController extends Controller
         }
 
         return $this->render('meeting/meeting.html.twig', array(
-            "pageHeader" => "Project:  \"" . $meeting->getProject()->getTitle() . "\" ",
-            "subHeader" => "Details of the meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
-            "usersAttendanceList" => $usersAttendanceList,
-            "currUserAttendance" => $currUserAttendance,
-            "currNote" => $currNote,
+            'pageHeader' => "Project:  \"" . $meeting->getProject()->getTitle() . "\" ",
+            'subHeader' => "Details of the meeting at : " . $meeting->getMDateTime()->format('Y-m-d H:i:s'),
+            'usersAttendanceList' => $usersAttendanceList,
+            'currUserAttendance' => $currUserAttendance,
+            'currNote' => $currNote,
             'form' => $form->createView(),
             'agendaItems' => $agendaItems,
             'project' => $meeting->getProject(),
             'meeting' => $meeting,
             'leader' => $leader,
+            'secretary' => $secretary,
+            'meetingStatus' => $meetingStatus,
             'afterAgendaDeadline' => $afterAgendaDeadline,
         ));
     }
@@ -249,7 +256,7 @@ class MeetingController extends Controller
             $attendance = new MeetingAttendance();
             $attendance->setMeeting($meeting);
             $attendance->setUser($user);
-            $attendance->setAttendance("Maybe");
+            $attendance->setAttendance("Yes");
             $attendance->setApologiesNote("");
             $em->persist($attendance);
             $em->flush();

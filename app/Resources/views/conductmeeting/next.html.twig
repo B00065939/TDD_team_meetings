@@ -36,15 +36,23 @@
             {% endif %}
         </ul>
     </div>
+    {% if meetingStatus == 'past' %}
+        <table class="table">
+            <tr>
+                <th>Comment</th>
+                <td> {{ minuteItem.comment }}</td>
+            </tr>
+        </table>
+    {% else %}
 
-
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit" name="minute_comment" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
-                                                                                          aria-hidden="true"></i>Update
-        Comment
-    </button>
-    {{ form_end(form) }}
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" name="minute_comment" class="btn btn-primary" formnovalidate><i class="fa fa-arrow-right"
+                                                                                              aria-hidden="true"></i>Update
+            Comment
+        </button>
+        {{ form_end(form) }}
+    {% endif %}
 
     {% set counter = 1 %}
     {% for item in minuteItem.actions %}
@@ -52,8 +60,11 @@
         <div class="row">
             <div class="col-md-4">
                 <table class="table">
-                    <caption>Action Item {{ counter }} . {{ item.title }} </caption>
-
+                    <caption>Action No. {{ counter }} </caption>
+                    <tr>
+                        <th>Title</th>
+                        <td>{{ item.title }}</td>
+                    </tr>
                     <tr>
                         <th>Proposer</th>
                         <td>{{ item.proposer.fullName }}</td>
@@ -73,15 +84,15 @@
                 <table class="table">
                     <caption>Action description</caption>
                     <tr>
-                        <td colspan="2">{{ item.description }}</td>
+                        <td>{{ item.description }}</td>
                     </tr>
-                    <tr>
-                        <td><a href="">Edit</a></td>
-                        <td>
-                            <a href="{{ path('delete_minute_action',{'minuteItem' : minuteItem.id, 'minuteAction' : item.id }) }}">Delete</a>
-                        </td>
-                    </tr>
-
+                    {% if meetingStatus != 'past' %}
+                        <tr>
+                            <td>
+                                <a href="{{ path('delete_minute_action',{'minuteItem' : minuteItem.id, 'minuteAction' : item.id }) }}">Delete</a>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </table>
             </div>
         </div>
