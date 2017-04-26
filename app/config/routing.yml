@@ -6,10 +6,12 @@
 #    resource: "@AppBundle/Controller/MeetingAttendanceController.php"
 #    type:     annotation
 
-app_meeting_status:
-    resource: "@AppBundle/Controller/MeetingStatusController.php"
-    type:     annotation
-
+#app_meeting_status:
+#    resource: "@AppBundle/Controller/MeetingStatusController.php"
+#    type:     annotation
+show_about:
+  path: /about/
+  defaults: {_controller: AppBundle:Main:about}
 # Minute Action
 edit_minute_action:
   path: /minuteaction/edit/{minuteItem}

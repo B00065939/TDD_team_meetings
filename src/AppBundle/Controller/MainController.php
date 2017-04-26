@@ -17,8 +17,17 @@ use AppBundle\Repository\ProjectHasUserRepository;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+/**
+ * Class MainController
+ * @package AppBundle\Controller
+ */
 class MainController extends Controller
 {
+    public function aboutAction()
+    {
+        return$this->render('about/about.html.twig');
+    }
+
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -56,6 +65,9 @@ class MainController extends Controller
         );
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function supPanelAction()
     {
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])) {
@@ -68,8 +80,6 @@ class MainController extends Controller
                 'projectRole' => $role
             ]);
 
-
-            //findAllProjectsWhereUserHasRole($this->getUser(), $role);
 
             return $this->render(
                 'sup/suppanel.html.twig',[
@@ -107,6 +117,9 @@ class MainController extends Controller
         }
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function adminPanelAction()
     {
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
@@ -123,6 +136,7 @@ class MainController extends Controller
             return $this->redirectToRoute('homepage');
         }
     }
+
     /**
      * @throws Exception
      */
