@@ -120,7 +120,7 @@
                         </tr>
                         <tr>
                             <th colspan="2">
-                                {% if ( leader == app.user and afterAgendaDeadline == false ) %}
+                                {% if ( leader == app.user  and afterAgendaDeadline == false ) %}
                                     <a href="{{ path('make_current_agenda_item', {'agendaItem' : agenda.id}) }}">
                                         <button class="btn btn-primary"><i class="fa fa-check" aria-hidden="true"></i>
                                             Make it current

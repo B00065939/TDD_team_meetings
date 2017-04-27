@@ -44,7 +44,7 @@ class MinuteActionController extends Controller
         }
         return $this->render('minuteaction/new.html.twig', array(
             'pageHeader' => "Project: \"" . $minuteItem->getMeeting()->getProject()->getTitle() . "\". Meeting: " . $minuteItem->getMeeting()->getMDateTime()->format('d/m/y  H:m'),
-            'subHeader' => "Agenda: " . $minuteItem->getTitle(),
+            'subHeader' => "Create new action for  \"" . $minuteItem->getTitle() . "\"",
             'minuteItem' => $minuteItem,
             'form' => $form->createView(),
         ));

@@ -34,62 +34,61 @@
     </div>
 
     {% if lastMeeting is defined %}
-        <p>Last meeting for project {{ lastMeeting.project }}
-            <br> was held on {{ lastMeeting.mDateTime |date }}</p>
+        {% if lastMeeting != null %}
+            <p>Last meeting for project {{ lastMeeting.project }}
+                <br> was held on {{ lastMeeting.mDateTime |date }}</p>
 
-        {% for minute in minuteItems %}
-            <button data-toggle="collapse" data-target="#{{ minute.id }}">{{ minute.sequenceNo }}. {{ minute.title }}</button>
-            <div id="{{ minute.id }}" class="collapse">
-            Description: {{ minute.description }}<br>
-            Proposer: {{ minute.proposer }}<br>
-            Creation date: {{ minute.creationDate|date }}<br>
-                {% set counter = 1 %}
-                {% for item in minute.actions %}
-                    <hr>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <table class="table">
-                                <caption>Action No. {{ counter }} </caption>
-                                <tr>
-                                    <th>Title</th>
-                                    <td>{{ item.title }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Proposer</th>
-                                    <td>{{ item.proposer.fullName }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Doer</th>
-                                    <td>{{ item.doer.fullName }}</td>
-                                </tr>
-                                <tr>
-                                    <th>Deadline</th>
-                                    <td>{{ item.deadline|date }}</td>
-                                </tr>
-                            </table>
+            {% for minute in minuteItems %}
+                <button data-toggle="collapse" data-target="#{{ minute.id }}">{{ minute.sequenceNo }}
+                    . {{ minute.title }}</button>
+                <div id="{{ minute.id }}" class="collapse">
+                    Description: {{ minute.description }}<br>
+                    Proposer: {{ minute.proposer }}<br>
+                    Creation date: {{ minute.creationDate|date }}<br>
+                    {% set counter = 1 %}
+                    {% for item in minute.actions %}
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <table class="table">
+                                    <caption>Action No. {{ counter }} </caption>
+                                    <tr>
+                                        <th>Title</th>
+                                        <td>{{ item.title }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Proposer</th>
+                                        <td>{{ item.proposer.fullName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Doer</th>
+                                        <td>{{ item.doer.fullName }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Deadline</th>
+                                        <td>{{ item.deadline|date }}</td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                            <div class="col-md-8">
+                                <table class="table">
+                                    <caption>Action description</caption>
+                                    <tr>
+                                        <td>{{ item.description }}</td>
+                                    </tr>
+
+                                </table>
+                            </div>
                         </div>
-
-                        <div class="col-md-8">
-                            <table class="table">
-                                <caption>Action description</caption>
-                                <tr>
-                                    <td>{{ item.description }}</td>
-                                </tr>
-
-                            </table>
-                        </div>
-                    </div>
-                    {% set counter = counter + 1 %}
-                {% endfor %}
-            </div>
-            <hr>
-        {% endfor %}
-
-
-
-
-    {% else %}
-        <p>This is a firs meeting </p>
+                        {% set counter = counter + 1 %}
+                    {% endfor %}
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>This is a first meeting </p>
+        {% endif %}
     {% endif %}
 
 

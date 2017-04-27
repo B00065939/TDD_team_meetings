@@ -94,7 +94,11 @@ class ConductMeetingController extends Controller
         } elseif ($agendaItemSequenceNo == 3) {
             //dump($nextAI);die();
             $lastMeeting = $this->findPreviousCompletedMeeting($meeting);
-            $minuteItems = $lastMeeting->getMinuteItems();
+            if ($lastMeeting == null) {
+                $minuteItems = null;
+            }else {
+                $minuteItems = $lastMeeting->getMinuteItems();
+            }
 
             return $this->render(':conductmeeting:third.html.twig', array(
                 'pageHeader' => "Project: \"" . $meeting->getProject()->getTitle() . "\". Meeting: " . $meeting->getMDateTime()->format('d/m/y  H:m'),
@@ -106,7 +110,7 @@ class ConductMeetingController extends Controller
                 'nextAISequenceNo' => $agendaItemSequenceNo + 1,
                 'meetingStatus' => $meeting->getMeetingStatus()->getName(),
                 'lastMeeting' => $lastMeeting,
-                'minuteItems'=> $minuteItems,
+                'minuteItems' => $minuteItems,
             ));
         } else {
             /**

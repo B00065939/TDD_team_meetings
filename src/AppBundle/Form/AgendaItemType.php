@@ -15,7 +15,7 @@ class AgendaItemType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('title',TextType::class,[
+        $builder->add('title', TextType::class, [
             'label' => ' Agenda title',
         ])
             ->add('description', TextareaType::class, [
@@ -23,7 +23,7 @@ class AgendaItemType extends AbstractType
             ]);
 
     }
-    
+
     /**
      * {@inheritdoc}
      */
