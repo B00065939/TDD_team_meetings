@@ -6,7 +6,7 @@ Feature: Authentication
   # Scenario cannot assume then is a data already in database so we need to put in there every time when we start test
   # and when we finishing it removing this data
 
-#  Scenario: Login in to management page
+#  Scenario: Login in to  dashboard page
 #    Given There is an admin user "admin@wp.pl" with password "pass" with "ROLE_ADMIN"
 #    And I am on "/"
 #    When I fill in "Username" with "admin@wp.pl"
@@ -17,7 +17,7 @@ Feature: Authentication
 #    And I should see "Logout
 
 #@javascript
-  Scenario Outline: Login in to management page
+  Scenario Outline: Login in to dashboard page
     Given There is an user "<email>" with password "<password>" with "<role>"
     And I am on "/"
     When I fill in "Username" with "<email>"
@@ -28,14 +28,14 @@ Feature: Authentication
     And I should see "Logout"
 
     Examples:
-      | email       | password | role       | page_name         | result              |
-      | admin@wp.pl | pass     | ROLE_ADMIN | /admin/adminpanel | Administrator Panel |
-      | user@wp.pl  | pass     | ROLE_USER  | /user/userpanel   | User Panel          |
-      | sup@wp.pl   | pass     | ROLE_SUP   | /sup/suppanel     | Supervisor Panel   |
+      | email       | password | role       | page_name         | result           |
+      | admin@wp.pl | pass     | ROLE_ADMIN | /admin/adminpanel | Admin Panel      |
+      | user@wp.pl  | pass     | ROLE_USER  | /user/userpanel   | User Panel       |
+      | sup@wp.pl   | pass     | ROLE_SUP   | /sup/suppanel     | Supervisor Panel |
 
 
 #@javascript
-  Scenario: Logout from administrator panel
+  Scenario: Logout from admin panel
     Given I am logged in as an admin
     When I follow "logout"
     Then I should see "Login please!"

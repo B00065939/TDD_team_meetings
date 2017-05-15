@@ -37,7 +37,7 @@ class AdminController extends Controller
 
         return $this->render('admin/newuser.html.twig', [
             'form' => $form->createView(),
-            "pageHeader" => "Administrator Panel",
+            "pageHeader" => "Admin Panel",
             "subHeader" => "Create new user"
         ]);
     }
@@ -72,7 +72,7 @@ class AdminController extends Controller
 
         return $this->render('admin/edituser.html.twig', [
             'form' => $form->createView(),
-            "pageHeader" => "Administrator Panel",
+            "pageHeader" => "Admin Panel",
             "subHeader" => "Edit user",
             "userToEdit" => $userToEdit
         ]);
@@ -106,7 +106,7 @@ class AdminController extends Controller
         }
 
         return $this->render('admin/deleteuser.html.twig', [
-            "pageHeader" => "Administrator Panel",
+            "pageHeader" => "Admin Panel",
             "subHeader" => "Delete user",
             "userToDelete" => $userToDelete,
             "form" => $form->createView()

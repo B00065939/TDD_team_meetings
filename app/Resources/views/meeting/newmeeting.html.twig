@@ -2,9 +2,8 @@
 {% block pageHeader %} {{ pageHeader }} {% endblock %}
 {% block subHeader %} {{ subHeader }} {% endblock %}
 
-
-
 {% block body %}
+
     <div class="container-fluid">
         <ul class="nav navbar-nav">
             {% if is_granted('ROLE_NEW_MEETING') %}
@@ -12,7 +11,6 @@
                     <a href="{{ path('show_project', {'project': project.id}) }}">Back to project</a>
                 </li>
             {% endif %}
-
         </ul>
     </div>
 
@@ -24,4 +22,5 @@
         </button>
         {{ form_end(form) }}
     </div>
+
 {% endblock %}

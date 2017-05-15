@@ -19,11 +19,14 @@ use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class NewMeetingForm extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $mDateTime = new \DateTime();
         date_add($mDateTime, date_interval_create_from_date_string('1 day'));
-
         $aDateTime = new \DateTime();
         date_add($aDateTime, date_interval_create_from_date_string('23 hour'));
 
@@ -48,14 +51,15 @@ class NewMeetingForm extends AbstractType
             ])
             ->add('duration', IntegerType::class, [
                 'data' => 90,
-
             ])
             ->add('location',TextType::class,[
                 'label' => "Meeting location"
             ]);
-
     }
 
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
@@ -63,6 +67,9 @@ class NewMeetingForm extends AbstractType
         ]);
     }
 
+    /**
+     * @return string
+     */
     public function getBlockPrefix()
     {
         return 'app_bundle_new_meeting_form';

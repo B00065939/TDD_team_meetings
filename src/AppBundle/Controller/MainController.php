@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Bemben
- * Date: 09/02/2017
- * Time: 12:57
- */
 
 namespace AppBundle\Controller;
-
 
 use AppBundle\Entity\ProjectHasUser;
 use AppBundle\Entity\ProjectRole;
@@ -25,7 +18,7 @@ class MainController extends Controller
 {
     public function aboutAction()
     {
-        return$this->render('about/about.html.twig');
+        return $this->render('about/about.html.twig');
     }
 
     /**
@@ -34,15 +27,13 @@ class MainController extends Controller
     public function homepageAction()
     {
 
-        //if($this->denyAccessUnlessGranted('ROLE_ADMIN')) {
-
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_USER'])) {
             return $this->redirectToRoute('user_panel');
         }
-        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])  ) {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])) {
             return $this->redirectToRoute('sup_panel');
         }
-        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])  ) {
+        if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_ADMIN'])) {
             return $this->redirectToRoute('admin_panel');
         }
         $authenticationUtils = $this->get('security.authentication_utils');
@@ -73,16 +64,15 @@ class MainController extends Controller
         if (($this->getUser() != null) && ($this->getUser()->getRoles() == ['ROLE_SUPERVISOR'])) {
             $em = $this->getDoctrine()->getManager();
 
-            $role = $em->getRepository(ProjectRole::class)->findOneBy(['name'=>"Project Supervisor"]);
+            $role = $em->getRepository(ProjectRole::class)->findOneBy(['name' => "Project Supervisor"]);
 
             $projects = $em->getRepository('AppBundle:ProjectHasUser')->findBy([
                 'user' => $this->getUser(),
                 'projectRole' => $role
             ]);
 
-
             return $this->render(
-                'sup/suppanel.html.twig',[
+                'sup/suppanel.html.twig', [
                 "pageHeader" => "Project supervising",
                 "subHeader" => "Project List",
                 "projects" => $projects
@@ -106,7 +96,7 @@ class MainController extends Controller
             $user = $this->getUser();
             $projects = $em->getRepository(ProjectHasUser::class)->findBy(['user' => $user]);
             return $this->render(
-                'user/userpanel.html.twig',[
+                'user/userpanel.html.twig', [
                     "pageHeader" => "User Panel",
                     "subHeader" => "Project List",
                     "projects" => $projects

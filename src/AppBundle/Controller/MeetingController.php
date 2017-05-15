@@ -92,6 +92,7 @@ class MeetingController extends Controller
     }
 
     /**
+     * New meeting
      * @Security("is_granted('ROLE_NEW_MEETING')")
      * @param Request $request
      * @param Project $project

@@ -13,6 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 class MinuteActionController extends Controller
 {
 
+    /**
+     * @param MinuteItem $minuteItem
+     * @param MinuteAction $minuteAction
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function deleteAction(MinuteItem $minuteItem, MinuteAction $minuteAction)
     {
         //$minuteItem->get
@@ -23,19 +28,22 @@ class MinuteActionController extends Controller
         return $this->redirectToRoute('next_agenda_on_meeting', ['meeting' => $minuteItem->getMeeting()->getId(), 'agendaItemSequenceNo' => $minuteItem->getSequenceNo()]);
     }
 
+    /**
+     * New Minute Action
+     * @param MinuteItem $minuteItem
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     */
     public function newAction(MinuteItem $minuteItem, Request $request)
     {
-        $minuteAction = new MinuteAction();
+        $em = $this->getDoctrine()->getManager();
 
+        $minuteAction = new MinuteAction();
         $form = $this->createForm(MinuteActionForm::class, $minuteAction);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-
-
-            $em = $this->getDoctrine()->getManager();
             $minuteAction->setMinuteItem($minuteItem);
             $minuteAction->setStatus($em->getRepository(ActionStatus::class)->findOneBy(['name' => "in progress"]));
-
             $em->persist($minuteAction);
             $em->flush();
 

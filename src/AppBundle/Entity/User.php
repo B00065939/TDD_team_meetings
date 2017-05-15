@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Bemben
- * Date: 17/02/2017
- * Time: 00:06
- */
 
 namespace AppBundle\Entity;
 
@@ -29,17 +23,8 @@ class User implements UserInterface
         $this->minuteItems = new ArrayCollection();
         $this->actionsToDo = new ArrayCollection();
         $this->proposedActions = new ArrayCollection();
-
-//        $this->projects = new ArrayCollection();
     }
 
-//    /**
-//      * Many projects has many users
-//     * @var ArrayCollection $projects
-//     * @ORM\ManyToMany(targetEntity="AppBundle\Entity\Project", mappedBy="users")
-//      *
-//     */
-//    private $projects;
     /**
      * @ORM\Column(type="json_array")
      */
@@ -102,8 +87,6 @@ class User implements UserInterface
     private $actionsToDo;
 
     /********************** GETTERS SETTERS ****************************************/
-    /********************** GETTERS SETTERS ****************************************/
-    /********************** GETTERS SETTERS ****************************************/
 
     public function getPlainPassword()
     {
@@ -137,9 +120,6 @@ class User implements UserInterface
     public function getRoles()
     {
         $roles = $this->roles;
-//        if ( !in_array('ROLE_USER', $roles)) {
-//            $roles[] = 'ROLE_USER';
-//        }
         return $roles;
     }
 

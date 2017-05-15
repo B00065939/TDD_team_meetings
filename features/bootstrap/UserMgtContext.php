@@ -61,9 +61,6 @@ class UserMgtContext extends RawMinkContext implements Context
         return $this->getContainer()->get('doctrine.orm.default_entity_manager');
     }
 
-
-
-
     /**
      * @return \Behat\Mink\Element\DocumentElement
      */

@@ -39,8 +39,6 @@
     <div class="row">
         <div class="col-sm-3 col-md-2 sidebar">
             <ul class="nav nav-sidebar">
-
-
                 <li><i class="link_header">S.T.P.S.</i></li>
                 <li><a href="{{ path('homepage') }}">Dashboard</a></li>
                 {% if (is_granted('ROLE_USER')) %}
@@ -73,12 +71,9 @@
                     {% endif %}
 
                     {% if (is_granted('ROLE_SUPERVISOR') and project.lock == false) or (is_granted('ROLE_USER') and project.lock == false and isCurrLeader == true ) %}
-                        {#{% if isCurrLeader == true  %}#}
                         <li>
                             <a href="{{ path('new_meeting', {'project': project.id}) }}">New Meeting</a>
                         </li>
-                        {#{% endif %}#}
-                        {#{% if ( isCurrLeader == true or is_granted('ROLE_ADD_USER_TO_CURRENT_PROJECT') ) and project.lock == false %}#}
                         <li>
                             <a href="{{ path('add_user_to_current_project', {'project': project.id}) }}">Add user</a>
                         </li>
@@ -99,7 +94,6 @@
                             <a href="{{ path('show_meeting', {'meeting': meeting.id}) }}">Show Meeting</a>
                         </li>
                     {% endif %}
-
                     {% if is_granted('ROLE_NEW_AGENDA_ITEM') and meeting.meetingStatus.name != 'past' and  isAfterAgendaDeadline == false %}
                         <li>
                             <a href="{{ path('new_agenda_item', {'meeting' : meeting.id}) }}">New Agenda Item</a>
@@ -107,7 +101,6 @@
                     {% endif %}
                 </ul>
             {% endif %}
-
 
         </div>
         <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
@@ -132,8 +125,6 @@
 </div>
 
 {% block javascripts %}
-    <!-- Bootstrap core JavaScript ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
     <script src="{{ asset('vendor/bootstrap/js/jquery.min.js') }}"></script>
     <script>window.jQuery || document.write('<script src="{{ asset('vendor/bootstrap/js/jquery.min.js') }}"><\/script>')</script>
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.min.js') }}"></script>

@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: bemben
- * Date: 11/04/2017
- * Time: 12:11
- */
 
 namespace AppBundle\Entity;
 
@@ -399,9 +393,10 @@ class Meeting
     {
         $this->agendaItems->removeElement($minuteItem);
     }
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
     function __toString()
     {
-        return $this->getMDateTime()->format('Y:m:D HH:MM') . " - " .  $this->getLocation();
+        return $this->getMDateTime()->format('Y:m:D HH:MM') . " - " . $this->getLocation();
     }
 }
