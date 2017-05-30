@@ -46,6 +46,7 @@ class UserMgtContext extends RawMinkContext implements Context
             $user->setEmail("user".$i."@wp.pl");
             $user->setPlainPassword("pass".$i);
             $user->setRoles(['ROLE_USER']);
+            $user->setFullName('Test'.$i.' User');
             $em = $this->getEntityManager();
             $em->persist($user);
             $em->flush();

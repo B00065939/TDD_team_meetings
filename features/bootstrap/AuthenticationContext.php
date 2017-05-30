@@ -35,15 +35,17 @@ class AuthenticationContext extends RawMinkContext implements Context
     }
 
     /**
-     * @Given There is an user :email with password :password with :role
+     * @Given There is an user :fullName :email with password :password with :role
      * @param $email
      * @param $password
      * @param $role
+     * @param $fullName
      */
-    public function thereIsAnUserWithPassword($email, $password, $role)
+    public function thereIsAnUserWithPassword($email, $password, $role , $fullName)
     {
         $user = new \AppBundle\Entity\User();
         $user->setEmail($email);
+        $user->setFullName($fullName);
         $user->setPlainPassword($password);
         $user->setRoles(array($role));
         $em = $this->getEntityManager();
@@ -59,8 +61,9 @@ class AuthenticationContext extends RawMinkContext implements Context
         $email = 'admin@wp.pl';
         $password = 'pass';
         $roles = 'ROLE_ADMIN';
+        $fullName = 'Test Admin';
 
-        $this->thereIsAnUserWithPassword($email,$password,$roles);
+        $this->thereIsAnUserWithPassword($email,$password,$roles, $fullName);
         $this->visitPath('/');
         $this->getPage()->fillField('Username', $email);
         $this->getPage()->fillField('Password', $password);
@@ -91,8 +94,9 @@ class AuthenticationContext extends RawMinkContext implements Context
         $email = 'user@wp.pl';
         $password = 'pass';
         $roles = 'ROLE_USER';
+        $fullName = 'Test User';
 
-        $this->thereIsAnUserWithPassword($email, $password, $roles);
+        $this->thereIsAnUserWithPassword($email, $password, $roles, $fullName);
         $this->visitPath('/');
         $this->getPage()->fillField('Username', $email);
         $this->getPage()->fillField('Password', $password);
@@ -106,9 +110,10 @@ class AuthenticationContext extends RawMinkContext implements Context
     {
         $email = 'sup@wp.pl';
         $password = 'pass';
-        $roles = 'ROLE_SUP';
+        $roles = 'ROLE_SUPERVISOR';
+        $fullName = 'Test Sup';
 
-        $this->thereIsAnUserWithPassword($email, $password, $roles);
+        $this->thereIsAnUserWithPassword($email, $password, $roles, $fullName);
         $this->visitPath('/');
         $this->getPage()->fillField('Username', $email);
         $this->getPage()->fillField('Password', $password);

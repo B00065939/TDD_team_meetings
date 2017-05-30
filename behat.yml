@@ -1,10 +1,10 @@
 default:
   suites:
-    user_mgt:
-      contexts:
-        - Behat\MinkExtension\Context\MinkContext
-        - UserMgtContext
-        - AuthenticationContext
+#    user_mgt:
+#      contexts:
+#        - Behat\MinkExtension\Context\MinkContext
+#        - UserMgtContext
+#        - AuthenticationContext
 #    default:
 #      contexts:
 #        - FeatureContext

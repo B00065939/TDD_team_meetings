@@ -73,7 +73,7 @@ class MainController extends Controller
 
             return $this->render(
                 'sup/suppanel.html.twig', [
-                "pageHeader" => "Project supervising",
+                "pageHeader" => "Supervisor Panel",
                 "subHeader" => "Project List",
                 "projects" => $projects
             ]);
@@ -119,7 +119,7 @@ class MainController extends Controller
             return $this->render(
                 'admin/adminpanel.html.twig', [
                 "users" => $users,
-                "pageHeader" => "Administrator Panel",
+                "pageHeader" => "Admin Panel",
                 "subHeader" => "User List"
             ]);
         } else {
